@@ -2233,7 +2233,7 @@ html.no-csstransitions .home-content__main {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.1);
     position: absolute;
-    left: 2rem;
+    left: -.5rem;
     top: 0;
 }
 
@@ -2248,7 +2248,7 @@ html.no-csstransitions .home-content__main {
     height: 1.5rem;
     width: 1.5rem;
     border-radius: 50%;
-    margin-left: 4rem;
+    margin-left: -1rem;
     box-shadow: 0 0 0 9px #E9E9E9;
     position: absolute;
     left: 2rem;
