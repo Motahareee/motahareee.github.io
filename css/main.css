@@ -2152,7 +2152,7 @@ html.no-csstransitions .home-content__main {
     }
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 200px) {
     .s-home {
         min-height: 654px;
     }
