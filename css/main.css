@@ -2082,7 +2082,7 @@ html.no-csstransitions .home-content__main {
 
 @media only screen and (max-width: 1200px) {
     .home-content h1 {
-        font-size: 5rem;
+        font-size: 2rem;
     }
     .home-content br {
         display: none;
@@ -2152,7 +2152,7 @@ html.no-csstransitions .home-content__main {
     }
 }
 
-@media only screen and (max-width: 200px) {
+@media only screen and (max-width: 500px) {
     .s-home {
         min-height: 654px;
     }
@@ -2248,7 +2248,7 @@ html.no-csstransitions .home-content__main {
     height: 1.5rem;
     width: 1.5rem;
     border-radius: 50%;
-    margin-left: -0.75rem;
+    margin-left: 4rem;
     box-shadow: 0 0 0 9px #E9E9E9;
     position: absolute;
     left: 2rem;
@@ -2267,7 +2267,7 @@ html.no-csstransitions .home-content__main {
 
 .timeline__header h3 {
     line-height: 1.25;
-    margin: 0 0 .3rem 0;
+    margin: 0 -84 .3rem 0;
 }
 
 .timeline__header h5 {
