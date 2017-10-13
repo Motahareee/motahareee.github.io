@@ -4138,8 +4138,10 @@ article.blog-single .blog-content {
     }
 }
 
-.timeline{
-    margin: auto;
-    width: 50;
-    padding: 10px;
+.row about-content about-content--buttons{
+    margin-top: 0px;
+    margin-right: : auto;
+    margin-bottom: 0px;
+    margin-left: auto;
+    position: relative;
 }
