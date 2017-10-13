@@ -2251,7 +2251,7 @@ html.no-csstransitions .home-content__main {
     margin-left: -3rem;
     box-shadow: 0 0 0 9px #E9E9E9;
     position: absolute;
-    left: 2rem;
+    left: 35rem;
     top: .3rem;
 }
 
@@ -2262,12 +2262,13 @@ html.no-csstransitions .home-content__main {
     letter-spacing: .15rem;
     color: rgba(0, 0, 0, 0.5);
     margin-bottom: .9rem;
+    margin-left: 210;
     font-family: "montserrat-bold", sans-serif;
 }
 
 .timeline__header h3 {
     line-height: 1.25;
-    margin: 0 0 .3rem 0;
+    margin: 0 0 .3rem 210;
 }
 
 .timeline__header h5 {
