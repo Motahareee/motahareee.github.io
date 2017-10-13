@@ -4137,3 +4137,9 @@ article.blog-single .blog-content {
         display: none;
     }
 }
+
+.timeline{
+    margin: auto;
+    width: 50;
+    padding: 10px;
+}
