@@ -2262,13 +2262,12 @@ html.no-csstransitions .home-content__main {
     letter-spacing: .15rem;
     color: rgba(0, 0, 0, 0.5);
     margin-bottom: .9rem;
-    margin-left: 210;
     font-family: "montserrat-bold", sans-serif;
 }
 
 .timeline__header h3 {
     line-height: 1.25;
-    margin: 0 0 .3rem 210;
+    margin: 0 0 .3rem 0;
 }
 
 .timeline__header h5 {
