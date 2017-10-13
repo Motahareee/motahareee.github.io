@@ -389,11 +389,11 @@ input[type="password"], textarea {
  * -------------------------------------- */
 
 [class*="col-"] {
-    float: left;
+    float: center;
 }
 
 [class*="col-"] + [class*="col-"].end {
-    float: right;
+    float: center;
 }
 
 [class*="col-"] {
