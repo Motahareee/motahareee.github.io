@@ -1,4 +1,4 @@
-"interval","method_long_desc","num_cab","serving_rate","average_wait","fleet_size","exe_time","match-percent","Hierarchy"
+"interval","method_long_desc","num_cab","serving_rate","average_wait","fleet_size","exe_time","match_percent","hierarchy"
 "","Greedy","9500","97.437","232","4","384.355","",""
 "","Greedy","10500","98.019","334","4","455.243","",""
 "","Greedy","11500","98.41","313","4","493.109","",""
