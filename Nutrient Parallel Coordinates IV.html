@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<!-- saved from url=(0032)http://localhost:8888/index.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Nutrient Parallel Coordinates IV</title>
+</head><body>
+<script src="./Nutrient Parallel Coordinates IV_files/d3.v4.js"></script>
+<script src="./Nutrient Parallel Coordinates IV_files/render-queue.js"></script>
+<link rel="stylesheet" href="./Nutrient Parallel Coordinates IV_files/style.css">
+<script>
+var margin = {top: 66, right: 110, bottom: 20, left: 188},
+    width = document.body.clientWidth - margin.left - margin.right,
+    height = 340 - margin.top - margin.bottom,
+    innerHeight = height - 2;
+
+var devicePixelRatio = window.devicePixelRatio || 1;
+
+var color = d3.scaleOrdinal()
+  .range(["#5DA5B3","#D58323","#DD6CA7"]);//,"#54AF52","#8C92E8","#E15E5A","#725D82","#776327","#50AB84","#954D56","#AB9C27","#517C3F","#9D5130","#357468","#5E9ACF","#C47DCB","#7D9E33","#DB7F85","#BA89AD","#4C6C86","#B59248","#D8597D","#944F7E","#D67D4B","#8F86C2"]);
+
+var types = {
+  "Number": {
+    key: "Number",
+    coerce: function(d) { return +d; },
+    extent: d3.extent,
+    within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+    defaultScale: d3.scaleLinear().range([innerHeight, 0])
+  },
+  "String": {
+    key: "String",
+    coerce: String,
+    extent: function (data) { return data.sort(); },
+    within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+    defaultScale: d3.scalePoint().range([0, innerHeight])
+  },
+  "Date": {
+    key: "Date",
+    coerce: function(d) { return new Date(d); },
+    extent: d3.extent,
+    within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+    defaultScale: d3.scaleTime().range([0, innerHeight])
+  }
+};
+
+var dimensions = [
+  {
+    key: "method_long_desc",
+    description: "Method",
+    type: types["String"],
+    axis: d3.axisLeft()
+      .tickFormat(function(d,i) {
+        return d;
+      })
+  },
+  {
+    key: "num_cab",
+    description: "Number of Cabs",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "serving_rate",
+    description: "Serving Rate",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "average_wait",
+    description: "Average Wait",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "interval",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "exe_time",
+    description: "Execuation Time",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "fleet_size",
+    description: "Fleet Size",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  }
+];
+
+var xscale = d3.scalePoint()
+    .domain(d3.range(dimensions.length))
+    .range([0, width]);
+
+var yAxis = d3.axisLeft();
+
+var container = d3.select("body").append("div")
+    .attr("class", "parcoords")
+    .style("width", width + margin.left + margin.right + "px")
+    .style("height", height + margin.top + margin.bottom + "px");
+
+var svg = container.append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var canvas = container.append("canvas")
+    .attr("width", width * devicePixelRatio)
+    .attr("height", height * devicePixelRatio)
+    .style("width", width + "px")
+    .style("height", height + "px")
+    .style("margin-top", margin.top + "px")
+    .style("margin-left", margin.left + "px");
+
+var ctx = canvas.node().getContext("2d");
+ctx.globalCompositeOperation = 'darken';
+ctx.globalAlpha = 0.15;
+ctx.lineWidth = 1.5;
+ctx.scale(devicePixelRatio, devicePixelRatio);
+
+var output = d3.select("body").append("pre");
+
+var axes = svg.selectAll(".axis")
+    .data(dimensions)
+  .enter().append("g")
+    .attr("class", function(d) { return "axis " + d.key.replace(/ /g, "_"); })
+    .attr("transform", function(d,i) { return "translate(" + xscale(i) + ")"; });
+
+d3.csv("/Experiments.csv", function(error, data) {
+  if (error) throw error;
+
+  // shuffle the data!
+  //data = d3.shuffle(data);
+
+  data.forEach(function(d) {
+    dimensions.forEach(function(p) {
+      d[p.key] = !d[p.key] ? null : p.type.coerce(d[p.key]);
+    });
+
+    // truncate long text strings to fit in data table
+    for (var key in d) {
+      if (d[key] && d[key].length > 35) d[key] = d[key].slice(0,36);
+    }
+  });
+
+  // type/dimension default setting happens here
+  dimensions.forEach(function(dim) {
+    if (!("domain" in dim)) {
+      // detect domain using dimension type's extent function
+      dim.domain = d3_functor(dim.type.extent)(data.map(function(d) { return d[dim.key]; }));
+    }
+    if (!("scale" in dim)) {
+      // use type's default scale for dimension
+      dim.scale = dim.type.defaultScale.copy();
+    }
+    dim.scale.domain(dim.domain);
+  });
+
+  var render = renderQueue(draw).rate(50);
+
+  ctx.clearRect(0,0,width,height);
+  ctx.globalAlpha = d3.min([0.85/Math.pow(data.length,0.3),1]);
+  render(data);
+
+  axes.append("g")
+      .each(function(d) {
+        var renderAxis = "axis" in d
+          ? d.axis.scale(d.scale)  // custom axis
+          : yAxis.scale(d.scale);  // default axis
+        d3.select(this).call(renderAxis);
+      })
+    .append("text")
+      .attr("class", "title")
+      .attr("text-anchor", "start")
+      .text(function(d) { return "description" in d ? d.description : d.key; });
+
+  // Add and store a brush for each axis.
+  axes.append("g")
+      .attr("class", "brush")
+      .each(function(d) {
+        d3.select(this).call(d.brush = d3.brushY()
+          .extent([[-10,0], [10,height]])
+          .on("start", brushstart)
+          .on("brush", brush)
+          .on("end", brush)
+        )
+      })
+    .selectAll("rect")
+      .attr("x", -8)
+      .attr("width", 16);
+
+  d3.selectAll(".axis.method_long_desc .tick text")
+    .style("fill", color);
+    
+  output.text(d3.tsvFormat(data.slice(0,24)));
+
+  function project(d) {
+    return dimensions.map(function(p,i) {
+      // check if data element has property and contains a value
+      if (
+        !(p.key in d) ||
+        d[p.key] === null
+      ) return null;
+
+      return [xscale(i),p.scale(d[p.key])];
+    });
+  };
+
+  function draw(d) {
+    ctx.strokeStyle = color(d.method_long_desc);
+    ctx.beginPath();
+    var coords = project(d);
+    coords.forEach(function(p,i) {
+      // this tricky bit avoids rendering null values as 0
+      if (p === null) {
+        // this bit renders horizontal lines on the previous/next
+        // dimensions, so that sandwiched null values are visible
+        if (i > 0) {
+          var prev = coords[i-1];
+          if (prev !== null) {
+            ctx.moveTo(prev[0],prev[1]);
+            ctx.lineTo(prev[0]+6,prev[1]);
+          }
+        }
+        if (i < coords.length-1) {
+          var next = coords[i+1];
+          if (next !== null) {
+            ctx.moveTo(next[0]-6,next[1]);
+          }
+        }
+        return;
+      }
+      
+      if (i == 0) {
+        ctx.moveTo(p[0],p[1]);
+        return;
+      }
+
+      ctx.lineTo(p[0],p[1]);
+    });
+    ctx.stroke();
+  }
+
+  function brushstart() {
+    d3.event.sourceEvent.stopPropagation();
+  }
+
+  // Handles a brush event, toggling the display of foreground lines.
+  function brush() {
+    render.invalidate();
+
+    var actives = [];
+    svg.selectAll(".axis .brush")
+      .filter(function(d) {
+        return d3.brushSelection(this);
+      })
+      .each(function(d) {
+        actives.push({
+          dimension: d,
+          extent: d3.brushSelection(this)
+        });
+      });
+
+    var selected = data.filter(function(d) {
+      if (actives.every(function(active) {
+          var dim = active.dimension;
+          // test if point is within extents for each active brush
+          return dim.type.within(d[dim.key], active.extent, dim);
+        })) {
+        return true;
+      }
+    });
+
+    // show ticks for active brush dimensions
+    // and filter ticks to only those within brush extents
+    /*
+    svg.selectAll(".axis")
+        .filter(function(d) {
+          return actives.indexOf(d) > -1 ? true : false;
+        })
+        .classed("active", true)
+        .each(function(dimension, i) {
+          var extent = extents[i];
+          d3.select(this)
+            .selectAll(".tick text")
+            .style("display", function(d) {
+              var value = dimension.type.coerce(d);
+              return dimension.type.within(value, extent, dimension) ? null : "none";
+            });
+        });
+
+    // reset dimensions without active brushes
+    svg.selectAll(".axis")
+        .filter(function(d) {
+          return actives.indexOf(d) > -1 ? false : true;
+        })
+        .classed("active", false)
+        .selectAll(".tick text")
+          .style("display", null);
+    */
+
+    ctx.clearRect(0,0,width,height);
+    ctx.globalAlpha = d3.min([0.85/Math.pow(selected.length,0.3),1]);
+    render(selected);
+
+    output.text(d3.tsvFormat(selected.slice(0,3)));
+  }
+});
+
+function d3_functor(v) {
+  return typeof v === "function" ? v : function() { return v; };
+};
+</script><div class="parcoords" style="width: 1203px; height: 340px;"><svg width="1203" height="340"><g transform="translate(188,66)"><g class="axis method_long_desc" transform="translate(0)"><g fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="#000" d="M-6,0.5H0.5V252.5H-6"></path><g class="tick" opacity="1" transform="translate(0,0.5)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em" style="fill: rgb(93, 165, 179);">Greedy</text></g><g class="tick" opacity="1" transform="translate(0,126.5)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em" style="fill: rgb(221, 108, 167);">Hungarian</text></g><g class="tick" opacity="1" transform="translate(0,252.5)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em" style="fill: rgb(213, 131, 35);">Simple Matching</text></g><text class="title" text-anchor="start">Method</text></g><g class="brush" fill="none" pointer-events="all" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><rect class="overlay" pointer-events="all" cursor="crosshair" x="-8" y="0" width="16" height="254"></rect><rect class="selection" cursor="move" fill="#777" fill-opacity="0.3" stroke="#fff" shape-rendering="crispEdges" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--n" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--s" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect></g></g><g class="axis num_cab" transform="translate(150.83333333333334)"><g fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="#000" d="M-6,252.5H0.5V0.5H-6"></path><g class="tick" opacity="1" transform="translate(0,224.72731918771683)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">6,000</text></g><g class="tick" opacity="1" transform="translate(0,192.65818970153833)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">8,000</text></g><g class="tick" opacity="1" transform="translate(0,164.4047194473705)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">10,000</text></g><g class="tick" opacity="1" transform="translate(0,138.86162986406782)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">12,000</text></g><g class="tick" opacity="1" transform="translate(0,115.37233478811808)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">14,000</text></g><g class="tick" opacity="1" transform="translate(0,93.50903201121531)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">16,000</text></g><g class="tick" opacity="1" transform="translate(0,72.97456910461509)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">18,000</text></g><g class="tick" opacity="1" transform="translate(0,53.552591193666274)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">20,000</text></g><g class="tick" opacity="1" transform="translate(0,35.079767824139)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">22,000</text></g><g class="tick" opacity="1" transform="translate(0,17.429207480048717)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">24,000</text></g><g class="tick" opacity="1" transform="translate(0,0.5)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">26,000</text></g><text class="title" text-anchor="start">Number of Cabs</text></g><g class="brush" fill="none" pointer-events="all" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><rect class="overlay" pointer-events="all" cursor="crosshair" x="-8" y="0" width="16" height="254"></rect><rect class="selection" cursor="move" fill="#777" fill-opacity="0.3" stroke="#fff" shape-rendering="crispEdges" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--n" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--s" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect></g></g><g class="axis serving_rate" transform="translate(301.6666666666667)"><g fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="#000" d="M-6,252.5H0.5V0.5H-6"></path><g class="tick" opacity="1" transform="translate(0,240.73850682596932)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">78</text></g><g class="tick" opacity="1" transform="translate(0,217.50947805650657)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">80</text></g><g class="tick" opacity="1" transform="translate(0,194.56904226576117)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">82</text></g><g class="tick" opacity="1" transform="translate(0,171.90670319947998)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">84</text></g><g class="tick" opacity="1" transform="translate(0,149.5125858405446)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">86</text></g><g class="tick" opacity="1" transform="translate(0,127.37738611967202)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">88</text></g><g class="tick" opacity="1" transform="translate(0,105.49232574217345)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">90</text></g><g class="tick" opacity="1" transform="translate(0,83.84911150867109)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">92</text></g><g class="tick" opacity="1" transform="translate(0,62.43989859513775)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">94</text></g><g class="tick" opacity="1" transform="translate(0,41.25725733121081)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">96</text></g><g class="tick" opacity="1" transform="translate(0,20.294143077856887)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">98</text></g><text class="title" text-anchor="start">Serving Rate</text></g><g class="brush" fill="none" pointer-events="all" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><rect class="overlay" pointer-events="all" cursor="crosshair" x="-8" y="0" width="16" height="254"></rect><rect class="selection" cursor="move" fill="#777" fill-opacity="0.3" stroke="#fff" shape-rendering="crispEdges" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--n" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--s" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect></g></g><g class="axis average_wait" transform="translate(452.5)"><g fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="#000" d="M-6,252.5H0.5V0.5H-6"></path><g class="tick" opacity="1" transform="translate(0,219.84637451467827)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">300</text></g><g class="tick" opacity="1" transform="translate(0,177.96187327179774)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">400</text></g><g class="tick" opacity="1" transform="translate(0,141.06088690463082)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">500</text></g><g class="tick" opacity="1" transform="translate(0,107.69984516322808)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">600</text></g><g class="tick" opacity="1" transform="translate(0,77.02120110377425)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">700</text></g><g class="tick" opacity="1" transform="translate(0,48.46621545231358)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">800</text></g><g class="tick" opacity="1" transform="translate(0,21.646786583685667)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">900</text></g><text class="title" text-anchor="start">Average Wait</text></g><g class="brush" fill="none" pointer-events="all" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><rect class="overlay" pointer-events="all" cursor="crosshair" x="-8" y="0" width="16" height="254"></rect><rect class="selection" cursor="move" fill="#777" fill-opacity="0.3" stroke="#fff" shape-rendering="crispEdges" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--n" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--s" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect></g></g><g class="axis interval" transform="translate(603.3333333333334)"><g fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="#000" d="M-6,252.5H0.5V0.5H-6"></path><g class="tick" opacity="1" transform="translate(0,252.5)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">1</text></g><g class="tick" opacity="1" transform="translate(0,204.22598799827972)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">2</text></g><g class="tick" opacity="1" transform="translate(0,167.18403577133955)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">3</text></g><g class="tick" opacity="1" transform="translate(0,135.95622551528538)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4</text></g><g class="tick" opacity="1" transform="translate(0,108.4439723824872)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">5</text></g><g class="tick" opacity="1" transform="translate(0,83.57099429917034)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">6</text></g><g class="tick" opacity="1" transform="translate(0,60.69793034536494)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">7</text></g><g class="tick" opacity="1" transform="translate(0,39.40820151184485)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">8</text></g><g class="tick" opacity="1" transform="translate(0,19.412451030570793)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">9</text></g><g class="tick" opacity="1" transform="translate(0,0.5)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">10</text></g><text class="title" text-anchor="start">interval</text></g><g class="brush" fill="none" pointer-events="all" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><rect class="overlay" pointer-events="all" cursor="crosshair" x="-8" y="0" width="16" height="254"></rect><rect class="selection" cursor="move" fill="#777" fill-opacity="0.3" stroke="#fff" shape-rendering="crispEdges" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--n" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--s" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect></g></g><g class="axis exe_time" transform="translate(754.1666666666667)"><g fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="#000" d="M-6,252.5H0.5V0.5H-6"></path><g class="tick" opacity="1" transform="translate(0,195.09424168003503)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">20,000</text></g><g class="tick" opacity="1" transform="translate(0,167.8280144660613)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">40,000</text></g><g class="tick" opacity="1" transform="translate(0,146.9059024644129)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">60,000</text></g><g class="tick" opacity="1" transform="translate(0,129.2677461453133)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">80,000</text></g><g class="tick" opacity="1" transform="translate(0,113.7282184785326)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">100,000</text></g><g class="tick" opacity="1" transform="translate(0,99.67941159909324)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">120,000</text></g><g class="tick" opacity="1" transform="translate(0,86.76020035097935)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">140,000</text></g><g class="tick" opacity="1" transform="translate(0,74.73529171736587)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">160,000</text></g><g class="tick" opacity="1" transform="translate(0,63.441250610591595)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">180,000</text></g><g class="tick" opacity="1" transform="translate(0,52.75908093813268)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">200,000</text></g><g class="tick" opacity="1" transform="translate(0,42.598950262079654)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">220,000</text></g><g class="tick" opacity="1" transform="translate(0,32.89106771406904)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">240,000</text></g><g class="tick" opacity="1" transform="translate(0,23.57993228021627)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">260,000</text></g><g class="tick" opacity="1" transform="translate(0,14.62054395182335)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">280,000</text></g><g class="tick" opacity="1" transform="translate(0,5.975816269582623)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">300,000</text></g><text class="title" text-anchor="start">Execuation Time</text></g><g class="brush" fill="none" pointer-events="all" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><rect class="overlay" pointer-events="all" cursor="crosshair" x="-8" y="0" width="16" height="254"></rect><rect class="selection" cursor="move" fill="#777" fill-opacity="0.3" stroke="#fff" shape-rendering="crispEdges" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--n" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--s" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect></g></g><g class="axis fleet_size" transform="translate(905)"><g fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="#000" d="M-6,252.5H0.5V0.5H-6"></path><g class="tick" opacity="1" transform="translate(0,252.5)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4.0</text></g><g class="tick" opacity="1" transform="translate(0,225.97751399622382)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4.1</text></g><g class="tick" opacity="1" transform="translate(0,199.77654832229462)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4.2</text></g><g class="tick" opacity="1" transform="translate(0,173.88568601971843)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4.3</text></g><g class="tick" opacity="1" transform="translate(0,148.29417022887685)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4.4</text></g><g class="tick" opacity="1" transform="translate(0,122.99185196218704)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4.5</text></g><g class="tick" opacity="1" transform="translate(0,97.96914307291695)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4.6</text></g><g class="tick" opacity="1" transform="translate(0,73.21697380156766)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4.7</text></g><g class="tick" opacity="1" transform="translate(0,48.72675436675763)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4.8</text></g><g class="tick" opacity="1" transform="translate(0,24.490340139420056)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4.9</text></g><g class="tick" opacity="1" transform="translate(0,0.5)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">5.0</text></g><text class="title" text-anchor="start">Fleet Size</text></g><g class="brush" fill="none" pointer-events="all" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><rect class="overlay" pointer-events="all" cursor="crosshair" x="-8" y="0" width="16" height="254"></rect><rect class="selection" cursor="move" fill="#777" fill-opacity="0.3" stroke="#fff" shape-rendering="crispEdges" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--n" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect><rect class="handle handle--s" cursor="ns-resize" x="-8" width="16" style="display: none;"></rect></g></g></g></svg><canvas width="905" height="254" style="width: 905px; height: 254px; margin-top: 66px; margin-left: 188px;"></canvas></div><pre>interval	method_long_desc	num_cab	serving_rate	average_wait	fleet_size	exe_time
+	Greedy	9500	97.437	232	4	384.355
+	Greedy	10500	98.019	334	4	455.243
+	Greedy	11500	98.41	313	4	493.109
+	Greedy	12500	98.769	300	4	471.245
+	Greedy	15000	99.055	299	4	586.474
+	Greedy	17500	99.146	305	4	692.296
+	Greedy	20000	99.223	290	4	778.001
+	Greedy	23000	99.253	288	4	873.647
+	Greedy	26000	99.282	286	4	939.868
+2	Simple Matching	4500	90.455	415	4	
+1	Simple Matching	6500	92.007	355	4	327.287
+2	Simple Matching	6500	94.197	441	4	350.198
+1	Simple Matching	7500	95.036	383	4	371.159
+2	Simple Matching	7500	97.164	458	4	374.555
+1	Simple Matching	8500	97.893	402	4	531.572
+2	Simple Matching	8500	98.599	452	4	512.244
+9	Simple Matching	9000	97.342	871	4	
+10	Simple Matching	9000	93.378	913	4	
+1	Simple Matching	9500	98.641	392	4	620.145
+2	Simple Matching	9500	98.886	458		1934.1
+3	Simple Matching	9500	98.966	482		1941.963
+4	Simple Matching	9500	99.9074	490	4	1080.711
+5	Simple Matching	9500	99.113	610	4	657.516
+6	Simple Matching	9500	99.127	537	4	743.618</pre>
+</body></html>

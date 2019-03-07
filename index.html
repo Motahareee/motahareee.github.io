@@ -1,988 +1,313 @@
 <!DOCTYPE html>
-<!--[if lt IE 9 ]><html class="no-js oldie" lang="en"> <![endif]-->
-<!--[if IE 9 ]><html class="no-js oldie ie9" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!-->
-<html class="no-js" lang="en">
-<!--<![endif]-->
+<meta charset="utf-8">
+<title>Nutrient Parallel Coordinates IV</title>
+<body>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://bl.ocks.org/syntagmatic/raw/3341641/render-queue.js"></script>
+<link rel="stylesheet" href="style.css"></link>
+<script>
+var margin = {top: 66, right: 110, bottom: 20, left: 188},
+    width = document.body.clientWidth - margin.left - margin.right,
+    height = 340 - margin.top - margin.bottom,
+    innerHeight = height - 2;
 
-<head>
+var devicePixelRatio = window.devicePixelRatio || 1;
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>Motahare Mounesan</title>
-    <meta name="description" content="">
-    <meta name="author" content="">
+var color = d3.scaleOrdinal()
+  .range(["#5DA5B3","#D58323","#DD6CA7"]);//,"#54AF52","#8C92E8","#E15E5A","#725D82","#776327","#50AB84","#954D56","#AB9C27","#517C3F","#9D5130","#357468","#5E9ACF","#C47DCB","#7D9E33","#DB7F85","#BA89AD","#4C6C86","#B59248","#D8597D","#944F7E","#D67D4B","#8F86C2"]);
 
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+var types = {
+  "Number": {
+    key: "Number",
+    coerce: function(d) { return +d; },
+    extent: d3.extent,
+    within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+    defaultScale: d3.scaleLinear().range([innerHeight, 0])
+  },
+  "String": {
+    key: "String",
+    coerce: String,
+    extent: function (data) { return data.sort(); },
+    within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+    defaultScale: d3.scalePoint().range([0, innerHeight])
+  },
+  "Date": {
+    key: "Date",
+    coerce: function(d) { return new Date(d); },
+    extent: d3.extent,
+    within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+    defaultScale: d3.scaleTime().range([0, innerHeight])
+  }
+};
 
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/vendor.css">
-    <link rel="stylesheet" href="css/main.css">
+var dimensions = [
+  {
+    key: "method_long_desc",
+    description: "Method",
+    type: types["String"],
+    axis: d3.axisLeft()
+      .tickFormat(function(d,i) {
+        return d;
+      })
+  },
+  {
+    key: "num_cab",
+    description: "Number of Cabs",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "serving_rate",
+    description: "Serving Rate",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "average_wait",
+    description: "Average Wait",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "interval",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "exe_time",
+    description: "Execuation Time",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "fleet_size",
+    description: "Fleet Size",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  }
+];
 
-    <!-- script
-    ================================================== -->
-    <script src="js/modernizr.js"></script>
-    <script src="js/pace.min.js"></script>
+var xscale = d3.scalePoint()
+    .domain(d3.range(dimensions.length))
+    .range([0, width]);
 
-    <!-- favicons
-    ================================================== -->
-    <link rel="shortcut icon" href="/images/favicon.ico" type="image/icon">
-    <link rel="icon" href="/images/favicon.ico" type="image/icon">
+var yAxis = d3.axisLeft();
 
-   
-</head>
+var container = d3.select("body").append("div")
+    .attr("class", "parcoords")
+    .style("width", width + margin.left + margin.right + "px")
+    .style("height", height + margin.top + margin.bottom + "px");
 
-<body id="top">
+var svg = container.append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    <!-- header
-    ================================================== -->
-    <header class="s-header">
-    <!--
-        <div class="header-logo">
-            <a class="site-logo" href="index.html"><img src="images/logo.png" alt="Homepage"></a>
-        </div>
-     -->
-        <nav class="header-nav-wrap">
-            <ul class="header-nav">
-                <li class="current"><a class="smoothscroll"  href="#home" title="home">Home</a></li>
-                <li><a class="smoothscroll"  href="#about" title="about">About</a></li>
-                <li><a class="smoothscroll" href="#contact" title="contact">Contact</a></li>
-            </ul>
-        </nav>
+var canvas = container.append("canvas")
+    .attr("width", width * devicePixelRatio)
+    .attr("height", height * devicePixelRatio)
+    .style("width", width + "px")
+    .style("height", height + "px")
+    .style("margin-top", margin.top + "px")
+    .style("margin-left", margin.left + "px");
 
-        <a class="header-menu-toggle" href="#0"><span>Menu</span></a>
+var ctx = canvas.node().getContext("2d");
+ctx.globalCompositeOperation = 'darken';
+ctx.globalAlpha = 0.15;
+ctx.lineWidth = 1.5;
+ctx.scale(devicePixelRatio, devicePixelRatio);
 
-    </header> <!-- end s-header -->
+var output = d3.select("body").append("pre");
 
+var axes = svg.selectAll(".axis")
+    .data(dimensions)
+  .enter().append("g")
+    .attr("class", function(d) { return "axis " + d.key.replace(/ /g, "_"); })
+    .attr("transform", function(d,i) { return "translate(" + xscale(i) + ")"; });
 
-   <!-- home
-   ================================================== -->
-   <section id="home" class="s-home page-hero target-section" data-parallax="scroll" data-image-src="images/IMG_5254.jpg" data-natural-width=1536 data-natural-height=2048 data-position-y=center>
+d3.csv("/Experiments.csv", function(error, data) {
+  if (error) throw error;
 
-        <div class="overlay"></div>
-        <div class="shadow-overlay"></div>
+  // shuffle the data!
+  //data = d3.shuffle(data);
 
-        <div class="home-content">
+  data.forEach(function(d) {
+    dimensions.forEach(function(p) {
+      d[p.key] = !d[p.key] ? null : p.type.coerce(d[p.key]);
+    });
 
-            <div class="row home-content__main">
-                
-                <h3>Hello There</h3>
+    // truncate long text strings to fit in data table
+    for (var key in d) {
+      if (d[key] && d[key].length > 35) d[key] = d[key].slice(0,36);
+    }
+  });
 
-                <h1>
-                    I am Motahare Mounesan. <br>
-                    I am a Ph.D student in Computer Science <br>
-                   	at the Graduate Center, City University of New York.
-                </h1>
-                
-               <!-- inja ro alan zafdam
-                
-                <div class="home-content__buttons">
-                    <a href="index.html#works" class="btn btn--stroke">
-                        Latest Projects
-                    </a>
-                    <a href="index.html#about" class="btn btn--stroke">
-                        More About Me
-                    </a>
-                </div>
+  // type/dimension default setting happens here
+  dimensions.forEach(function(dim) {
+    if (!("domain" in dim)) {
+      // detect domain using dimension type's extent function
+      dim.domain = d3_functor(dim.type.extent)(data.map(function(d) { return d[dim.key]; }));
+    }
+    if (!("scale" in dim)) {
+      // use type's default scale for dimension
+      dim.scale = dim.type.defaultScale.copy();
+    }
+    dim.scale.domain(dim.domain);
+  });
 
-                <div class="home-content__scroll">
-                    <a href="#styles" class="smoothscroll scroll-link">
-                        <span>Scroll Down</span>
-                    </a>
-                </div>
+  var render = renderQueue(draw).rate(50);
 
-            </div>
-                    
-                taaaa injaaa-->
+  ctx.clearRect(0,0,width,height);
+  ctx.globalAlpha = d3.min([0.85/Math.pow(data.length,0.3),1]);
+  render(data);
 
-                <div class="home-content__buttons">
-                <!--
-                    <a href="#works" class="smoothscroll btn btn--stroke">
-                        Latest Projects
-                    </a>
-                    -->
-                    <a href="#about" class="smoothscroll btn btn--stroke">
-                        More About Me
-                    </a> 
-                    
-                </div>
+  axes.append("g")
+      .each(function(d) {
+        var renderAxis = "axis" in d
+          ? d.axis.scale(d.scale)  // custom axis
+          : yAxis.scale(d.scale);  // default axis
+        d3.select(this).call(renderAxis);
+      })
+    .append("text")
+      .attr("class", "title")
+      .attr("text-anchor", "start")
+      .text(function(d) { return "description" in d ? d.description : d.key; });
 
-                <div class="home-content__scroll">
-                    <a href="#about" class="scroll-link smoothscroll">
-                        <span>Scroll Down</span>
-                    </a>
-                </div>
+  // Add and store a brush for each axis.
+  axes.append("g")
+      .attr("class", "brush")
+      .each(function(d) {
+        d3.select(this).call(d.brush = d3.brushY()
+          .extent([[-10,0], [10,height]])
+          .on("start", brushstart)
+          .on("brush", brush)
+          .on("end", brush)
+        )
+      })
+    .selectAll("rect")
+      .attr("x", -8)
+      .attr("width", 16);
 
-            </div>
-
-        </div> <!-- end home-content -->
-<!--
-        <ul class="home-social">
-            <li>
-                <a href="#"><i class="im im-facebook" aria-hidden="true"></i><span>Facebook</span></a>
-            </li>
-            <li>
-                <a href="#"><i class="im im-twitter" aria-hidden="true"></i><span>Twiiter</span></a>
-            </li>
-            <li>
-                <a href="#"><i class="im im-instagram" aria-hidden="true"></i><span>Instagram</span></a>
-            </li>
-            <li>
-                <a href="#"><i class="im im-behance" aria-hidden="true"></i><span>Behance</span></a>
-            </li>
-            <li>
-                <a href="#"><i class="im im-pinterest" aria-hidden="true"></i><span>Pinterest</span></a>
-            </li>
-        </ul> 
-        <!-- end home-social -->
-
-    </section> <!-- end s-home -->
-
-
-    <!-- about
-    ================================================== -->
+  d3.selectAll(".axis.method_long_desc .tick text")
+    .style("fill", color);
     
-    <section id="about" class="s-about target-section">
-        
-        <div class="row narrow section-intro has-bottom-sep">
-            <div class="col-full text-center">
-                <h3>About</h3>
-                <h1>More About Me</h1>
-                <p class="lead">
-                I am a Ph.D. student of Computer Science at <a href="https://www.gc.cuny.edu/Home">The Graduate Center</a>, City University of New York. I am a member of <a href="https://bdilab.github.io">Big Data Interaction Lab</a> at <a href="https://www.nyu.edu/about/university-initiatives/center-for-urban-science-progress.html">CUSP</a> working under the supervision of Professor <a href="https://serv.cusp.nyu.edu/~hvo/">Huy Vo</a>. My primary research areas are Natural Language Processing, Data Mining, Data Visualization and Data Science.
-                </p>
-            </div>
-        </div>
-        <!--
-        <div class="row about-content">
-
-            <div class="col-six tab-full left">
-                <h3>Howdy!</h3>
-
-                <p>Lorem ipsum Ut eiusmod ex magna sit dolor esse adipisicing minim ad cupidatat eu veniam nostrud mollit laboris sunt magna velit culpa consectetur nostrud consectetur labore sed do.</p>
-
-                <p>
-                Lorem ipsum Nisi officia Duis irure voluptate dolor commodo pariatur occaecat aliquip adipisicing voluptate Ut in qui ea sint occaecat in commodo in in in incididunt ut sunt in Ut Duis in ut ex qui anim cupidatat cupidatat ex in non dolore labore ea amet cillum ea qui dolor nisi sed velit mollit exercitation ex fugiat labore in deserunt culpa laborum culpa anim dolore laboris amet irure mollit proident velit fugiat aute ea elit magna consequat qui officia quis elit Duis dolor esse cupidatat tempor proident voluptate aliqua ex cupidatat do eiusmod veniam irure laborum ut magna nostrud dolore ullamco commodo elit sit magna aliqua laborum veniam officia dolor.	
-                </p>
-            </div>
-            <!--
-            <div class="col-six tab-full right">
-                <h3>I've Got Some skills.</h3>
-
-                <ul class="skill-bars">
-                    <li>
-                    <div class="progress percent90"><span>90%</span></div>
-                    <strong>JAVA</strong>
-                    </li>
-                    <li>
-                    <div class="progress percent85"><span>85%</span></div>
-                    <strong>PYTHON</strong>
-                    </li>
-                    <li>
-                    <div class="progress percent70"><span>70%</span></div>
-                    <strong>C++</strong>
-                    </li>
-                    <li>
-                    <div class="progress percent95"><span>95%</span></div>
-                    <strong>SQL</strong>
-                    </li>
-                    <li>
-                    <div class="progress percent75"><span>75%</span></div>
-                    <strong>Wordpress</strong>
-                    </li>   
-                    <li>
-                    <div class="progress percent90"><span>90%</span></div>
-                    <strong>Angular JS</strong>
-                    </li>   
-                </ul>
-            </div>
-
-        </div> <!-- end about-content -->
-        
-        <div class="row about-content about-content--buttons" style="margin-top:0px; margin-right:auto; margin-bottom: 0px; margin-left:auto;">
-        <div class="col-full text-center">
-                <h3></h3>
-            </div>
-
-        <!--
-            <div class="col-six tab-full center">
-                <a href="#0" class="btn btn--primary full-width">Download My CV</a>
-            </div>
-            <!--
-            <div class="col-six tab-full right">
-                <a href="#0" class="btn full-width">Hire Me Now</a>
-            </div>
-            -->
-<!--
-        </div> <!-- end about-content buttons -->
-        <!--
-        <div class="row about-content about-content--timeline">
-        <!--
-            <div class="col-full text-center">
-                <h3></h3>
-            </div>
-          -->
-            <!--<div class="col-six tab-full ">-->
-                <div class="timeline" style="margin-top:0px; margin-right:auto; margin-bottom: 0px; margin-left:auto;">
-
-                    <div class="timeline__block" >
-                        <div class="timeline__bullet"></div>
-                        <div class="timeline__header">
-                            <p class="timeline__timeframe">September 2017 - Present</p>
-                            <h3>City University of New York,</h3>
-                            <h3>Graduate Center</h3>
-                            <h5>PhD Student</h5>
-                        </div>
-                        <div class="timeline__desc">
-
-
-                        <!--
-                            <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
-                        -->
-                        </div>
-                    </div> <!-- end timeline__block -->
-
-                    <div class="timeline__block">
-                        <div class="timeline__bullet"></div>
-                        <div class="timeline__header">
-                            <p class="timeline__timeframe">September 2017 -Present</p>
-                            <h3>Center of Urban Science and Progress,</h3>
-                            <h3>NYU</h3>
-                            <h5>Graduate Research Assistant</h5>
-                        </div>
-                        <div class="timeline__desc">	
-                            <!--
-                            <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi incididunt.</p>
-                            -->
-                        </div>
-                    </div> <!-- end timeline__block -->
-                <!--</div> <!-- end timeline -->
-            <!--</div> <!-- end right -->
-            <!--<div class="col-six tab-full center">
-                <div class="timeline">-->
-
-                    <div class="timeline__block">
-                        <div class="timeline__bullet"></div>
-                        <div class="timeline__header">
-                            <p class="timeline__timeframe">APRIL 2016 - JANUARY 2017</p>
-                            <h3>NLP Lab</h3>
-                            <h3>University of Tehran</h3>
-                            <h5>Research Assistant</h5>
-                        </div>
-                        <div class="timeline__desc">    
-                           <!---->
-                        </div>
-                    </div> <!-- end timeline__block -->
-
-                    <div class="timeline__block">
-                        <div class="timeline__bullet"></div>
-                        <div class="timeline__header">
-                            <p class="timeline__timeframe">September 2016 - JANUARY 2017</p>
-                            <h3>University of Tehran</h3>
-                            <h5>Teacher Assistant</h5>
-                        </div>
-                        <div class="timeline__desc">    
-                            <!--
-                            <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi incididunt.</p>
-                            -->
-                        </div>
-                    </div> <!-- end timeline__block -->
-            <!--    </div> <!-- end timeline -->
-            <!--</div> <!-- end right -->
-
-        </div> <!-- end about-content timeline -->
-
-    </section> <!-- end about --> 
-    
-    <!-- works
-    ================================================== -->
-    <!--
-    <section id="works" class="s-works target-section">
-
-        <div class="row narrow section-intro has-bottom-sep">
-            <div class="col-full">
-                <h3>Portfolio</h3>
-                <h1>See My Latest Projects.</h1>
-                
-                <p class="lead">I am a first year PhD student of Computer Science at City University of New York, Graduate Center. I am a member of Big Data Interaction Lab and Center for Urban Sceince and Progress (CUSP) working under supervision of Professor Huy Vo.
-                </p>
-            </div>
-        </div>
-
-        <div class="row masonry-wrap">
-            <div class="masonry">
-
-                <div class="masonry__brick">
-                    <div class="item-folio">
-
-                        <div class="item-folio__thumb">
-                            <a href="images/portfolio/gallery/g-beetle.jpg" class="thumb-link" title="The Beetle Car" data-size="1050x700">
-                                <img src="images/portfolio/beetle.jpg" 
-                                     srcset="images/portfolio/beetle.jpg 1x, images/portfolio/beetle@2x.jpg 2x" alt="">
-                                <span class="shadow-overlay"></span>
-                            </a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <h3 class="item-folio__title">
-                                The Beetle
-                            </h3>
-                            <p class="item-folio__cat">
-                                Web Development
-                            </p>
-                        </div>
-
-                        <a href="https://www.behance.net/" class="item-folio__project-link" title="Project link">
-                            <i class="im im-link"></i>
-                        </a>
-
-                        <div class="item-folio__caption">
-                            <p>Vero molestiae sed aut natus excepturi. Et tempora numquam. Temporibus iusto quo.Unde dolorem corrupti neque nisi.</p>
-                        </div>
-
-                    </div> <!-- end item-folio -->
-                </div> <!-- end masonry__brick -->
-                <!--
-                <div class="masonry__brick">
-                    <div class="item-folio">
-
-                        <div class="item-folio__thumb">
-                            <a href="images/portfolio/gallery/g-lighthouse.jpg" class="thumb-link" title="Lighthouse" data-size="1050x700">
-                                <img src="images/portfolio/lighthouse.jpg" 
-                                     srcset="images/portfolio/lighthouse.jpg 1x, images/portfolio/lighthouse@2x.jpg 2x" alt="">
-                                <span class="shadow-overlay"></span>
-                            </a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <h3 class="item-folio__title">
-                                Lighthouse
-                            </h3>
-                            <p class="item-folio__cat">
-                                Web Design
-                            </p>
-                        </div>
-
-                        <a href="https://www.behance.net/" class="item-folio__project-link" title="Project link">
-                            <i class="im im-link"></i>
-                        </a>
-
-                        <div class="item-folio__caption">
-                            <p>Vero molestiae sed aut natus excepturi. Et tempora numquam. Temporibus iusto quo.Unde dolorem corrupti neque nisi.</p>
-                        </div>
-
-                    </div> <!-- end item-folio -->
-                </div> <!-- end masonry__brick -->
-                <!--
-                <div class="masonry__brick">
-                    <div class="item-folio">
-
-                        <div class="item-folio__thumb">
-                            <a href="images/portfolio/gallery/g-salad.jpg" class="thumb-link" data-size="1050x700">
-                                <img src="images/portfolio/salad.jpg" 
-                                     srcset="images/portfolio/salad.jpg 1x, images/portfolio/salad@2x.jpg 2x" alt="">
-                                <span class="shadow-overlay"></span>
-                            </a>
-                        </div>
-
-                        <!--
-                        <div class="item-folio__text">
-                            <h3 class="item-folio__title">
-                                Salad
-                            </h3>
-                            <p class="item-folio__cat">
-                                Branding
-                            </p>
-                        </div>
-                        -->
-
-                        <a href="https://www.behance.net/" class="item-folio__project-link" title="Project link">
-                            <i class="im im-link"></i>
-                        </a>
-
-                        <span class="item-folio__caption">
-                            <p>Vero molestiae sed aut natus excepturi. Et tempora numquam. Temporibus iusto quo.Unde dolorem corrupti neque nisi.</p>
-                        </span>
-
-                    </div> <!-- end item-folio -->
-                </div> <!-- end masonry__brick -->
-<!--
-                <div class="masonry__brick">
-                    <div class="item-folio">
-                    <!--
-                        <div class="item-folio__thumb">
-                            <a href="images/portfolio/gallery/g-woodcraft.jpg" class="thumb-link" data-size="1050x700">
-                                <img src="images/portfolio/woodcraft.jpg"
-                                     srcset="images/portfolio/woodcraft.jpg 1x, images/portfolio/woodcraft@2x.jpg 2x" alt="">
-                                <span class="shadow-overlay"></span>
-                            </a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <h3 class="item-folio__title">
-                                Woodcraft
-                            </h3>
-                            <p class="item-folio__cat">
-                                Branding
-                            </p>
-                        </div>
-
-                        <a href="https://www.behance.net/" class="item-folio__project-link" title="Project link">
-                            <i class="im im-link"></i>
-                        </a>
-
-                        <span class="item-folio__caption">
-                            <p>Vero molestiae sed aut natus excepturi. Et tempora numquam. Temporibus iusto quo.Unde dolorem corrupti neque nisi.</p>
-                        </span>
-
-                    </div> <!-- end item-folio -->
-                </div> <!-- end masonry__brick -->
-<!--
-                <div class="masonry__brick">
-                    <div class="item-folio">
-
-                        <div class="item-folio__thumb">
-                            <a href="images/portfolio/gallery/g-skaterboy.jpg" class="thumb-link" data-size="1050x700">
-                                <img src="images/portfolio/skaterboy.jpg"
-                                     srcset="images/portfolio/skaterboy.jpg 1x, images/portfolio/skaterboy@2x.jpg 2x" alt="">
-                                <span class="shadow-overlay"></span>
-                            </a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <h3 class="item-folio__title">
-                                Skaterboy
-                            </h3>
-                            <p class="item-folio__cat">
-                                Web Development
-                            </p>
-                        </div>
-
-                        <a href="https://www.behance.net/" class="item-folio__project-link" title="Project link">
-                            <i class="im im-link"></i>
-                        </a>
-
-                        <span class="item-folio__caption">
-                            <p>Vero molestiae sed aut natus excepturi. Et tempora numquam. Temporibus iusto quo.Unde dolorem corrupti neque nisi.</p>
-                        </span>
-
-                    </div> <!-- end item-folio -->
-                </div> <!-- end masonry__brick -->
-<!--
-                <div class="masonry__brick">
-                    <div class="item-folio">
-
-                        <div class="item-folio__thumb">
-                            <a href="images/portfolio/gallery/g-liberty.jpg" class="thumb-link" data-size="1050x700">
-                                <img src="images/portfolio/liberty.jpg"
-                                     srcset="images/portfolio/liberty.jpg 1x, images/portfolio/liberty@2x.jpg 2x" alt="">
-                                <span class="shadow-overlay"></span>
-                            </a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <h3 class="item-folio__title">
-                                Liberty
-                            </h3>
-                            <p class="item-folio__cat">
-                                Branding
-                            </p>
-                        </div>
-
-                        <a href="https://www.behance.net/" class="item-folio__project-link" title="Project link">
-                            <i class="im im-link"></i>
-                        </a>
-
-                        <span class="item-folio__caption">
-                            <p>Vero molestiae sed aut natus excepturi. Et tempora numquam. Temporibus iusto quo.Unde dolorem corrupti neque nisi.</p>
-                        </span>
-
-                    </div> <!-- end item-folio -->
-                </div> <!-- end masonry__brick -->
-<!--
-                <div class="masonry__brick">
-                    <div class="item-folio">
-
-                        <div class="item-folio__thumb">
-                            <a href="images/portfolio/gallery/g-minimalismo.jpg" class="thumb-link" data-size="1050x700">
-                                <img src="images/portfolio/minimalismo.jpg"
-                                     srcset="images/portfolio/minimalismo.jpg 1x, images/portfolio/minimalismo@2x.jpg 2x" alt="">
-                                <span class="shadow-overlay"></span>
-                            </a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <h3 class="item-folio__title">
-                                Minimalismo
-                            </h3>
-                            <p class="item-folio__cat">
-                                Web Design
-                            </p>
-                        </div>
-
-                        <a href="https://www.behance.net/" class="item-folio__project-link" title="Project link">
-                            <i class="im im-link"></i>
-                        </a>
-
-                        <span class="item-folio__caption">
-                            <p>Vero molestiae sed aut natus excepturi. Et tempora numquam. Temporibus iusto quo.Unde dolorem corrupti neque nisi.</p>
-                        </span>
-
-                    </div> <!-- end item-folio -->
-                </div> <!-- end masonry__brick -->
-<!--
-                <div class="masonry__brick">
-                    <div class="item-folio">
-
-                        <div class="item-folio__thumb">
-                            <a href="images/portfolio/gallery/g-shutterbug.jpg" class="thumb-link" data-size="1050x700">
-                                <img src="images/portfolio/shutterbug.jpg"
-                                     srcset="images/portfolio/shutterbug.jpg 1x, images/portfolio/shutterbug@2x.jpg 2x" alt="">
-                                <span class="shadow-overlay"></span>
-                            </a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <h3 class="item-folio__title">
-                                Lady Shutterbug
-                            </h3>
-                            <p class="item-folio__cat">
-                                Branding
-                            </p>
-                        </div>
-
-                        <a href="https://www.behance.net/" class="item-folio__project-link" title="Project link">
-                            <i class="im im-link"></i>
-                        </a>
-
-                        <span class="item-folio__caption">
-                            <p>Vero molestiae sed aut natus excepturi. Et tempora numquam. Temporibus iusto quo.Unde dolorem corrupti neque nisi.</p>
-                        </span>
-
-                    </div> <!-- end item-folio -->
-                </div> <!-- end masonry__brick -->
-
-            </div>
-        </div> <!-- end masonry -->
-
-    </section> <!-- end works -->
-
-
-
-    <!-- testimonials
-    ================================================== -->
-   <!--
-    <div class="s-testimonials">
-
-        <div class="overlay"></div>
-
-        <div class="row testimonials-header">
-            <!--
-            <div class="col-full">
-                <h1 class="h02">What People Say.</h1>
-            </div>
-            -->
-        </div>
-        <!--
-        <div class="row testimonials">
-
-            <div class="col-full testimonials__slider">
-
-                <div class="testimonials__slide">
-                    <img src="images/avatars/user-01.jpg" alt="Author image" class="testimonials__avatar">
-                    <p>Qui ipsam temporibus quisquam velMaiores eos cumque distinctio nam accusantium ipsum. 
-                    Laudantium quia consequatur molestias delectus culpa facere hic dolores aperiam. Accusantium quos qui praesentium corpori.</p>
-                    <div class="testimonials__author h06">
-                        Tim Cook
-                        <span>CEO, Apple</span>
-                    </div>
-                </div>
-
-                <div class="testimonials__slide">
-                    <img src="images/avatars/user-05.jpg" alt="Author image" class="testimonials__avatar">
-                    <p>Excepturi nam cupiditate culpa doloremque deleniti repellat. Veniam quos repellat voluptas animi adipisci.
-                    Nisi eaque consequatur. Quasi voluptas eius distinctio. Atque eos maxime. Qui ipsam temporibus quisquam vel.</p>
-                    <div class="testimonials__author h06">
-                        Sundar Pichai
-                        <span>CEO, Google</span>
-                    </div>
-                </div>
-
-                <div class="testimonials__slide">
-                    <img src="images/avatars/user-02.jpg" alt="Author image" class="testimonials__avatar">
-                    <p>Repellat dignissimos libero. Qui sed at corrupti expedita voluptas odit. Nihil ea quia nesciunt. Ducimus aut sed ipsam.  
-                    Autem eaque officia cum exercitationem sunt voluptatum accusamus. Quasi voluptas eius distinctio.</p>
-                    <div class="testimonials__author h06">
-                        Satya Nadella
-                        <span>CEO, Microsoft</span>
-                    </div>
-                </div>
-                
-            </div> <!-- end testimonials__slider -->
-
-        </div> <!-- end testimonials -->
-
-    </div> <!-- end s-testimonials -->
-
-
-    <!-- blog
-    ================================================== -->
-    <!--
-    <section id="blog" class="s-blog target-section">
-
-        <div class="row narrow section-intro has-bottom-sep">
-            <div class="col-full">
-                <h3>Journal</h3>
-                <h1>Latest From The Blog.</h1>
-                <p class="lead">Lorem ipsum Dolor adipisicing nostrud et aute. 
-                Excepteur amet commodo ea dolore irure esse Duis nulla sint fugiat cillum 
-                ullamco proident aliquip quis qui voluptate dolore veniam Ut laborum non est in officia.</p>
-            </div>
-        </div>
-
-        <div class="row blog-content">
-            <div class="col-full">
-
-                <div class="blog-list block-1-2 block-tab-full">
-                    <article class="col-block">
-                                
-                        <div class="blog-date">
-                            <a href="blog-single.html">Sept 16, 2017</a>
-                        </div>  
-                        
-                        <h2 class="h01"><a href="blog-single.html">The 10 Golden Rules of Clean Simple Design.</a></h2>
-                        <p>
-                        Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Pellentesque in ipsum id orci porta dapibus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus nibh..
-                        </p>
-
-                        <div class="blog-cat">
-                                <a href="blog.html">Branding</a><a href="blog.html">Design</a>
-                        </div>
-
-                        
-                    </article>
-                    <article class="col-block">
-                                
-                        <div class="blog-date">
-                            <a href="blog-single.html">Sept 15, 2017</a>
-                        </div>  
-                        
-                        <h2 class="h01"><a href="blog-single.html">Photography Can Improve Your Graphic Design.</a></h2>
-                        <p>
-                        Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Pellentesque in ipsum id orci porta dapibus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus nibh..
-                        </p>
-
-                        <div class="blog-cat">
-                            <a href="blog.html">Photography</a>
-                        </div>
-
-                        
-                    </article>
-                    <article class="col-block">
-                        
-                        <div class="blog-date">
-                            <a href="blog-single.html">Sept 14, 2017</a>
-                        </div>
-
-                        <h2 class="h01"><a href="blog-single.html">Workspace Design Trends and Ideas.</a></h2>
-                        <p>
-                        Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Pellentesque in ipsum id orci porta dapibus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus nibh dolore irure esse Duis nulla sint.
-                        </p>
-
-                        <div class="blog-cat">
-                            <a href="blog.html">Branding</a><a href="blog.html">Wordpress</a>
-                        </div>
-                    </article>
-                    <article class="col-block">
-                        
-                        <div class="blog-date">
-                            <a href="blog-single.html">Sept 12, 2017</a>
-                        </div>    
-                        <h2 class="h01"><a href="blog-single.html">Using Patterns in your Branding.</a></h2>
-                        <p>
-                        Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Pellentesque in ipsum id orci porta dapibus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus nibh.
-                        </p>
-
-                        <div class="blog-cat">
-                            <a href="blog.html">Design</a><a href="blog.html">Branding</a>
-                        </div>
-                    </article>
-                </div> <!-- end blog-list -->
-
-            </div> <!-- end col-full -->
-        </div> <!-- end blog-content -->
-
-    </section> <!-- end s-blog -->
-
-
-    <!-- s-cta
-    ================================================== -->
-    <!--
-    <section class="s-cta">
-        
-        <div class="row narrow cta">
-
-            <div class="col-full cta__content">
-
-                <h2 class="h01"><a href="http://www.dreamhost.com/r.cgi?287326|STYLESHOUT">Styleshout Recommends Dreamhost.</a></h2>
-
-                <p class="lead">
-                Looking for an awesome and reliable webhosting? Try <a href="http://www.dreamhost.com/r.cgi?287326|STYLESHOUT">DreamHost</a>.
-                Get <span>$50 off</span> when you sign up with the promocode <span>styleshout</span>.
-                </p>
-
-                <div class="cta__action">
-                    <a class="btn btn--primary btn--large" href="http://www.dreamhost.com/r.cgi?287326|STYLESHOUT">Sign Up Now</a>
-                </div>	
-
-            </div>
-
-        </div> <!-- end cta -->
-        
-    </section>
-
-    <!-- s-stats
-    ================================================== -->
-    <!--
-    <section id="stats" class="s-stats">
-        <div class="row block-1-4 block-tab-1-2 block-mob-full stats">
-
-            <div class="col-block stats__col ">
-                <div class="stats__count">
-                    128
-                </div>
-                <h4>Awards Received</h4>
-            </div>
-            <div class="col-block stats__col">
-                <div class="stats__count">
-                    1500
-                </div>
-                <h4>Cups of Coffee</h4>
-            </div>
-            <div class="col-block stats__col stats__col--highlight">
-                <div class="stats__upsign">
-                    <a href="#"><i class="im im-arrow-up" aria-hidden="true"></i></a>
-                </div>
-                <div class="stats__count">
-                    110
-                </div>
-                <h4>Projects Completed</h4>
-            </div>
-            <div class="col-block stats__col">
-                <div class="stats__count">
-                    101
-                </div>
-                <h4>Happy Clients</h4> 
-            </div>
-
-        </div>
-    </section> <!-- end s-stats -->
-
-
-    <!-- s-stats
-    ================================================== -->
-    
-    <section id="contact" class="s-contact target-section">
-
-        <div class="overlay"></div>
-
-        <div class="row narrow section-intro">
-            <div class="col-full">
-                <h3>Contact</h3>
-                <!--<h1>Say Hello.</h1>-->
-                
-                <p class="lead">
-                <br>
-                The Center For Urban Science And Progress <br>
-                1 MetroTech Center, 19th Floor, Brooklyn, <br>
-                NY 11201 <br>
-                <br>
-                    <a href="mailto:mmounesan@gradcenter.cuny.edu">m.mounesan@gardcenter.cuny.edu</a><br>    
-                    <a href="mailto:mm9087@nyu.edu">mm9087@nyu.edu</a>
-                </p>
-            </div>
-        </div>
-        <!--
-        <div class="row contact__main">
-            <div class="col-eight tab-full contact__form">
-                <!--
-                <form name="contactForm" id="contactForm" method="post" action="">
-                    <fieldset>
-    
-                    <div class="form-field">
-                        <input name="contactName" type="text" id="contactName" placeholder="Name" value="" minlength="2" required="" aria-required="true" class="full-width">
-                    </div>
-                    <div class="form-field">
-                        <input name="contactEmail" type="email" id="contactEmail" placeholder="Email" value="" required="" aria-required="true" class="full-width">
-                    </div>
-                    <div class="form-field">
-                        <input name="contactSubject" type="text" id="contactSubject" placeholder="Subject" value="" class="full-width">
-                    </div>
-                    <div class="form-field">
-                        <textarea name="contactMessage" id="contactMessage" placeholder="message" rows="10" cols="50" required="" aria-required="true" class="full-width"></textarea>
-                    </div>
-                    <div class="form-field">
-                        <button class="full-width btn--primary">Submit</button>
-                        <div class="submit-loader">
-                            <div class="text-loader">Sending...</div>
-                            <div class="s-loader">
-                                <div class="bounce1"></div>
-                                <div class="bounce2"></div>
-                                <div class="bounce3"></div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    </fieldset>
-                </form>
-
-                 <!--contact-warning
-                <div class="message-warning">
-                    Something went wrong. Please try again.
-                </div> 
-            
-                <!-- contact-success
-                <div class="message-success">
-                    Your message was sent, thank you!<br>
-                </div>
-                        
-            </div> -->
-            <!--
-            <div class="col-four tab-full contact__infos">
-                <h4 class="h06">Phone</h4>
-                <p>Phone: (+63) 555 1212<br>
-                Mobile: (+63) 555 0100<br>
-                Fax: (+63) 555 0101
-                </p>
-
-                <h4 class="h06">Email</h4>
-                <p>someone@Motaharewebsite.com<br>
-                info@motaharewebsite.com
-                </p>
-
-                <h4 class="h06">Address</h4>
-                <p>
-                1600 Amphitheatre Parkway<br>
-                Mountain View, CA<br>
-                94043 US
-                </p>
-            </div>-->
-
-        <!--</div> -->
-
-    </section> <!-- end s-contact -->
-
-
-    <!-- footer
-    ================================================== -->
-    <footer>
-        <div class="row">
-            <div class="col-full">
-            <!--
-                <div class="footer-logo">
-                    <a class="footer-site-logo" href="#0"><img src="images/logo.png" alt="Homepage"></a>
-                </div>
-                -->
-<!--
-                <ul class="footer-social">
-                    <li><a href="#0">
-                        <i class="im im-facebook" aria-hidden="true"></i>
-                        <span>Facebook</span>
-                    </a></li>
-                    <li><a href="#0">
-                        <i class="im im-twitter" aria-hidden="true"></i>
-                        <span>Twitter</span>
-                    </a></li>
-                    <li><a href="#0">
-                        <i class="im im-instagram" aria-hidden="true"></i>
-                        <span>Instagram</span>
-                    </a></li>
-                    <li><a href="#0">
-                        <i class="im im-behance" aria-hidden="true"></i>
-                        <span>Behance</span>
-                    </a></li>
-                    <li><a href="#0">
-                        <i class="im im-pinterest" aria-hidden="true"></i>
-                        <span>Pinterest</span>
-                    </a></li>
-                </ul>
-                    
-            </div>
-        </div>
-<!--
-        <div class="row footer-bottom">
-
-            <div class="col-twelve">
-                <div class="copyright">
-                    <span>© Copyright Moti 2017</span> 
-                    <span>Design by <a href="https://www.styleshout.com/">styleshout</a></span>	
-                </div>
-
-                <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"><i class="im im-arrow-up" aria-hidden="true"></i></a>
-                </div>
-            </div>
-
-        </div> <!-- end footer-bottom -->
-
-    </footer> <!-- end footer -->
-
-
-    <!-- photoswipe background
-    ================================================== -->
-    <div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
-
-        <div class="pswp__bg"></div>
-        <div class="pswp__scroll-wrap">
-
-            <div class="pswp__container">
-                <div class="pswp__item"></div>
-                <div class="pswp__item"></div>
-                <div class="pswp__item"></div>
-            </div>
-
-            <div class="pswp__ui pswp__ui--hidden">
-                <div class="pswp__top-bar">
-                    <div class="pswp__counter"></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button> <button class="pswp__button pswp__button--share" title=
-                    "Share"></button> <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button> <button class="pswp__button pswp__button--zoom" title=
-                    "Zoom in/out"></button>
-                    <div class="pswp__preloader">
-                        <div class="pswp__preloader__icn">
-                            <div class="pswp__preloader__cut">
-                                <div class="pswp__preloader__donut"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                    <div class="pswp__share-tooltip"></div>
-                </div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button> <button class="pswp__button pswp__button--arrow--right" title=
-                "Next (arrow right)"></button>
-                <div class="pswp__caption">
-                    <div class="pswp__caption__center"></div>
-                </div>
-            </div>
-
-        </div>
-
-    </div><!-- end photoSwipe background -->
-
-    <div id="preloader">
-        <div id="loader"></div>
-    </div>
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/plugins.js"></script>
-    <script src="js/main.js"></script>
-
-</body>
-
-</html>
+  output.text(d3.tsvFormat(data.slice(0,24)));
+
+  function project(d) {
+    return dimensions.map(function(p,i) {
+      // check if data element has property and contains a value
+      if (
+        !(p.key in d) ||
+        d[p.key] === null
+      ) return null;
+
+      return [xscale(i),p.scale(d[p.key])];
+    });
+  };
+
+  function draw(d) {
+    ctx.strokeStyle = color(d.method_long_desc);
+    ctx.beginPath();
+    var coords = project(d);
+    coords.forEach(function(p,i) {
+      // this tricky bit avoids rendering null values as 0
+      if (p === null) {
+        // this bit renders horizontal lines on the previous/next
+        // dimensions, so that sandwiched null values are visible
+        if (i > 0) {
+          var prev = coords[i-1];
+          if (prev !== null) {
+            ctx.moveTo(prev[0],prev[1]);
+            ctx.lineTo(prev[0]+6,prev[1]);
+          }
+        }
+        if (i < coords.length-1) {
+          var next = coords[i+1];
+          if (next !== null) {
+            ctx.moveTo(next[0]-6,next[1]);
+          }
+        }
+        return;
+      }
+      
+      if (i == 0) {
+        ctx.moveTo(p[0],p[1]);
+        return;
+      }
+
+      ctx.lineTo(p[0],p[1]);
+    });
+    ctx.stroke();
+  }
+
+  function brushstart() {
+    d3.event.sourceEvent.stopPropagation();
+  }
+
+  // Handles a brush event, toggling the display of foreground lines.
+  function brush() {
+    render.invalidate();
+
+    var actives = [];
+    svg.selectAll(".axis .brush")
+      .filter(function(d) {
+        return d3.brushSelection(this);
+      })
+      .each(function(d) {
+        actives.push({
+          dimension: d,
+          extent: d3.brushSelection(this)
+        });
+      });
+
+    var selected = data.filter(function(d) {
+      if (actives.every(function(active) {
+          var dim = active.dimension;
+          // test if point is within extents for each active brush
+          return dim.type.within(d[dim.key], active.extent, dim);
+        })) {
+        return true;
+      }
+    });
+
+    // show ticks for active brush dimensions
+    // and filter ticks to only those within brush extents
+    /*
+    svg.selectAll(".axis")
+        .filter(function(d) {
+          return actives.indexOf(d) > -1 ? true : false;
+        })
+        .classed("active", true)
+        .each(function(dimension, i) {
+          var extent = extents[i];
+          d3.select(this)
+            .selectAll(".tick text")
+            .style("display", function(d) {
+              var value = dimension.type.coerce(d);
+              return dimension.type.within(value, extent, dimension) ? null : "none";
+            });
+        });
+
+    // reset dimensions without active brushes
+    svg.selectAll(".axis")
+        .filter(function(d) {
+          return actives.indexOf(d) > -1 ? false : true;
+        })
+        .classed("active", false)
+        .selectAll(".tick text")
+          .style("display", null);
+    */
+
+    ctx.clearRect(0,0,width,height);
+    ctx.globalAlpha = d3.min([0.85/Math.pow(selected.length,0.3),1]);
+    render(selected);
+
+    output.text(d3.tsvFormat(selected.slice(0,3)));
+  }
+});
+
+function d3_functor(v) {
+  return typeof v === "function" ? v : function() { return v; };
+};
+</script>
