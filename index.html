@@ -45,7 +45,10 @@ var dimensions = [
     key: "hierarchy",
     description: "Hierarchy",
     type: types["String"],
-    scale: d3.scaleSqrt().range([innerHeight, 0])
+    axis: d3.axisLeft()
+      .tickFormat(function(d,i) {
+        return d;
+      })
   },
   {
     key: "method_long_desc",
