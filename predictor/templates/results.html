@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <head>
+        <title>Transaction Predictor</title>
+        <!-- <link rel="stylesheet" type="text/css" href="../static/css/styles.css"> -->
+        <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}"> -->
+  </head>
+        <div class="ml-container">
+           <img class="wp-image-461992" src="https://www.bankingtech.com/files/2016/03/santander.png" alt="&quot;The way our customers are choosing to bank with u
+s ha
+s changed dramatically in recent years&quot;" width="50" height="50" srcset="https://www.bankingtech.com/files/2016/03/santander.png 1024w, https://www.bankingtec
+h.com/f
+iles/2016/03/santander-150x150.png 150w, https://www.bankingtech.com/files/2016/03/santander-180x180.png 180w, https://www.bankingtech.com/files/2016/03/santander
+-110x110.
+png 110w, https://www.bankingtech.com/files/2016/03/santander-90x90.png 90w, https://www.bankingtech.com/files/2016/03/santander-100x100.png 100w, https://www.ban
+kingtech.
+com/files/2016/03/santander-70x70.png 70w, https://www.bankingtech.com/files/2016/03/santander-280x280.png 280w" sizes="(max-width: 50px) 50vw, 50px">
+             <h3>Santander Customer Transaction Prediction</h3>
+        </div>
+
+
+<table>
+  <tr>
+    <td>Cat Boost</td>
+    <td>Naive Bayes</td>
+    <td>Decision Tree</td>
+    <td>Random Forest</td>
+    <td>SVM</td>
+    <td>Log Reg</td>
+  </tr>
+  <tr>
+    {% if predict1 == 1%}
+    <td>1</td>
+    {% elif predict1 == 0%}
+    <td>0</td>
+    {% else %}
+    <td> - </td>
+    {% endif %}
+    
+    {% if predict2 == 1%}
+    <td>1</td>
+    {% elif predict2 == 0%}
+    <td>0</td>
+    {% else %}
+    <td> - </td>
+    {% endif %} 
+
+    {% if predict3 == 1%}
+    <td>1</td>
+    {% elif predict3 == 0%}
+    <td>0</td>
+    {% else %}
+    <td> - </td>
+    {% endif %}
+ 	
+    {% if predict4 == 1%}
+    <td>1</td>
+    {% elif predict4 == 0%}
+    <td>0</td>
+    {% else %}
+    <td> - </td>
+    {% endif %}
+
+    {% if predict5 == 1%}
+    <td>1</td>
+    {% elif predict5 == 0%}
+    <td>0</td>
+    {% else %}
+    <td> - </td>
+    {% endif %}
+	
+    {% if predict6 == 1%}
+    <td>1</td>
+    {% elif predict6 == 0%}
+    <td>0</td>
+    {% else %}
+    <td> - </td>
+    {% endif %}
+  </tr>
+</table>
+
+<style>
+table {
+  border-spacing: 0.5rem;
+}
+td {
+  padding: 0.5rem;
+}
+
+td:nth-child(1) { background: hsl(150, 50%, 50%); }
+td:nth-child(2) { background: hsl(160, 60%, 50%); }
+td:nth-child(3) { background: hsl(170, 70%, 50%); }
+td:nth-child(4) { background: hsl(180, 80%, 50%); }
+td:nth-child(5) { background: hsl(190, 90%, 50%); }
+td:nth-child(6) { background: hsl(200, 99%, 50%); }
+<style/>
+		
+</body>
+</html>
+

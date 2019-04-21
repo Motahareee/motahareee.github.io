@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>Transaction Predictor</title>
+	<!-- <link rel="stylesheet" type="text/css" href="../static/css/styles.css"> -->
+	<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}"> -->
+  </head>
+<body>
+	<div class="ml-container">
+  	   <img class="wp-image-461992" src="https://www.bankingtech.com/files/2016/03/santander.png" alt="&quot;The way our customers are choosing to bank with us ha
+s changed dramatically in recent years&quot;" width="50" height="50" srcset="https://www.bankingtech.com/files/2016/03/santander.png 1024w, https://www.bankingtech.com/f
+iles/2016/03/santander-150x150.png 150w, https://www.bankingtech.com/files/2016/03/santander-180x180.png 180w, https://www.bankingtech.com/files/2016/03/santander-110x110.
+png 110w, https://www.bankingtech.com/files/2016/03/santander-90x90.png 90w, https://www.bankingtech.com/files/2016/03/santander-100x100.png 100w, https://www.bankingtech.
+com/files/2016/03/santander-70x70.png 70w, https://www.bankingtech.com/files/2016/03/santander-280x280.png 280w" sizes="(max-width: 50px) 50vw, 50px">
+             <h3>Santander Customer Transaction Prediction</h3>
+	</div>
+        
+	<div class="ml-container">
+		 <!-- <form action="{{ url_for('generate')}}" method="POST">
+			<p>Generate a sample</p>
+			<button name="subject" type="submit" value="fav_HTML">generate</button> -->
+             <button onclick="genInp()">Generate</button>
+	     <form action="/" method="POST">
+		<br/>
+                <textarea id="sample" placeholder = "Generate a sample or enter input" rows="12" cols="120"></textarea>
+		<!-- <input type="text" name="comment"/> 
+			<textarea name="sample" rows="4" cols="80"></textarea> -->
+		<!-- <textarea id="sample" placeholder = "Generate a sample or enter input" rows="12" cols="120"></textarea>-->
+	     </form>
+     	</div>
+	
+ 	<div class="ml-container">
+                <form action="{{ url_for('predict')}}" method="POST">
+				<br/>
+                		<textarea id="comment" name="comment" class="text" rows="12" cols="120"></textarea>
+				<br/>
+				<input type = "checkbox" id="model1" name = "CatBoost" value = "{{model}}"> 
+                        	<label for="model1">CatBoost</label>
+				<input type = "checkbox" id="model2" name = "NaiveBayes" value = "{{model}}"> 
+                        	<label for="model2">Naive Bayes</label>
+				<input type = "checkbox" id="model3" name = "DecisionTree" value = "{{model}}">
+                                <label for="model3">Decision Tree</label>
+				<input type = "checkbox" id="model4"  name = "RandomForest" value = "{{model}}"> 
+                        	<label for="model4">Random Forest</label>
+				<input type = "checkbox" id="model5"  name = "SVM" value = "{{model}}">
+				<label for="model5">SVM</label>
+				<input type = "checkbox" id="model6" name = "LogReg" value = "{{model}}">
+                                <label for="model2">Log Reg</label>
+                        	<br/>
+				<input type="submit" class="btn-info" value="predict">
+		</form>
+	</div>
+	<script>
+		//Here is your random generate function
+		function genInp() {
+			var text="";
+                	for (i = 0; i < 200; i++) { 
+                         	text += parseFloat((Math.random()).toFixed(4)) ;
+				if(i!=199){
+					text+=","
+				}
+                	}
+			//the "sample" is the ID of the textbox on line 29
+  			document.getElementById("sample").innerHTML = text;
+	}
+	</script>
+</body>
+</html>
+
