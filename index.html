@@ -62,8 +62,8 @@ var dimensions = [
       })
   },
   {
-    key: "num_cab",
-    description: "Number of Cabs",
+    key: "fleet_size",
+    description: "Fleet Size",
     type: types["Number"],
     scale: d3.scaleSqrt().range([innerHeight, 0])
   },
@@ -74,31 +74,44 @@ var dimensions = [
     scale: d3.scaleSqrt().range([innerHeight, 0])
   },
   {
-    key: "average_wait",
+    key: "wait",
     description: "Average Wait",
     type: types["Number"],
     scale: d3.scaleSqrt().range([innerHeight, 0])
   },
   {
-    key: "exe_time",
-    description: "Execuation Time",
+    key: "wait_served",
+    description: "Average Wait for Served Trips",
     type: types["Number"],
     scale: d3.scaleSqrt().range([innerHeight, 0])
   },
   {
-    key: "interval",
+    key: "total_delay",
+    description: "Total Delay",
     type: types["Number"],
     scale: d3.scaleSqrt().range([innerHeight, 0])
   },
-  /*{
-    key: "fleet_size",
-    description: "Fleet Size",
+  {
+    key: "in_vehicle_delay",
+    description: "Extra Delay",
     type: types["Number"],
     scale: d3.scaleSqrt().range([innerHeight, 0])
-  },*/
+  },
   {
-    key: "match_percent",
-    description: "Match Percent",
+    key: "pick_walk",
+    description: "Pickup Walk",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "drop_walk",
+    description: "Dropoff Walk",
+    type: types["Number"],
+    scale: d3.scaleSqrt().range([innerHeight, 0])
+  },
+  {
+    key: "total_walk",
+    description: "Total Walk",
     type: types["Number"],
     scale: d3.scaleSqrt().range([innerHeight, 0])
   }
@@ -143,7 +156,7 @@ var axes = svg.selectAll(".axis")
     .attr("class", function(d) { return "axis " + d.key.replace(/ /g, "_"); })
     .attr("transform", function(d,i) { return "translate(" + xscale(i) + ")"; });
 
-d3.csv("/EXPERIMENTS copy.csv", function(error, data) {
+d3.csv("/EXPERIMENTS1.csv", function(error, data) {
   if (error) throw error;
 
   // shuffle the data!
