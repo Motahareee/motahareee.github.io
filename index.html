@@ -707,7 +707,7 @@ input[type="range"]::-moz-range-thumb {
       <a href="#about">About</a>
       <a href="#education">Education</a>
       <a href="#interests">Research Interests</a>
-      <a href="#demo">Research Demo</a>
+
       <a href="#publications">Publications</a>
       <a href="#experience">Experience</a>
       <a href="#contact">Contact</a>
@@ -809,77 +809,6 @@ input[type="range"]::-moz-range-thumb {
     </div>
   </section>
 
-  <!-- research demo -->
-  <section id="demo">
-    <h2 class="section-title"><span class="st-slash">//</span> Research Demo</h2>
-    <p class="demo-intro">
-      This interactive demo illustrates a core challenge in my research: deciding where to run a deep learning inference task — on the IoT device, an edge server, or the cloud — given real-time constraints like battery, network, and task complexity. An RL agent learns this offloading policy to minimize latency and energy cost in resource-constrained environments.
-    </p>
-    <div class="demo-box">
-      <div class="demo-titlebar">
-        <div class="demo-titlebar-dots">
-          <span class="demo-titlebar-dot r"></span>
-          <span class="demo-titlebar-dot a"></span>
-          <span class="demo-titlebar-dot g"></span>
-        </div>
-        <span class="demo-titlebar-label">rl_offload_agent.py — inference decision simulator</span>
-      </div>
-      <div class="demo-inner">
-        <div class="demo-scene" id="demoScene">
-          <div class="demo-node">
-            <div class="node-circle" id="circleDevice">📱</div>
-            <span class="node-label">IoT Device</span>
-          </div>
-          <svg class="demo-lines" id="demoSvg" aria-hidden="true"></svg>
-          <div class="demo-node">
-            <div class="node-circle" id="circleEdge">🗼</div>
-            <span class="node-label">Edge Server</span>
-          </div>
-          <div class="demo-node">
-            <div class="node-circle" id="circleCloud">☁️</div>
-            <span class="node-label">Cloud</span>
-          </div>
-        </div>
-
-        <div class="demo-controls">
-          <div class="ctrl-row">
-            <div class="ctrl-header">
-              <span class="ctrl-label">🔋 Battery Level</span>
-              <span class="ctrl-val" id="valBattery">50%</span>
-            </div>
-            <input type="range" id="sliderBattery" min="0" max="100" value="50">
-            <div class="ctrl-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
-          </div>
-          <div class="ctrl-row">
-            <div class="ctrl-header">
-              <span class="ctrl-label">📶 Network Latency</span>
-              <span class="ctrl-val" id="valLatency">Medium</span>
-            </div>
-            <input type="range" id="sliderLatency" min="0" max="100" value="50">
-            <div class="ctrl-ticks"><span>Low</span><span>Medium</span><span>High</span></div>
-          </div>
-          <div class="ctrl-row">
-            <div class="ctrl-header">
-              <span class="ctrl-label">⚙️ Task Complexity</span>
-              <span class="ctrl-val" id="valComplexity">Medium</span>
-            </div>
-            <input type="range" id="sliderComplexity" min="0" max="100" value="50">
-            <div class="ctrl-ticks"><span>Simple</span><span>Medium</span><span>Complex</span></div>
-          </div>
-        </div>
-
-        <div class="demo-decision" id="demoDecision">
-          <span class="dec-badge" id="decBadge">$ agent --awaiting-input</span>
-          <span class="dec-text" id="decText">Adjust sliders and click Run Agent to see the offloading decision.</span>
-        </div>
-
-        <div class="demo-btn-row">
-          <button class="btn-demo-run" id="btnRun">▶ Run Agent</button>
-          <button class="btn-demo-reset" id="btnReset">↺ Reset</button>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- publications -->
   <section id="publications">
@@ -922,69 +851,9 @@ input[type="range"]::-moz-range-thumb {
         </div></div></div>
       </div>
 
-      <div class="pub-item">
+      <div class="pub-item" style="display:none">
         <button class="pub-trigger">
           <span class="pub-num">4</span>
-          <span class="pub-title">I Know What You Did for Partition: Model Extraction Attack on Collaborative DNN Inference</span>
-          <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
-          <div class="pub-authors">M. Zneit, X. Zhang, M. Mounesan, and S. Debroy</div>
-          <span class="pub-venue">IEEE/IFIP NOMS 2025</span>
-        </div></div></div>
-      </div>
-
-      <div class="pub-item">
-        <button class="pub-trigger">
-          <span class="pub-num">5</span>
-          <span class="pub-title">EdgeRL: Reinforcement Learning-driven Deep Learning Model Inference Optimization at Edge</span>
-          <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
-          <div class="pub-authors">M. Mounesan and S. Debroy</div>
-          <span class="pub-venue">CNSM 2024</span>
-        </div></div></div>
-      </div>
-
-      <div class="pub-item">
-        <button class="pub-trigger">
-          <span class="pub-num">6</span>
-          <span class="pub-title">VECA: Reliable and Confidential Resource Clustering for Volunteer Edge-Cloud Computing</span>
-          <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
-          <div class="pub-authors">H. Yeddulapalli, M. Lemus, U. Roy, R. Neupane, D. Gafurov, M. Mounesan, S. Debroy, P. Calyam</div>
-          <span class="pub-venue">IC2E 2024</span>
-        </div></div></div>
-      </div>
-
-      <div class="pub-item">
-        <button class="pub-trigger">
-          <span class="pub-num">7</span>
-          <span class="pub-title">Reinforcement Learning-driven Data-intensive Workflow Scheduling for Volunteer Edge-Cloud</span>
-          <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
-          <div class="pub-authors">M. Mounesan, M. Lemus, H. Yeddulapalli, P. Calyam and S. Debroy</div>
-          <span class="pub-venue">ICFEC 2024</span>
-        </div></div></div>
-      </div>
-
-      <div class="pub-item">
-        <button class="pub-trigger">
-          <span class="pub-num">8</span>
-          <span class="pub-title">Exploring the Threat of Software Supply Chain Attacks on Containerized Applications</span>
-          <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
-          <div class="pub-authors">M. Mounesan, H. Siadati, and S. Jafarikhah</div>
-          <span class="pub-venue">SINCONF 2023</span>
-        </div></div></div>
-      </div>
-
-      <div class="pub-item">
-        <button class="pub-trigger">
-          <span class="pub-num">9</span>
           <span class="pub-title">EFFECT-DNN: Energy-efficient Edge Framework for Real-time DNN Inference</span>
           <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
@@ -994,36 +863,34 @@ input[type="range"]::-moz-range-thumb {
         </div></div></div>
       </div>
 
-      <div class="pub-item">
-        <button class="pub-trigger">
-          <span class="pub-num">10</span>
-          <span class="pub-title">Fleet management for ride-pooling with meeting points at scale</span>
-          <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
-          <div class="pub-authors">M. Mounesan, V. Jayawardana, Y. Wu, S. Samaranayake, and H.T. Vo</div>
-          <span class="pub-venue">ArXiv 2021</span>
-        </div></div></div>
-      </div>
+    </div>
 
+    <div style="margin-top:1.5rem;">
+      <a href="https://scholar.google.com/citations?user=c5teoEQAAAAJ" target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:0.5rem;font-size:0.85rem;font-weight:600;color:var(--indigo);text-decoration:none;padding:0.55rem 1.1rem;border:1px solid rgba(99,102,241,0.3);border-radius:8px;transition:all 0.2s;background:rgba(99,102,241,0.04);"
+         onmouseover="this.style.background='rgba(99,102,241,0.1)';this.style.borderColor='var(--indigo)'"
+         onmouseout="this.style.background='rgba(99,102,241,0.04)';this.style.borderColor='rgba(99,102,241,0.3)'">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        View all publications on Google Scholar →
+      </a>
     </div>
   </section>
 
   <!-- education -->
   <section id="education">
     <h2 class="section-title"><span class="st-slash">//</span> Education</h2>
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-period">2022 – 2025</div>
-        <div class="tl-role">Ph.D. in Computer Science</div>
-        <div class="tl-org">The Graduate Center, City University of New York (CUNY)</div>
-        <div class="tl-desc">Dissertation focused on reinforcement learning-driven DNN inference optimization at the edge. Advised by Prof. Saptarshi Debroy.</div>
+    <div style="display:flex;flex-direction:column;gap:1.5rem;">
+      <div>
+        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);margin-bottom:0.25rem;">2022 – 2025</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.1rem;">Ph.D. in Computer Science</div>
+        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem;">The Graduate Center, City University of New York (CUNY)</div>
+        <div style="font-size:0.83rem;color:var(--muted);line-height:1.7;">Dissertation focused on reinforcement learning-driven DNN inference optimization at the edge. Advised by Prof. Saptarshi Debroy.</div>
       </div>
-      <div class="tl-item">
-        <div class="tl-period">2017 – 2021</div>
-        <div class="tl-role">M.Sc. in Data Science</div>
-        <div class="tl-org">NYU Center for Urban Science and Progress (CUSP)</div>
-        <div class="tl-desc">Research on spatio-temporal data processing and large-scale ride-pooling simulation at NYC scale.</div>
+      <div>
+        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);margin-bottom:0.25rem;">2017 – 2021</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.1rem;">M.Sc. in Computer Science</div>
+        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem;">NYU Center for Urban Science and Progress (CUSP)</div>
+        <div style="font-size:0.83rem;color:var(--muted);line-height:1.7;">Research on spatio-temporal data processing and large-scale ride-pooling simulation at NYC scale.</div>
       </div>
     </div>
   </section>
@@ -1100,124 +967,6 @@ document.querySelectorAll('.sb-nav a').forEach(function(a) {
   }
   window.addEventListener('scroll', sync, { passive: true });
   sync();
-})();
-
-/* demo */
-(function() {
-  var slB = document.getElementById('sliderBattery');
-  var slL = document.getElementById('sliderLatency');
-  var slC = document.getElementById('sliderComplexity');
-  var vB  = document.getElementById('valBattery');
-  var vL  = document.getElementById('valLatency');
-  var vC  = document.getElementById('valComplexity');
-  var badge = document.getElementById('decBadge');
-  var text  = document.getElementById('decText');
-  var box   = document.getElementById('demoDecision');
-  var cD    = document.getElementById('circleDevice');
-  var cE    = document.getElementById('circleEdge');
-  var cCl   = document.getElementById('circleCloud');
-  var scene = document.getElementById('demoScene');
-  var svg   = document.getElementById('demoSvg');
-
-  var latL = ['Low','Low-Med','Medium','Med-High','High'];
-  var cmpL = ['Simple','Simple-Med','Medium','Med-Complex','Complex'];
-  function lbl(v, arr) { return arr[Math.round((v/100)*(arr.length-1))]; }
-
-  function updateLabels() {
-    vB.textContent = slB.value + '%';
-    vL.textContent = lbl(+slL.value, latL);
-    vC.textContent = lbl(+slC.value, cmpL);
-  }
-  [slB, slL, slC].forEach(function(s) { s.addEventListener('input', updateLabels); });
-
-  function policy(bat, lat, cmp) {
-    if (cmp < 35 && bat >= 30)           return { node:'device', reason:'Simple task + adequate battery → run locally for zero-latency inference' };
-    if (bat < 30 && cmp > 65)            return { node:'edge',   reason:'Low battery + complex task → offload to Edge to save energy while meeting latency' };
-    if (lat > 65 && cmp > 65)            return { node:'cloud',  reason:'High latency acceptable for complex task — Cloud provides maximum compute power' };
-    if (cmp > 65 && bat >= 60 && lat <= 65) return { node:'edge', reason:'Complex task + good battery + low latency → Edge balances compute and responsiveness' };
-    if (bat < 30)                         return { node:'edge',   reason:'Battery is low → offload to Edge to conserve device energy' };
-    if (lat > 65)                         return { node:'device', reason:'High network cost for moderate task → run locally to avoid transmission overhead' };
-    return { node:'edge', reason:'Balanced conditions → Edge server provides the optimal trade-off of latency and energy' };
-  }
-
-  function clearActive() { [cD, cE, cCl].forEach(function(c) { c.classList.remove('active'); }); }
-
-  function drawLines() {
-    svg.innerHTML = '';
-    var r = scene.getBoundingClientRect();
-    var nodes = [
-      document.querySelector('#demoScene .demo-node:nth-child(1)'),
-      document.querySelector('#demoScene .demo-node:nth-child(3)'),
-      document.querySelector('#demoScene .demo-node:nth-child(4)')
-    ];
-    for (var i = 0; i < nodes.length - 1; i++) {
-      var a = nodes[i].getBoundingClientRect();
-      var b = nodes[i+1].getBoundingClientRect();
-      var line = document.createElementNS('http://www.w3.org/2000/svg','line');
-      line.setAttribute('x1', a.left - r.left + a.width/2);
-      line.setAttribute('y1', a.top  - r.top  + a.height/2);
-      line.setAttribute('x2', b.left - r.left + b.width/2);
-      line.setAttribute('y2', b.top  - r.top  + b.height/2);
-      line.setAttribute('stroke','#E2E8F0');
-      line.setAttribute('stroke-width','1.5');
-      line.setAttribute('stroke-dasharray','6 4');
-      svg.appendChild(line);
-    }
-  }
-  window.addEventListener('resize', drawLines);
-  setTimeout(drawLines, 150);
-
-  function animatePacket(targetNode) {
-    var startEl = document.querySelector('#demoScene .demo-node:nth-child(1)');
-    var endEl   = targetNode === 'device' ? startEl
-                : targetNode === 'edge'   ? document.querySelector('#demoScene .demo-node:nth-child(3)')
-                :                           document.querySelector('#demoScene .demo-node:nth-child(4)');
-    var r = scene.getBoundingClientRect();
-    function cx(el) { var b = el.getBoundingClientRect(); return b.left - r.left + b.width/2; }
-    function cy(el) { var b = el.getBoundingClientRect(); return b.top  - r.top  + b.height/2; }
-    var pkt = document.createElement('div');
-    pkt.className = 'data-packet';
-    scene.style.position = 'relative';
-    scene.appendChild(pkt);
-    var sx = cx(startEl), sy = cy(startEl), ex = cx(endEl), ey = cy(endEl);
-    var dur = targetNode === 'device' ? 300 : targetNode === 'edge' ? 600 : 1000;
-    var start = null;
-    function step(ts) {
-      if (!start) start = ts;
-      var p = Math.min((ts - start) / dur, 1);
-      var e = 1 - Math.pow(1 - p, 3);
-      pkt.style.left = (sx + (ex - sx) * e) + 'px';
-      pkt.style.top  = (sy + (ey - sy) * e) + 'px';
-      pkt.style.opacity = p < 0.85 ? '1' : String(1 - (p - 0.85) / 0.15);
-      if (p < 1) requestAnimationFrame(step);
-      else if (scene.contains(pkt)) scene.removeChild(pkt);
-    }
-    pkt.style.opacity = '1';
-    requestAnimationFrame(step);
-  }
-
-  document.getElementById('btnRun').addEventListener('click', function() {
-    var res = policy(+slB.value, +slL.value, +slC.value);
-    clearActive();
-    if (res.node === 'device') cD.classList.add('active');
-    else if (res.node === 'edge') cE.classList.add('active');
-    else cCl.classList.add('active');
-    var label = res.node === 'device' ? 'ON-DEVICE' : res.node === 'edge' ? 'EDGE' : 'CLOUD';
-    badge.textContent = '$ decision → ' + label;
-    text.textContent  = res.reason;
-    box.classList.add('has-decision');
-    animatePacket(res.node);
-  });
-
-  document.getElementById('btnReset').addEventListener('click', function() {
-    slB.value = slL.value = slC.value = 50;
-    updateLabels(); clearActive();
-    badge.textContent = '$ agent --awaiting-input';
-    text.textContent  = 'Adjust sliders and click Run Agent to see the offloading decision.';
-    box.classList.remove('has-decision');
-  });
-
-  updateLabels();
 })();
 </script>
 </body>
