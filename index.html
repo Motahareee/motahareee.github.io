@@ -3,525 +3,272 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Motahare Mounesan — Postdoctoral Researcher</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Motahare Mounesan</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --indigo:      #6366F1;
-  --indigo-dark: #4F46E5;
-  --cyan:        #22D3EE;
-  --violet:      #A78BFA;
-  --green:       #10B981;
-  --green-dim:   #D1FAE5;
-  --text:        #0F172A;
-  --muted:       #64748B;
-  --border:      #E2E8F0;
-  --bg:          #ffffff;
-  --bg-soft:     #F8FAFC;
-  --sidebar-w:   280px;
-  --mono:        'JetBrains Mono', monospace;
-  --grad:        linear-gradient(135deg, var(--indigo), var(--cyan));
-  --grad-v:      linear-gradient(135deg, var(--violet), var(--indigo));
+  --indigo:  #6366F1;
+  --cyan:    #22D3EE;
+  --green:   #10B981;
+  --text:    #0F172A;
+  --muted:   #64748B;
+  --border:  #E2E8F0;
+  --bg:      #ffffff;
+  --soft:    #F8FAFC;
+  --sw:      280px;
+  --mono:    'JetBrains Mono', monospace;
+  --grad:    linear-gradient(135deg, #6366F1, #22D3EE);
 }
 
 html { scroll-behavior: smooth; }
-body {
-  font-family: 'Inter', sans-serif;
-  color: var(--text);
-  background: var(--bg);
-  line-height: 1.6;
-  font-size: 16px;
-}
+body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); line-height: 1.6; }
 
-/* ─── SIDEBAR ─────────────────────────────── */
+/* ── SIDEBAR ── */
 .sidebar {
-  position: fixed;
-  top: 0; left: 0;
-  width: var(--sidebar-w);
-  height: 100vh;
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
   overflow-y: auto;
-  background: #060D1F;
-  display: flex;
-  flex-direction: column;
-  padding: 2.25rem 1.6rem;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 2rem 1.6rem;
   z-index: 50;
-  border-right: 1px solid rgba(99,102,241,0.15);
-}
-
-.sidebar::after {
-  content: '';
-  position: absolute;
-  top: 0; right: 0;
-  width: 1px; height: 100%;
-  background: linear-gradient(to bottom, transparent, rgba(99,102,241,0.5) 40%, rgba(34,211,238,0.3) 70%, transparent);
-  pointer-events: none;
 }
 
 .sb-top { flex: 1; }
 
+.sb-photo {
+  width: 100%; aspect-ratio: 1/1;
+  object-fit: cover; object-position: center top;
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  border: 2px solid var(--border);
+}
+
 .sb-name {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #F1F5F9;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  margin-bottom: 0.2rem;
+  font-size: 1.15rem; font-weight: 700;
+  color: var(--text); letter-spacing: -0.02em;
+  line-height: 1.2; margin-bottom: 0.2rem;
 }
 
 .sb-role {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--cyan);
-  letter-spacing: 0.04em;
-  margin-bottom: 1.5rem;
-  opacity: 0.85;
+  font-family: var(--mono); font-size: 0.65rem;
+  color: var(--indigo); letter-spacing: 0.03em;
+  margin-bottom: 1.25rem;
 }
 
-.sb-emails {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  margin-bottom: 1.4rem;
-}
+.sb-emails { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1.1rem; }
 
 .sb-email {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.75rem;
-  color: #64748B;
-  text-decoration: none;
-  padding: 0.3rem 0.4rem;
-  border-radius: 6px;
-  transition: color 0.15s, background 0.15s;
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.72rem; color: var(--muted);
+  text-decoration: none; padding: 0.25rem 0.35rem;
+  border-radius: 5px; transition: color 0.15s, background 0.15s;
   word-break: break-all;
 }
-.sb-email:hover { color: #93C5FD; background: rgba(99,102,241,0.1); }
-.sb-email svg { flex-shrink: 0; color: #334155; }
-.sb-email:hover svg { color: var(--cyan); }
+.sb-email:hover { color: var(--indigo); background: rgba(99,102,241,0.06); }
+.sb-email svg { flex-shrink: 0; }
 
 .sb-about {
-  font-size: 0.75rem;
-  color: #475569;
-  line-height: 1.65;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.74rem; color: var(--muted);
+  line-height: 1.65; margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .sb-nav-label {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  color: #334155;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
+  font-family: var(--mono); font-size: 0.58rem;
+  color: #94A3B8; letter-spacing: 0.12em;
+  text-transform: uppercase; margin-bottom: 0.4rem;
 }
 
 .sb-nav { display: flex; flex-direction: column; gap: 0.05rem; }
 
 .sb-nav a {
-  font-size: 0.78rem;
-  color: #475569;
-  text-decoration: none;
-  padding: 0.28rem 0.5rem;
-  border-radius: 5px;
-  font-weight: 500;
-  transition: all 0.15s;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  font-size: 0.78rem; color: var(--muted);
+  text-decoration: none; padding: 0.28rem 0.5rem;
+  border-radius: 5px; font-weight: 500;
+  transition: all 0.15s; display: flex; align-items: center; gap: 0.5rem;
 }
-
 .sb-nav a::before {
-  content: '';
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: #1E293B;
-  flex-shrink: 0;
-  transition: background 0.15s, box-shadow 0.15s;
+  content: ''; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--border); flex-shrink: 0; transition: all 0.15s;
 }
-
-.sb-nav a:hover { color: #CBD5E1; background: rgba(255,255,255,0.04); }
+.sb-nav a:hover { color: var(--indigo); background: rgba(99,102,241,0.06); }
 .sb-nav a:hover::before { background: var(--indigo); }
-.sb-nav a.active { color: #A5B4FC; background: rgba(99,102,241,0.1); }
-.sb-nav a.active::before { background: var(--cyan); box-shadow: 0 0 6px rgba(34,211,238,0.6); }
+.sb-nav a.active { color: var(--indigo); background: rgba(99,102,241,0.07); font-weight: 600; }
+.sb-nav a.active::before { background: var(--cyan); box-shadow: 0 0 5px rgba(34,211,238,0.5); }
 
-.sb-footer {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  color: #1E293B;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255,255,255,0.04);
-}
+.sb-footer { font-size: 0.65rem; color: #CBD5E1; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
 
-/* ─── MAIN ─────────────────────────────────── */
-.main { margin-left: var(--sidebar-w); min-height: 100vh; }
+/* ── MAIN ── */
+.main { margin-left: var(--sw); min-height: 100vh; }
 
-section { padding: 4.5rem 4.5rem; border-bottom: 1px solid var(--border); }
+section { padding: 4rem 4.5rem; border-bottom: 1px solid var(--border); }
 section:last-child { border-bottom: none; }
+section:nth-child(even) { background: var(--soft); }
 
-/* alternating section backgrounds */
-#about      { background: var(--bg); }
-#interests  { background: #F8FAFF; }
-#demo       { background: var(--bg); }
-#publications { background: #F8FAFF; }
-#education  { background: var(--bg); }
-#experience { background: #F8FAFF; }
-#contact    { background: var(--bg); }
-
-/* section title */
 .section-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 2.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  font-size: 1.35rem; font-weight: 700;
+  margin-bottom: 2rem;
+  display: flex; align-items: center; gap: 0.5rem;
   letter-spacing: -0.02em;
 }
-
-.section-title .st-slash {
-  font-family: var(--mono);
-  font-size: 0.9rem;
-  font-weight: 500;
+.st-slash {
+  font-family: var(--mono); font-size: 0.85rem; font-weight: 400;
   background: var(--grad);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  opacity: 0.7;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; opacity: 0.75;
 }
 
-/* ─── HERO ─────────────────────────────────── */
+/* ── HERO ── */
 #hero {
   position: relative;
-  background: #060D1F;
-  padding: 5rem 4.5rem 5.5rem;
+  background: var(--bg);
+  padding: 5rem 4.5rem 4.5rem;
   overflow: hidden;
-  border-bottom: none;
-  min-height: 540px;
-  display: flex;
-  align-items: center;
+  border-bottom: 1px solid var(--border);
+  min-height: 480px;
+  display: flex; align-items: center;
 }
 
-/* animated gradient orbs */
-#hero::before, #hero::after {
+/* subtle gradient blobs */
+#hero::before {
   content: '';
   position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-}
-
-#hero::before {
   width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(99,102,241,0.35) 0%, transparent 70%);
-  top: -150px; left: -100px;
-  animation: drift1 12s ease-in-out infinite alternate;
-}
-
-#hero::after {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(34,211,238,0.2) 0%, transparent 70%);
-  bottom: -100px; right: 10%;
-  animation: drift2 15s ease-in-out infinite alternate;
-}
-
-@keyframes drift1 {
-  0%   { transform: translate(0,0) scale(1); }
-  100% { transform: translate(60px, 40px) scale(1.1); }
-}
-@keyframes drift2 {
-  0%   { transform: translate(0,0) scale(1); }
-  100% { transform: translate(-50px, -30px) scale(1.15); }
-}
-
-/* dot grid overlay */
-.hero-grid {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(99,102,241,0.2) 1px, transparent 1px);
-  background-size: 32px 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+  top: -180px; right: -80px;
   pointer-events: none;
-  mask-image: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.05));
-  -webkit-mask-image: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.05));
+}
+#hero::after {
+  content: '';
+  position: absolute;
+  width: 350px; height: 350px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34,211,238,0.06) 0%, transparent 70%);
+  bottom: -100px; left: 10%;
+  pointer-events: none;
 }
 
-.hero-content { position: relative; z-index: 2; max-width: 660px; }
+/* subtle dot grid */
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(#E2E8F0 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 620px; }
 
 .hero-eyebrow {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--cyan);
-  margin-bottom: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.75rem;
+  color: var(--indigo); margin-bottom: 1.1rem;
+  display: flex; align-items: center; gap: 0.4rem; opacity: 0.8;
 }
-.hero-eyebrow::before { content: '>_'; color: #334155; }
+.hero-eyebrow::before { content: '>_'; color: var(--muted); }
 
 .hero-name {
-  font-size: clamp(2.4rem, 4vw, 3.4rem);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  margin-bottom: 0.75rem;
-  background: linear-gradient(135deg, #F1F5F9 30%, #A5B4FC 70%, #67E8F9 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 700; line-height: 1.1;
+  letter-spacing: -0.03em; margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.hero-name span.grad {
+  background: var(--grad);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .hero-cursor {
-  display: inline-block;
-  width: 3px; height: 0.85em;
-  background: var(--cyan);
-  margin-left: 4px;
-  vertical-align: text-bottom;
-  border-radius: 1px;
+  display: inline-block; width: 3px; height: 0.8em;
+  background: var(--indigo); margin-left: 3px;
+  vertical-align: text-bottom; border-radius: 1px;
   animation: blink 1.1s step-end infinite;
-  -webkit-text-fill-color: var(--cyan);
 }
-
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
 .hero-tagline {
-  font-size: 1rem;
-  color: #94A3B8;
-  max-width: 520px;
-  line-height: 1.75;
-  margin-bottom: 2rem;
+  font-size: 0.97rem; color: var(--muted);
+  max-width: 480px; line-height: 1.75; margin-bottom: 1.75rem;
 }
 
-.hero-btns { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.hero-btns { display: flex; flex-wrap: wrap; gap: 0.65rem; }
 
 .btn {
   display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.6rem 1.2rem; border-radius: 8px;
-  font-size: 0.85rem; font-weight: 600;
+  padding: 0.55rem 1.1rem; border-radius: 8px;
+  font-size: 0.84rem; font-weight: 600;
   text-decoration: none; transition: all 0.2s;
   border: none; cursor: pointer; font-family: inherit;
 }
-
 .btn-primary {
-  background: var(--grad);
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(99,102,241,0.4);
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(99,102,241,0.5); }
-
-.btn-ghost {
-  background: rgba(255,255,255,0.05);
-  color: #94A3B8;
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(4px);
-}
-.btn-ghost:hover { background: rgba(255,255,255,0.09); color: #CBD5E1; transform: translateY(-1px); border-color: rgba(99,102,241,0.4); }
-
-/* ─── ABOUT ─────────────────────────────────── */
-.about-text p {
-  color: var(--muted);
-  margin-bottom: 1rem;
-  line-height: 1.85;
-  max-width: 700px;
-}
-.about-text p:last-child { margin-bottom: 0; }
-
-/* ─── RESEARCH INTERESTS ─────────────────── */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 1.25rem;
-}
-
-.card {
-  background: var(--bg);
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-  transition: transform 0.25s, box-shadow 0.25s;
-  /* gradient border via outline trick */
-  box-shadow: 0 0 0 1px var(--border);
-}
-
-.card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 12px;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(99,102,241,0), rgba(99,102,241,0));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude;
-  transition: background 0.3s;
-  pointer-events: none;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 36px rgba(99,102,241,0.12), 0 0 0 1px rgba(99,102,241,0.3);
-}
-
-.card:hover::before {
-  background: linear-gradient(135deg, var(--indigo), var(--cyan));
-}
-
-.card-header {
-  background: #F1F5F9;
-  border-bottom: 1px solid var(--border);
-  padding: 0.55rem 0.9rem;
-  display: flex; align-items: center; gap: 0.35rem;
-}
-.card-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-.card-dot.red   { background: #FC8181; }
-.card-dot.amber { background: #F6AD55; }
-.card-dot.green { background: #68D391; }
-.card-filename { font-family: var(--mono); font-size: 0.65rem; color: #94A3B8; margin-left: 0.3rem; }
-
-.card-body { padding: 1.4rem; }
-.card-icon { font-size: 1.5rem; margin-bottom: 0.6rem; }
-.card-title { font-size: 0.93rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text); }
-.card-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.65; }
-
-/* ─── DEMO ─────────────────────────────────── */
-.demo-intro {
-  color: var(--muted); margin-bottom: 1.75rem;
-  max-width: 680px; line-height: 1.75; font-size: 0.93rem;
-}
-
-.demo-box {
-  background: var(--bg);
-  border-radius: 14px;
-  overflow: hidden;
-  max-width: 740px;
-  box-shadow: 0 0 0 1px var(--border), 0 8px 32px rgba(0,0,0,0.06);
-}
-
-.demo-titlebar {
-  background: #0F172A;
-  padding: 0.65rem 1.1rem;
-  display: flex; align-items: center; gap: 0.5rem;
-}
-.demo-titlebar-dots { display: flex; gap: 0.38rem; }
-.demo-titlebar-dot { width: 11px; height: 11px; border-radius: 50%; }
-.demo-titlebar-dot.r { background: #FC8181; }
-.demo-titlebar-dot.a { background: #F6AD55; }
-.demo-titlebar-dot.g { background: #68D391; }
-.demo-titlebar-label { font-family: var(--mono); font-size: 0.7rem; color: #334155; margin-left: 0.5rem; }
-
-.demo-inner { padding: 1.5rem 1.75rem 1.75rem; }
-
-.demo-scene {
-  position: relative; height: 160px;
-  display: flex; align-items: center; justify-content: space-around;
-  margin-bottom: 1.75rem;
-}
-.demo-node { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; position: relative; z-index: 2; }
-
-.node-circle {
-  width: 66px; height: 66px; border-radius: 50%;
-  background: var(--bg-soft);
-  border: 1.5px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.6rem;
-  transition: all 0.3s;
-}
-
-.node-circle.active {
-  border-color: var(--indigo);
-  background: rgba(99,102,241,0.08);
-  box-shadow: 0 0 0 6px rgba(99,102,241,0.1), 0 0 24px rgba(99,102,241,0.35);
-  animation: node-glow 1.6s ease-in-out infinite;
-}
-
-@keyframes node-glow {
-  0%,100% { box-shadow: 0 0 0 6px rgba(99,102,241,0.1), 0 0 24px rgba(99,102,241,0.35); }
-  50%      { box-shadow: 0 0 0 10px rgba(99,102,241,0.06), 0 0 36px rgba(34,211,238,0.3); }
-}
-
-.node-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-align: center; }
-
-.demo-lines { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1; }
-
-.demo-controls { display: flex; flex-direction: column; gap: 1.1rem; margin-bottom: 1.25rem; }
-.ctrl-row { display: flex; flex-direction: column; gap: 0.3rem; }
-.ctrl-header { display: flex; justify-content: space-between; font-size: 0.83rem; }
-.ctrl-label { font-weight: 600; color: var(--text); }
-.ctrl-val { color: var(--indigo); font-weight: 700; font-family: var(--mono); font-size: 0.8rem; }
-
-input[type="range"] {
-  width: 100%; -webkit-appearance: none; appearance: none;
-  height: 5px; background: var(--border); border-radius: 3px; outline: none; cursor: pointer;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
-  background: var(--grad); cursor: pointer; transition: transform 0.1s;
-  box-shadow: 0 0 6px rgba(99,102,241,0.5);
-}
-input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-input[type="range"]::-moz-range-thumb {
-  width: 16px; height: 16px; border-radius: 50%; background: var(--indigo); border: none; cursor: pointer;
-}
-
-.ctrl-ticks { display: flex; justify-content: space-between; font-size: 0.67rem; color: #CBD5E1; }
-
-.demo-decision {
-  background: #060D1F;
-  border: 1px solid #1E293B;
-  border-radius: 8px;
-  padding: 0.8rem 1rem;
-  margin-bottom: 1rem;
-  display: flex; align-items: center; gap: 0.75rem;
-  min-height: 48px;
-  font-family: var(--mono);
-  transition: border-color 0.3s;
-}
-.demo-decision.has-decision { border-color: rgba(34,211,238,0.4); }
-
-.dec-badge {
-  flex-shrink: 0; font-size: 0.75rem; font-weight: 600;
-  color: #334155; letter-spacing: 0.03em;
-}
-.demo-decision.has-decision .dec-badge { color: var(--cyan); }
-
-.dec-text { font-size: 0.78rem; color: #334155; line-height: 1.5; }
-.demo-decision.has-decision .dec-text { color: #94A3B8; }
-
-.demo-btn-row { display: flex; gap: 0.65rem; flex-wrap: wrap; }
-
-.btn-demo-run {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.55rem 1.1rem; border-radius: 7px;
-  font-size: 0.84rem; font-weight: 600;
   background: var(--grad); color: #fff;
-  border: none; cursor: pointer; font-family: inherit;
-  box-shadow: 0 4px 14px rgba(99,102,241,0.35);
-  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.3);
 }
-.btn-demo-run:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99,102,241,0.45); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.4); }
 
-.btn-demo-reset {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.55rem 1.1rem; border-radius: 7px;
-  font-size: 0.84rem; font-weight: 600;
-  background: transparent; color: var(--muted);
-  border: 1px solid var(--border); cursor: pointer; font-family: inherit;
-  transition: all 0.2s;
+.btn-outline {
+  background: transparent; color: var(--text);
+  border: 1.5px solid var(--border);
 }
-.btn-demo-reset:hover { border-color: var(--indigo); color: var(--indigo); }
+.btn-outline:hover { border-color: var(--indigo); color: var(--indigo); transform: translateY(-1px); }
 
-.data-packet {
-  position: absolute; width: 9px; height: 9px;
-  background: var(--cyan); border-radius: 50%;
-  pointer-events: none; z-index: 10; opacity: 0;
-  transform: translate(-50%,-50%);
-  box-shadow: 0 0 8px rgba(34,211,238,0.7);
+/* ── BACKGROUND (edu + exp merged) ── */
+.bg-list { display: flex; flex-direction: column; gap: 0; }
+
+.bg-item {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 0 1.5rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+.bg-item:first-child { border-top: 1px solid var(--border); }
+
+.bg-period {
+  font-family: var(--mono); font-size: 0.68rem;
+  color: var(--cyan); white-space: nowrap; padding-top: 0.1rem;
 }
 
-/* ─── PUBLICATIONS ────────────────────────── */
+.bg-role { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.bg-org  { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+
+.bg-section-label {
+  font-family: var(--mono); font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: #94A3B8; margin-top: 1.75rem; margin-bottom: 0.5rem;
+}
+.bg-section-label:first-child { margin-top: 0; }
+
+/* ── RESEARCH INTERESTS ── */
+.interests-grid {
+  display: flex; flex-wrap: wrap; gap: 0.75rem;
+}
+
+.interest-tag {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1rem; border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.84rem; font-weight: 500; color: var(--text);
+  background: var(--bg);
+  transition: all 0.2s; cursor: default;
+}
+.interest-tag:hover {
+  border-color: var(--indigo); color: var(--indigo);
+  background: rgba(99,102,241,0.04);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99,102,241,0.1);
+}
+.interest-tag .tag-icon { font-size: 1.1rem; }
+
+/* ── PUBLICATIONS ── */
 .pub-list { display: flex; flex-direction: column; }
 
 .pub-item { border-bottom: 1px solid var(--border); }
@@ -529,146 +276,92 @@ input[type="range"]::-moz-range-thumb {
 
 .pub-trigger {
   display: flex; align-items: center; gap: 1rem;
-  width: 100%; background: none; border: none;
-  text-align: left; padding: 1.05rem 0.5rem;
+  width: calc(100% + 1rem); background: none; border: none;
+  text-align: left; padding: 1rem 0.5rem;
   cursor: pointer; font-family: inherit;
-  border-radius: 8px;
-  transition: background 0.15s;
-  margin: 0 -0.5rem; width: calc(100% + 1rem);
+  border-radius: 7px; transition: background 0.15s;
+  margin: 0 -0.5rem;
 }
 .pub-trigger:hover { background: rgba(99,102,241,0.04); }
 
 .pub-num {
-  flex-shrink: 0;
-  font-family: var(--mono);
-  font-size: 0.66rem; font-weight: 600;
-  width: 28px; height: 20px;
-  background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(34,211,238,0.1));
-  color: var(--indigo);
-  border-radius: 4px;
-  border: 1px solid rgba(99,102,241,0.2);
+  flex-shrink: 0; font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  width: 26px; height: 20px;
+  background: rgba(99,102,241,0.08); color: var(--indigo);
+  border-radius: 4px; border: 1px solid rgba(99,102,241,0.18);
   display: flex; align-items: center; justify-content: center;
-  letter-spacing: 0.01em;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.2s;
 }
-
-.pub-item.open .pub-num {
-  background: var(--grad);
-  color: #fff;
-  border-color: transparent;
-}
+.pub-item.open .pub-num { background: var(--grad); color: #fff; border-color: transparent; }
 
 .pub-title {
   flex: 1; font-size: 0.88rem; font-weight: 600;
   color: var(--text); line-height: 1.45; text-align: left;
   transition: color 0.2s;
 }
-
-.pub-chevron {
-  flex-shrink: 0; color: #CBD5E1;
-  transition: transform 0.28s ease, color 0.2s;
-}
-
-.pub-item.open .pub-chevron { transform: rotate(180deg); color: var(--indigo); }
 .pub-item.open .pub-title { color: var(--indigo); }
 
-.pub-body {
-  display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows 0.28s ease;
-}
+.pub-chevron { flex-shrink: 0; color: var(--border); transition: transform 0.25s, color 0.2s; }
+.pub-item.open .pub-chevron { transform: rotate(180deg); color: var(--indigo); }
+
+.pub-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.27s ease; }
 .pub-item.open .pub-body { grid-template-rows: 1fr; }
 
-.pub-body-inner { overflow: hidden; padding-left: 2.75rem; }
-.pub-body-content { padding-bottom: 1.1rem; padding-top: 0.15rem; }
+.pub-body-inner { overflow: hidden; padding-left: 2.6rem; }
+.pub-body-content { padding-bottom: 1rem; padding-top: 0.1rem; }
 
-.pub-authors { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; line-height: 1.5; }
+.pub-authors { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.45rem; line-height: 1.5; }
 .pub-venue {
   display: inline-flex; align-items: center;
-  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
-  color: var(--green); background: var(--green-dim);
-  padding: 0.15rem 0.55rem; border-radius: 4px;
+  font-family: var(--mono); font-size: 0.67rem; font-weight: 500;
+  color: var(--green); background: #D1FAE5;
+  padding: 0.13rem 0.5rem; border-radius: 4px;
   border: 1px solid rgba(16,185,129,0.2);
 }
 
-/* ─── TIMELINE ───────────────────────────── */
-.timeline { position: relative; padding-left: 1.75rem; }
-.timeline::before {
-  content: ''; position: absolute;
-  left: 6px; top: 8px; bottom: 8px; width: 2px;
-  background: linear-gradient(to bottom, var(--indigo), var(--cyan), transparent);
-  border-radius: 2px;
-}
-
-.tl-item { position: relative; margin-bottom: 2.5rem; }
-.tl-item:last-child { margin-bottom: 0; }
-
-.tl-item::before {
-  content: ''; position: absolute;
-  left: -1.75rem; top: 5px;
-  width: 14px; height: 14px; border-radius: 50%;
-  background: var(--grad);
-  border: 3px solid var(--bg);
-  box-shadow: 0 0 0 2px var(--indigo), 0 0 10px rgba(99,102,241,0.4);
-}
-
-.tl-period {
-  font-family: var(--mono); font-size: 0.7rem; font-weight: 500;
-  color: var(--cyan); letter-spacing: 0.03em; margin-bottom: 0.3rem;
-}
-.tl-role  { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.12rem; }
-.tl-org   { font-size: 0.83rem; color: var(--muted); margin-bottom: 0.5rem; }
-.tl-desc  { font-size: 0.83rem; color: var(--muted); line-height: 1.75; }
-
-/* ─── CONTACT ────────────────────────────── */
+/* ── CONTACT ── */
 #contact { text-align: center; }
-
 #contact .section-title { justify-content: center; }
 
 .contact-note {
-  font-size: 0.95rem; color: var(--muted);
-  margin-bottom: 2rem; max-width: 440px;
-  margin-left: auto; margin-right: auto; line-height: 1.7;
+  font-size: 0.92rem; color: var(--muted);
+  margin: 0 auto 1.75rem; max-width: 400px; line-height: 1.7;
 }
 
-.contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+.contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.7rem; }
 
 .c-link {
-  display: inline-flex; align-items: center; gap: 0.45rem;
-  padding: 0.6rem 1.3rem; border-radius: 9px;
-  font-size: 0.85rem; font-weight: 600; text-decoration: none;
-  border: 1px solid var(--border); color: var(--text);
-  background: var(--bg);
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.55rem 1.2rem; border-radius: 8px;
+  font-size: 0.84rem; font-weight: 600; text-decoration: none;
+  border: 1.5px solid var(--border); color: var(--text); background: var(--bg);
   transition: all 0.2s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 .c-link:hover {
-  border-color: var(--indigo);
-  color: var(--indigo);
-  background: rgba(99,102,241,0.04);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99,102,241,0.12);
+  border-color: var(--indigo); color: var(--indigo);
+  background: rgba(99,102,241,0.04); transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(99,102,241,0.1);
 }
 
-/* ─── MOBILE ─────────────────────────────── */
+/* ── MOBILE ── */
 .mobile-header {
   display: none; position: sticky; top: 0; z-index: 100;
-  background: #060D1F;
-  border-bottom: 1px solid rgba(99,102,241,0.2);
-  padding: 0.9rem 1.25rem;
-  align-items: center; justify-content: space-between;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  padding: 0.85rem 1.25rem; align-items: center; justify-content: space-between;
 }
-.mob-name { font-weight: 700; font-size: 0.95rem; color: #F1F5F9; }
+.mob-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
 .mob-toggle { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 4px; padding: 4px; }
-.mob-toggle span { display: block; width: 20px; height: 2px; background: #64748B; border-radius: 2px; transition: 0.25s; }
+.mob-toggle span { display: block; width: 20px; height: 2px; background: var(--muted); border-radius: 2px; }
 
 @media (max-width: 768px) {
-  .sidebar { display: none; position: fixed; top: 0; left: 0; width: 270px; height: 100vh; z-index: 200; }
+  .sidebar { display: none; position: fixed; top: 0; left: 0; width: 270px; height: 100vh; z-index: 200; box-shadow: 4px 0 20px rgba(0,0,0,0.08); }
   .sidebar.open { display: flex; }
   .mobile-header { display: flex; }
   .main { margin-left: 0; }
-  section { padding: 2.75rem 1.5rem; }
+  section { padding: 2.5rem 1.5rem; }
   #hero { padding: 3rem 1.5rem; min-height: auto; }
-  .cards-grid { grid-template-columns: 1fr; }
+  .bg-item { grid-template-columns: 1fr; gap: 0.15rem; }
 }
 </style>
 </head>
@@ -682,35 +375,32 @@ input[type="range"]::-moz-range-thumb {
   </button>
 </div>
 
-<!-- ── SIDEBAR ── -->
+<!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sb-top">
 
-    <img src="Pictures/5865981649466626232.jpg" alt="Motahare Mounesan"
-         style="width:100%;aspect-ratio:1/1;object-fit:cover;object-position:center top;border-radius:12px;margin-bottom:1.25rem;border:2px solid rgba(99,102,241,0.3);">
+    <img class="sb-photo" src="Pictures/5865981649466626232.jpg" alt="Motahare Mounesan">
 
     <div class="sb-name">Motahare Mounesan</div>
-    <div class="sb-role">postdoc@tamu · RL · Edge AI</div>
+    <div class="sb-role">postdoc · RL · Edge AI · TAMU</div>
 
     <div class="sb-emails">
       <a class="sb-email" href="mailto:motahare@tamu.edu">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         motahare@tamu.edu
       </a>
       <a class="sb-email" href="mailto:motaharemounesan@gmail.com">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         motaharemounesan@gmail.com
       </a>
     </div>
 
-    <p class="sb-about">Postdoctoral researcher at Texas A&amp;M University specializing in Reinforcement Learning, Edge Computing, and Multimodal AI. PhD from The Graduate Center, CUNY. Focused on bringing intelligence to the edge.</p>
+    <p class="sb-about">Postdoctoral researcher at Texas A&amp;M specializing in Reinforcement Learning, Edge Computing, and Multimodal AI. PhD from The Graduate Center, CUNY.</p>
 
     <div class="sb-nav-label">Navigate</div>
     <nav class="sb-nav">
-      <a href="#about">About</a>
-      <a href="#education">Education</a>
-      <a href="#experience">Experience</a>
-      <a href="#interests">Research Interests</a>
+      <a href="#background">Background</a>
+      <a href="#interests">Research</a>
       <a href="#publications">Publications</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -719,87 +409,83 @@ input[type="range"]::-moz-range-thumb {
   <div class="sb-footer">© 2026 Motahare Mounesan</div>
 </aside>
 
-<!-- ── MAIN ── -->
+<!-- MAIN -->
 <main class="main">
 
   <!-- hero -->
   <section id="hero">
     <div class="hero-grid"></div>
     <div class="hero-content">
-      <div class="hero-eyebrow">motahare@tamu.edu ~ ./research --field=RL,EdgeAI</div>
-      <h1 class="hero-name">Motahare Mounesan<span class="hero-cursor"></span></h1>
+      <div class="hero-eyebrow">motahare@tamu.edu ~ research</div>
+      <h1 class="hero-name">
+        <span class="grad">Motahare</span> Mounesan<span class="hero-cursor"></span>
+      </h1>
       <p class="hero-tagline">Bridging Reinforcement Learning and Edge Intelligence for Real-World Impact</p>
       <div class="hero-btns">
         <a class="btn btn-primary" href="mailto:motahare@tamu.edu">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
           Email Me
         </a>
-        <a class="btn btn-ghost" href="https://scholar.google.com/citations?user=c5teoEQAAAAJ" target="_blank" rel="noopener">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        <a class="btn btn-outline" href="https://scholar.google.com/citations?user=c5teoEQAAAAJ" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
           Google Scholar
         </a>
-        <a class="btn btn-ghost" href="https://github.com/Motahareee" target="_blank" rel="noopener">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        <a class="btn btn-outline" href="https://github.com/Motahareee" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
           GitHub
         </a>
-        <a class="btn btn-ghost" href="https://linkedin.com/in/motahare-mounesan" target="_blank" rel="noopener">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        <a class="btn btn-outline" href="https://linkedin.com/in/motahare-mounesan" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
           LinkedIn
         </a>
       </div>
     </div>
   </section>
 
-  <!-- about -->
-  <section id="about">
-    <h2 class="section-title"><span class="st-slash">//</span> About</h2>
-    <div class="about-text">
-      <p>I am a postdoctoral researcher specializing in Reinforcement Learning, AI, and Edge Computing. My work is focused on multimodal intelligence at the edge and LLM-assisted reinforcement learning for real-time, context-aware decision-making in dynamic, resource-constrained environments.</p>
-      <p>I received my PhD from The Graduate Center, CUNY, where I developed frameworks for DNN inference optimization, adversarial robustness in collaborative inference, and RL-driven scheduling for edge-cloud systems.</p>
-      <p>My current research at Texas A&amp;M explores how large language models can guide reinforcement learning agents to make faster, smarter decisions on IoT devices and edge servers — bringing intelligence closer to where data is generated.</p>
-    </div>
-  </section>
+  <!-- background -->
+  <section id="background">
+    <h2 class="section-title"><span class="st-slash">//</span> Background</h2>
 
-  <!-- education -->
-  <section id="education">
-    <h2 class="section-title"><span class="st-slash">//</span> Education</h2>
-    <div style="display:flex;flex-direction:column;gap:1.5rem;">
-      <div>
-        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);margin-bottom:0.25rem;">2022 – 2025</div>
-        <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.1rem;">Ph.D. in Computer Science</div>
-        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem;">The Graduate Center, City University of New York (CUNY)</div>
-        <div style="font-size:0.83rem;color:var(--muted);line-height:1.7;">Dissertation focused on reinforcement learning-driven DNN inference optimization at the edge. Advised by Prof. Saptarshi Debroy.</div>
+    <div class="bg-section-label">Education</div>
+    <div class="bg-list">
+      <div class="bg-item">
+        <div class="bg-period">2022 – 2025</div>
+        <div>
+          <div class="bg-role">Ph.D. in Computer Science</div>
+          <div class="bg-org">The Graduate Center, CUNY</div>
+        </div>
       </div>
-      <div>
-        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);margin-bottom:0.25rem;">2017 – 2021</div>
-        <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.1rem;">M.Sc. in Computer Science</div>
-        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem;">The Graduate Center, City University of New York (CUNY)</div>
-        <div style="font-size:0.83rem;color:var(--muted);line-height:1.7;">Research on spatio-temporal data processing and large-scale ride-pooling simulation at NYC scale.</div>
+      <div class="bg-item">
+        <div class="bg-period">2017 – 2021</div>
+        <div>
+          <div class="bg-role">M.Sc. in Computer Science</div>
+          <div class="bg-org">The Graduate Center, CUNY</div>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- experience -->
-  <section id="experience">
-    <h2 class="section-title"><span class="st-slash">//</span> Experience</h2>
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-period">Oct 2025 – Present</div>
-        <div class="tl-role">Postdoctoral Research Associate</div>
-        <div class="tl-org">Texas A&amp;M University</div>
-        <div class="tl-desc">Multimodal LLM inference on resource-constrained devices; LLM-assisted reinforcement learning for dynamic, context-aware decision-making in edge environments.</div>
+    <div class="bg-section-label">Experience</div>
+    <div class="bg-list">
+      <div class="bg-item">
+        <div class="bg-period">2025 – Present</div>
+        <div>
+          <div class="bg-role">Postdoctoral Research Associate</div>
+          <div class="bg-org">Texas A&amp;M University</div>
+        </div>
       </div>
-      <div class="tl-item">
-        <div class="tl-period">Aug 2022 – Jun 2025</div>
-        <div class="tl-role">Research Assistant</div>
-        <div class="tl-org">The Graduate Center, CUNY</div>
-        <div class="tl-desc">Reinforcement learning for video computing; adversarial attacks on collaborative DNN inference; edge AI framework for optimized DNN inference at the edge.</div>
+      <div class="bg-item">
+        <div class="bg-period">2022 – 2025</div>
+        <div>
+          <div class="bg-role">Research Assistant</div>
+          <div class="bg-org">The Graduate Center, CUNY</div>
+        </div>
       </div>
-      <div class="tl-item">
-        <div class="tl-period">Aug 2017 – Dec 2021</div>
-        <div class="tl-role">Research Assistant</div>
-        <div class="tl-org">NYU Center for Urban Science and Progress (CUSP)</div>
-        <div class="tl-desc">Spatio-temporal data processing; large-scale ride-pooling simulation at NYC scale with meeting-point optimization.</div>
+      <div class="bg-item">
+        <div class="bg-period">2017 – 2021</div>
+        <div>
+          <div class="bg-role">Research Assistant</div>
+          <div class="bg-org">NYU Center for Urban Science and Progress</div>
+        </div>
       </div>
     </div>
   </section>
@@ -807,54 +493,15 @@ input[type="range"]::-moz-range-thumb {
   <!-- research interests -->
   <section id="interests">
     <h2 class="section-title"><span class="st-slash">//</span> Research Interests</h2>
-    <div class="cards-grid">
-      <div class="card">
-        <div class="card-header">
-          <span class="card-dot red"></span><span class="card-dot amber"></span><span class="card-dot green"></span>
-          <span class="card-filename">edge_intelligence.py</span>
-        </div>
-        <div class="card-body">
-          <div class="card-icon">⚡</div>
-          <div class="card-title">Edge Intelligence</div>
-          <div class="card-desc">DNN inference optimization, partitioning, and deployment on resource-constrained IoT and edge devices.</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <span class="card-dot red"></span><span class="card-dot amber"></span><span class="card-dot green"></span>
-          <span class="card-filename">rl_agent.py</span>
-        </div>
-        <div class="card-body">
-          <div class="card-icon">🤖</div>
-          <div class="card-title">Reinforcement Learning</div>
-          <div class="card-desc">Deep RL for resource management, scheduling, and real-time decision-making in dynamic environments.</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <span class="card-dot red"></span><span class="card-dot amber"></span><span class="card-dot green"></span>
-          <span class="card-filename">multimodal_llm.py</span>
-        </div>
-        <div class="card-body">
-          <div class="card-icon">🧠</div>
-          <div class="card-title">Multimodal AI</div>
-          <div class="card-desc">Multimodal LLM inference at the edge for situational awareness and context-aware computing.</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <span class="card-dot red"></span><span class="card-dot amber"></span><span class="card-dot green"></span>
-          <span class="card-filename">adversarial.py</span>
-        </div>
-        <div class="card-body">
-          <div class="card-icon">🔒</div>
-          <div class="card-title">Security</div>
-          <div class="card-desc">Adversarial attacks on collaborative inference and software supply chain security in containerized systems.</div>
-        </div>
-      </div>
+    <div class="interests-grid">
+      <div class="interest-tag"><span class="tag-icon">⚡</span> Edge Intelligence</div>
+      <div class="interest-tag"><span class="tag-icon">🤖</span> Reinforcement Learning</div>
+      <div class="interest-tag"><span class="tag-icon">🧠</span> Multimodal AI</div>
+      <div class="interest-tag"><span class="tag-icon">🔒</span> Adversarial Security</div>
+      <div class="interest-tag"><span class="tag-icon">☁️</span> Edge–Cloud Computing</div>
+      <div class="interest-tag"><span class="tag-icon">🔬</span> DNN Inference Optimization</div>
     </div>
   </section>
-
 
   <!-- publications -->
   <section id="publications">
@@ -865,7 +512,7 @@ input[type="range"]::-moz-range-thumb {
         <button class="pub-trigger">
           <span class="pub-num">1</span>
           <span class="pub-title">Reinforcement Learning-Driven Edge Management for Reliable Multi-view 3D Reconstruction</span>
-          <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="pub-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
           <div class="pub-authors">M. Mounesan, S. Saha, H. Gan, M. N. Absur and S. Debroy</div>
@@ -877,7 +524,7 @@ input[type="range"]::-moz-range-thumb {
         <button class="pub-trigger">
           <span class="pub-num">2</span>
           <span class="pub-title">AdVAR-DNN: Adversarial Misclassification Attack on Collaborative DNN Inference</span>
-          <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="pub-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
           <div class="pub-authors">S. Yousefi, M. Mounesan and S. Debroy</div>
@@ -889,7 +536,7 @@ input[type="range"]::-moz-range-thumb {
         <button class="pub-trigger">
           <span class="pub-num">3</span>
           <span class="pub-title">Infer-EDGE: Optimized DNN Inference in "Just-in-time" Edge Environments</span>
-          <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="pub-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
           <div class="pub-authors">M. Mounesan and S. Debroy</div>
@@ -897,27 +544,14 @@ input[type="range"]::-moz-range-thumb {
         </div></div></div>
       </div>
 
-      <div class="pub-item" style="display:none">
-        <button class="pub-trigger">
-          <span class="pub-num">4</span>
-          <span class="pub-title">EFFECT-DNN: Energy-efficient Edge Framework for Real-time DNN Inference</span>
-          <svg class="pub-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
-          <div class="pub-authors">X. Zhang, M. Mounesan, and S. Debroy</div>
-          <span class="pub-venue">IEEE WoWMoM 2023</span>
-        </div></div></div>
-      </div>
-
     </div>
-
     <div style="margin-top:1.5rem;">
       <a href="https://scholar.google.com/citations?user=c5teoEQAAAAJ" target="_blank" rel="noopener"
-         style="display:inline-flex;align-items:center;gap:0.5rem;font-size:0.85rem;font-weight:600;color:var(--indigo);text-decoration:none;padding:0.55rem 1.1rem;border:1px solid rgba(99,102,241,0.3);border-radius:8px;transition:all 0.2s;background:rgba(99,102,241,0.04);"
-         onmouseover="this.style.background='rgba(99,102,241,0.1)';this.style.borderColor='var(--indigo)'"
-         onmouseout="this.style.background='rgba(99,102,241,0.04)';this.style.borderColor='rgba(99,102,241,0.3)'">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-        View all publications on Google Scholar →
+         style="display:inline-flex;align-items:center;gap:0.5rem;font-size:0.84rem;font-weight:600;color:var(--indigo);text-decoration:none;padding:0.5rem 1rem;border:1.5px solid rgba(99,102,241,0.25);border-radius:7px;transition:all 0.2s;background:rgba(99,102,241,0.04);"
+         onmouseover="this.style.background='rgba(99,102,241,0.09)';this.style.borderColor='var(--indigo)'"
+         onmouseout="this.style.background='rgba(99,102,241,0.04)';this.style.borderColor='rgba(99,102,241,0.25)'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        View all on Google Scholar →
       </a>
     </div>
   </section>
@@ -925,11 +559,13 @@ input[type="range"]::-moz-range-thumb {
   <!-- contact -->
   <section id="contact">
     <h2 class="section-title"><span class="st-slash">//</span> Get In Touch</h2>
-    <p class="contact-note">Interested in collaboration, research opportunities, or just want to connect?</p>
+    <p class="contact-note">Open to research collaborations and academic opportunities.</p>
     <div class="contact-links">
+      <a class="c-link" href="mailto:motahare@tamu.edu">✉️ motahare@tamu.edu</a>
+      <a class="c-link" href="mailto:motaharemounesan@gmail.com">✉️ Gmail</a>
       <a class="c-link" href="https://linkedin.com/in/motahare-mounesan" target="_blank" rel="noopener">💼 LinkedIn</a>
       <a class="c-link" href="https://github.com/Motahareee" target="_blank" rel="noopener">🐙 GitHub</a>
-      <a class="c-link" href="https://scholar.google.com/citations?user=c5teoEQAAAAJ" target="_blank" rel="noopener">🎓 Google Scholar</a>
+      <a class="c-link" href="https://scholar.google.com/citations?user=c5teoEQAAAAJ" target="_blank" rel="noopener">🎓 Scholar</a>
     </div>
   </section>
 
@@ -963,7 +599,10 @@ document.querySelectorAll('.sb-nav a').forEach(function(a) {
   function sync() {
     var y = window.scrollY + 120, cur = '';
     sections.forEach(function(s) { if (y >= s.offsetTop) cur = s.id; });
-    links.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + cur); });
+    links.forEach(function(a) {
+      var href = a.getAttribute('href').replace('#','');
+      a.classList.toggle('active', href === cur || (href === 'background' && cur === 'hero'));
+    });
   }
   window.addEventListener('scroll', sync, { passive: true });
   sync();
