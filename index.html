@@ -4,609 +4,835 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Motahare Mounesan</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #06091C; }
+#graph { display: block; width: 100%; height: 100%; cursor: default; }
 
-:root {
-  --indigo:  #6366F1;
-  --cyan:    #22D3EE;
-  --green:   #10B981;
-  --text:    #0F172A;
-  --muted:   #64748B;
-  --border:  #E2E8F0;
-  --bg:      #ffffff;
-  --soft:    #F8FAFC;
-  --sw:      280px;
-  --mono:    'JetBrains Mono', monospace;
-  --grad:    linear-gradient(135deg, #6366F1, #22D3EE);
+#back-btn {
+  position: fixed; top: 1.8rem; left: 1.8rem; z-index: 40;
+  display: flex; align-items: center; gap: 0.45rem;
+  padding: 0.48rem 1.1rem; border-radius: 100px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer; backdrop-filter: blur(20px);
+  transition: opacity 0.3s, color 0.2s, background 0.2s;
+  opacity: 0; pointer-events: none;
+}
+#back-btn.visible { opacity: 1; pointer-events: all; }
+#back-btn:hover   { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
+
+#hint {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.12); pointer-events: none;
+  transition: opacity 0.5s; white-space: nowrap;
 }
 
-html { scroll-behavior: smooth; }
-body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); line-height: 1.6; }
-
-/* ── SIDEBAR ── */
-.sidebar {
-  position: fixed; top: 0; left: 0;
-  width: var(--sw); height: 100vh;
-  overflow-y: auto;
-  background: var(--bg);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  padding: 2rem 1.6rem;
-  z-index: 50;
+/* info card */
+#info-card {
+  position: fixed; bottom: 1.8rem; right: 1.8rem; z-index: 40;
+  width: 300px; padding: 1.5rem 1.6rem; border-radius: 20px;
+  background: rgba(6,9,28,0.88);
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6),
+              inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter: blur(32px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
 }
-
-.sb-top { flex: 1; }
-
-.sb-photo {
-  width: 100%; aspect-ratio: 1/1;
-  object-fit: cover; object-position: center top;
-  border-radius: 12px;
-  margin-bottom: 1.25rem;
-  border: 2px solid var(--border);
+#info-card.show { opacity: 1; }
+.ic-ey {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase;
+  margin-bottom: 0.55rem; opacity: 0.9;
 }
-
-.sb-name {
-  font-size: 1.15rem; font-weight: 700;
-  color: var(--text); letter-spacing: -0.02em;
-  line-height: 1.2; margin-bottom: 0.2rem;
+.ic-tt {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem; line-height: 1.5;
+  color: rgba(255,255,255,0.9); margin-bottom: 0.4rem;
 }
-
-.sb-role {
-  font-family: var(--mono); font-size: 0.65rem;
-  color: var(--indigo); letter-spacing: 0.03em;
-  margin-bottom: 1.25rem;
+.ic-dt {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.73rem; line-height: 1.7;
+  color: rgba(255,255,255,0.33);
 }
-
-.sb-emails { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1.1rem; }
-
-.sb-email {
-  display: flex; align-items: center; gap: 0.4rem;
-  font-size: 0.72rem; color: var(--muted);
-  text-decoration: none; padding: 0.25rem 0.35rem;
-  border-radius: 5px; transition: color 0.15s, background 0.15s;
-  word-break: break-all;
+.ic-lk {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  margin-top: 1rem; padding: 0.38rem 0.9rem; border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.12);
+  font-family: 'Inter', sans-serif; font-size: 0.68rem; font-weight: 500;
+  letter-spacing: 0.04em; text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
 }
-.sb-email:hover { color: var(--indigo); background: rgba(99,102,241,0.06); }
-.sb-email svg { flex-shrink: 0; }
-
-.sb-about {
-  font-size: 0.74rem; color: var(--muted);
-  line-height: 1.65; margin-bottom: 1.25rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.sb-nav-label {
-  font-family: var(--mono); font-size: 0.58rem;
-  color: #94A3B8; letter-spacing: 0.12em;
-  text-transform: uppercase; margin-bottom: 0.4rem;
-}
-
-.sb-nav { display: flex; flex-direction: column; gap: 0.05rem; }
-
-.sb-nav a {
-  font-size: 0.78rem; color: var(--muted);
-  text-decoration: none; padding: 0.28rem 0.5rem;
-  border-radius: 5px; font-weight: 500;
-  transition: all 0.15s; display: flex; align-items: center; gap: 0.5rem;
-}
-.sb-nav a::before {
-  content: ''; width: 4px; height: 4px; border-radius: 50%;
-  background: var(--border); flex-shrink: 0; transition: all 0.15s;
-}
-.sb-nav a:hover { color: var(--indigo); background: rgba(99,102,241,0.06); }
-.sb-nav a:hover::before { background: var(--indigo); }
-.sb-nav a.active { color: var(--indigo); background: rgba(99,102,241,0.07); font-weight: 600; }
-.sb-nav a.active::before { background: var(--cyan); box-shadow: 0 0 5px rgba(34,211,238,0.5); }
-
-.sb-footer { font-size: 0.65rem; color: #CBD5E1; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-
-/* ── MAIN ── */
-.main { margin-left: var(--sw); min-height: 100vh; }
-
-section { padding: 4rem 4.5rem; border-bottom: 1px solid var(--border); }
-section:last-child { border-bottom: none; }
-section:nth-child(even) { background: var(--soft); }
-
-.section-title {
-  font-size: 1.35rem; font-weight: 700;
-  margin-bottom: 2rem;
-  display: flex; align-items: center; gap: 0.5rem;
-  letter-spacing: -0.02em;
-}
-.st-slash {
-  font-family: var(--mono); font-size: 0.85rem; font-weight: 400;
-  background: var(--grad);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; opacity: 0.75;
-}
-
-/* ── HERO ── */
-#hero {
-  position: relative;
-  background: var(--bg);
-  padding: 5rem 4.5rem 4.5rem;
-  overflow: hidden;
-  border-bottom: 1px solid var(--border);
-  min-height: 480px;
-  display: flex; align-items: center;
-}
-
-/* subtle gradient blobs */
-#hero::before {
-  content: '';
-  position: absolute;
-  width: 500px; height: 500px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
-  top: -180px; right: -80px;
-  pointer-events: none;
-}
-#hero::after {
-  content: '';
-  position: absolute;
-  width: 350px; height: 350px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(34,211,238,0.06) 0%, transparent 70%);
-  bottom: -100px; left: 10%;
-  pointer-events: none;
-}
-
-/* subtle dot grid */
-.hero-grid {
-  position: absolute; inset: 0;
-  background-image: radial-gradient(#E2E8F0 1px, transparent 1px);
-  background-size: 28px 28px;
-  pointer-events: none;
-  opacity: 0.6;
-}
-
-.hero-content { position: relative; z-index: 1; max-width: 620px; }
-
-.hero-eyebrow {
-  font-family: var(--mono); font-size: 0.75rem;
-  color: var(--indigo); margin-bottom: 1.1rem;
-  display: flex; align-items: center; gap: 0.4rem; opacity: 0.8;
-}
-.hero-eyebrow::before { content: '>_'; color: var(--muted); }
-
-.hero-name {
-  font-size: clamp(2.2rem, 4vw, 3rem);
-  font-weight: 700; line-height: 1.1;
-  letter-spacing: -0.03em; margin-bottom: 0.75rem;
-  color: var(--text);
-}
-
-.hero-name span.grad {
-  background: var(--grad);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero-cursor {
-  display: inline-block; width: 3px; height: 0.8em;
-  background: var(--indigo); margin-left: 3px;
-  vertical-align: text-bottom; border-radius: 1px;
-  animation: blink 1.1s step-end infinite;
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-.hero-tagline {
-  font-size: 0.97rem; color: var(--muted);
-  max-width: 480px; line-height: 1.75; margin-bottom: 1.75rem;
-}
-
-.hero-btns { display: flex; flex-wrap: wrap; gap: 0.65rem; }
-
-.btn {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.55rem 1.1rem; border-radius: 8px;
-  font-size: 0.84rem; font-weight: 600;
-  text-decoration: none; transition: all 0.2s;
-  border: none; cursor: pointer; font-family: inherit;
-}
-.btn-primary {
-  background: var(--grad); color: #fff;
-  box-shadow: 0 4px 16px rgba(99,102,241,0.3);
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.4); }
-
-.btn-outline {
-  background: transparent; color: var(--text);
-  border: 1.5px solid var(--border);
-}
-.btn-outline:hover { border-color: var(--indigo); color: var(--indigo); transform: translateY(-1px); }
-
-/* ── BACKGROUND (edu + exp merged) ── */
-.bg-list { display: flex; flex-direction: column; gap: 0; }
-
-.bg-item {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 0 1.5rem;
-  padding: 0.9rem 0;
-  border-bottom: 1px solid var(--border);
-  align-items: baseline;
-}
-.bg-item:first-child { border-top: 1px solid var(--border); }
-
-.bg-period {
-  font-family: var(--mono); font-size: 0.68rem;
-  color: var(--cyan); white-space: nowrap; padding-top: 0.1rem;
-}
-
-.bg-role { font-size: 0.9rem; font-weight: 600; color: var(--text); }
-.bg-org  { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
-
-.bg-section-label {
-  font-family: var(--mono); font-size: 0.65rem;
-  text-transform: uppercase; letter-spacing: 0.1em;
-  color: #94A3B8; margin-top: 1.75rem; margin-bottom: 0.5rem;
-}
-.bg-section-label:first-child { margin-top: 0; }
-
-/* ── RESEARCH INTERESTS ── */
-.interests-grid {
-  display: flex; flex-wrap: wrap; gap: 0.75rem;
-}
-
-.interest-tag {
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.6rem 1rem; border-radius: 8px;
-  border: 1px solid var(--border);
-  font-size: 0.84rem; font-weight: 500; color: var(--text);
-  background: var(--bg);
-  transition: all 0.2s; cursor: default;
-}
-.interest-tag:hover {
-  border-color: var(--indigo); color: var(--indigo);
-  background: rgba(99,102,241,0.04);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99,102,241,0.1);
-}
-.interest-tag .tag-icon { font-size: 1.1rem; }
-
-/* ── PUBLICATIONS ── */
-.pub-list { display: flex; flex-direction: column; }
-
-.pub-item { border-bottom: 1px solid var(--border); }
-.pub-item:first-child { border-top: 1px solid var(--border); }
-
-.pub-trigger {
-  display: flex; align-items: center; gap: 1rem;
-  width: calc(100% + 1rem); background: none; border: none;
-  text-align: left; padding: 1rem 0.5rem;
-  cursor: pointer; font-family: inherit;
-  border-radius: 7px; transition: background 0.15s;
-  margin: 0 -0.5rem;
-}
-.pub-trigger:hover { background: rgba(99,102,241,0.04); }
-
-.pub-num {
-  flex-shrink: 0; font-family: var(--mono);
-  font-size: 0.65rem; font-weight: 500;
-  width: 26px; height: 20px;
-  background: rgba(99,102,241,0.08); color: var(--indigo);
-  border-radius: 4px; border: 1px solid rgba(99,102,241,0.18);
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s;
-}
-.pub-item.open .pub-num { background: var(--grad); color: #fff; border-color: transparent; }
-
-.pub-title {
-  flex: 1; font-size: 0.88rem; font-weight: 600;
-  color: var(--text); line-height: 1.45; text-align: left;
-  transition: color 0.2s;
-}
-.pub-item.open .pub-title { color: var(--indigo); }
-
-.pub-chevron { flex-shrink: 0; color: var(--border); transition: transform 0.25s, color 0.2s; }
-.pub-item.open .pub-chevron { transform: rotate(180deg); color: var(--indigo); }
-
-.pub-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.27s ease; }
-.pub-item.open .pub-body { grid-template-rows: 1fr; }
-
-.pub-body-inner { overflow: hidden; padding-left: 2.6rem; }
-.pub-body-content { padding-bottom: 1rem; padding-top: 0.1rem; }
-
-.pub-authors { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.45rem; line-height: 1.5; }
-.pub-venue {
-  display: inline-flex; align-items: center;
-  font-family: var(--mono); font-size: 0.67rem; font-weight: 500;
-  color: var(--green); background: #D1FAE5;
-  padding: 0.13rem 0.5rem; border-radius: 4px;
-  border: 1px solid rgba(16,185,129,0.2);
-}
-
-/* ── CONTACT ── */
-#contact { text-align: center; }
-#contact .section-title { justify-content: center; }
-
-.contact-note {
-  font-size: 0.92rem; color: var(--muted);
-  margin: 0 auto 1.75rem; max-width: 400px; line-height: 1.7;
-}
-
-.contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.7rem; }
-
-.c-link {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.55rem 1.2rem; border-radius: 8px;
-  font-size: 0.84rem; font-weight: 600; text-decoration: none;
-  border: 1.5px solid var(--border); color: var(--text); background: var(--bg);
-  transition: all 0.2s;
-}
-.c-link:hover {
-  border-color: var(--indigo); color: var(--indigo);
-  background: rgba(99,102,241,0.04); transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(99,102,241,0.1);
-}
-
-/* ── MOBILE ── */
-.mobile-header {
-  display: none; position: sticky; top: 0; z-index: 100;
-  background: var(--bg); border-bottom: 1px solid var(--border);
-  padding: 0.85rem 1.25rem; align-items: center; justify-content: space-between;
-}
-.mob-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
-.mob-toggle { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 4px; padding: 4px; }
-.mob-toggle span { display: block; width: 20px; height: 2px; background: var(--muted); border-radius: 2px; }
-
-@media (max-width: 768px) {
-  .sidebar { display: none; position: fixed; top: 0; left: 0; width: 270px; height: 100vh; z-index: 200; box-shadow: 4px 0 20px rgba(0,0,0,0.08); }
-  .sidebar.open { display: flex; }
-  .mobile-header { display: flex; }
-  .main { margin-left: 0; }
-  section { padding: 2.5rem 1.5rem; }
-  #hero { padding: 3rem 1.5rem; min-height: auto; }
-  .bg-item { grid-template-columns: 1fr; gap: 0.15rem; }
-}
+.ic-lk:hover { background: rgba(255,255,255,0.07); }
 </style>
 </head>
 <body>
+<svg id="graph"></svg>
 
-<!-- mobile header -->
-<div class="mobile-header">
-  <span class="mob-name">Motahare Mounesan</span>
-  <button class="mob-toggle" id="mobToggle" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+<button id="back-btn">
+  <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+    <path d="M5.5 1.5L2.5 4.5L5.5 7.5" stroke="currentColor" stroke-width="1.4"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  Overview
+</button>
+<div id="hint">Select a node to explore &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Drag to pan</div>
+<div id="info-card">
+  <div class="ic-ey" id="ic-cat"></div>
+  <div class="ic-tt" id="ic-tt"></div>
+  <div class="ic-dt" id="ic-dt"></div>
+  <a   class="ic-lk" id="ic-lk" href="#" target="_blank" rel="noopener">View ↗</a>
 </div>
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="sb-top">
-
-    <img class="sb-photo" src="Pictures/5865981649466626232.jpg" alt="Motahare Mounesan">
-
-    <div class="sb-name">Motahare Mounesan</div>
-    <div class="sb-role">postdoc · RL · Edge AI · TAMU</div>
-
-    <div class="sb-emails">
-      <a class="sb-email" href="mailto:motahare@tamu.edu">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-        motahare@tamu.edu
-      </a>
-      <a class="sb-email" href="mailto:motaharemounesan@gmail.com">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-        motaharemounesan@gmail.com
-      </a>
-    </div>
-
-    <p class="sb-about">Postdoctoral researcher at Texas A&amp;M specializing in Reinforcement Learning, Edge Computing, and Multimodal AI. PhD from The Graduate Center, CUNY.</p>
-
-    <div class="sb-nav-label">Navigate</div>
-    <nav class="sb-nav">
-      <a href="#background">Background</a>
-      <a href="#interests">Research</a>
-      <a href="#publications">Publications</a>
-      <a href="#contact">Contact</a>
-    </nav>
-
-  </div>
-  <div class="sb-footer">© 2026 Motahare Mounesan</div>
-</aside>
-
-<!-- MAIN -->
-<main class="main">
-
-  <!-- hero -->
-  <section id="hero">
-    <div class="hero-grid"></div>
-    <div class="hero-content">
-      <div class="hero-eyebrow">motahare@tamu.edu ~ research</div>
-      <h1 class="hero-name">
-        <span class="grad">Motahare</span> Mounesan<span class="hero-cursor"></span>
-      </h1>
-      <p class="hero-tagline">Bridging Reinforcement Learning and Edge Intelligence for Real-World Impact</p>
-      <div class="hero-btns">
-        <a class="btn btn-primary" href="mailto:motahare@tamu.edu">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          Email Me
-        </a>
-        <a class="btn btn-outline" href="https://scholar.google.com/citations?user=c5teoEQAAAAJ" target="_blank" rel="noopener">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-          Google Scholar
-        </a>
-        <a class="btn btn-outline" href="https://github.com/Motahareee" target="_blank" rel="noopener">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          GitHub
-        </a>
-        <a class="btn btn-outline" href="https://linkedin.com/in/motahare-mounesan" target="_blank" rel="noopener">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          LinkedIn
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- background -->
-  <section id="background">
-    <h2 class="section-title"><span class="st-slash">//</span> Background</h2>
-
-    <div class="bg-section-label">Education</div>
-    <div class="bg-list">
-      <div class="bg-item">
-        <div class="bg-period">2022 – 2025</div>
-        <div>
-          <div class="bg-role">Ph.D. in Computer Science</div>
-          <div class="bg-org">The Graduate Center, CUNY</div>
-        </div>
-      </div>
-      <div class="bg-item">
-        <div class="bg-period">2017 – 2021</div>
-        <div>
-          <div class="bg-role">M.Sc. in Computer Science</div>
-          <div class="bg-org">The Graduate Center, CUNY</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="bg-section-label">Experience</div>
-    <div class="bg-list">
-      <div class="bg-item">
-        <div class="bg-period">2025 – Present</div>
-        <div>
-          <div class="bg-role">Postdoctoral Research Associate</div>
-          <div class="bg-org">Texas A&amp;M University</div>
-        </div>
-      </div>
-      <div class="bg-item">
-        <div class="bg-period">2022 – 2025</div>
-        <div>
-          <div class="bg-role">Research Assistant</div>
-          <div class="bg-org">The Graduate Center, CUNY</div>
-        </div>
-      </div>
-      <div class="bg-item">
-        <div class="bg-period">2017 – 2021</div>
-        <div>
-          <div class="bg-role">Research Assistant</div>
-          <div class="bg-org">NYU Center for Urban Science and Progress</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- research interests -->
-  <section id="interests">
-    <h2 class="section-title"><span class="st-slash">//</span> Research Interests</h2>
-    <div class="interests-grid">
-      <div class="interest-tag"><span class="tag-icon">⚡</span> Edge Intelligence</div>
-      <div class="interest-tag"><span class="tag-icon">🤖</span> Reinforcement Learning</div>
-      <div class="interest-tag"><span class="tag-icon">🧠</span> Multimodal AI</div>
-      <div class="interest-tag"><span class="tag-icon">🔒</span> Adversarial Security</div>
-      <div class="interest-tag"><span class="tag-icon">☁️</span> Edge–Cloud Computing</div>
-      <div class="interest-tag"><span class="tag-icon">🔬</span> DNN Inference Optimization</div>
-    </div>
-  </section>
-
-  <!-- publications -->
-  <section id="publications">
-    <h2 class="section-title"><span class="st-slash">//</span> Publications</h2>
-    <div class="pub-list">
-
-      <div class="pub-item">
-        <button class="pub-trigger">
-          <span class="pub-num">1</span>
-          <span class="pub-title">Reinforcement Learning-Driven Edge Management for Reliable Multi-view 3D Reconstruction</span>
-          <svg class="pub-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
-          <div class="pub-authors">M. Mounesan, S. Saha, H. Gan, M. N. Absur and S. Debroy</div>
-          <span class="pub-venue">CNSM 2025</span>
-        </div></div></div>
-      </div>
-
-      <div class="pub-item">
-        <button class="pub-trigger">
-          <span class="pub-num">2</span>
-          <span class="pub-title">AdVAR-DNN: Adversarial Misclassification Attack on Collaborative DNN Inference</span>
-          <svg class="pub-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
-          <div class="pub-authors">S. Yousefi, M. Mounesan and S. Debroy</div>
-          <span class="pub-venue">IEEE LCN 2025</span>
-        </div></div></div>
-      </div>
-
-      <div class="pub-item">
-        <button class="pub-trigger">
-          <span class="pub-num">3</span>
-          <span class="pub-title">Infer-EDGE: Optimized DNN Inference in "Just-in-time" Edge Environments</span>
-          <svg class="pub-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pub-body"><div class="pub-body-inner"><div class="pub-body-content">
-          <div class="pub-authors">M. Mounesan and S. Debroy</div>
-          <span class="pub-venue">IEEE/IFIP NOMS 2025</span>
-        </div></div></div>
-      </div>
-
-    </div>
-    <div style="margin-top:1.5rem;">
-      <a href="https://scholar.google.com/citations?user=c5teoEQAAAAJ" target="_blank" rel="noopener"
-         style="display:inline-flex;align-items:center;gap:0.5rem;font-size:0.84rem;font-weight:600;color:var(--indigo);text-decoration:none;padding:0.5rem 1rem;border:1.5px solid rgba(99,102,241,0.25);border-radius:7px;transition:all 0.2s;background:rgba(99,102,241,0.04);"
-         onmouseover="this.style.background='rgba(99,102,241,0.09)';this.style.borderColor='var(--indigo)'"
-         onmouseout="this.style.background='rgba(99,102,241,0.04)';this.style.borderColor='rgba(99,102,241,0.25)'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-        View all on Google Scholar →
-      </a>
-    </div>
-  </section>
-
-  <!-- contact -->
-  <section id="contact">
-    <h2 class="section-title"><span class="st-slash">//</span> Get In Touch</h2>
-    <p class="contact-note">Open to research collaborations and academic opportunities.</p>
-    <div class="contact-links">
-      <a class="c-link" href="mailto:motahare@tamu.edu">✉️ motahare@tamu.edu</a>
-      <a class="c-link" href="mailto:motaharemounesan@gmail.com">✉️ Gmail</a>
-      <a class="c-link" href="https://linkedin.com/in/motahare-mounesan" target="_blank" rel="noopener">💼 LinkedIn</a>
-      <a class="c-link" href="https://github.com/Motahareee" target="_blank" rel="noopener">🐙 GitHub</a>
-      <a class="c-link" href="https://scholar.google.com/citations?user=c5teoEQAAAAJ" target="_blank" rel="noopener">🎓 Scholar</a>
-    </div>
-  </section>
-
-</main>
-
 <script>
-/* accordion */
-document.querySelectorAll('.pub-trigger').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var item = btn.closest('.pub-item');
-    var isOpen = item.classList.contains('open');
-    document.querySelectorAll('.pub-item.open').forEach(function(el) { el.classList.remove('open'); });
-    if (!isOpen) item.classList.add('open');
-  });
+'use strict';
+
+// ══════════════════════════════════════════════════════
+//  PALETTE
+// ══════════════════════════════════════════════════════
+const PAL = {
+  education:  '#A78BFA',
+  experience: '#6EE7B7',
+  research:   '#93C5FD',
+  contact:    '#FCD34D',
+};
+
+// ══════════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════════
+const CATS = [
+  {
+    id: 'education', label: 'Education', icon: '🎓',
+    items: [
+      {
+        label: 'Ph.D. in Computer Science', degree: 'Doctor of Philosophy',
+        dept: 'Department of Computer Science',
+        org: 'The Graduate Center', uni: 'City University of New York',
+        sub: '2022 – 2025', logo: { text: 'GC', color: '#1B4D8E' },
+        href: 'https://www.gc.cuny.edu'
+      },
+    ]
+  },
+  {
+    id: 'experience', label: 'Experience', icon: '💼',
+    items: [
+      { label: 'Postdoctoral RA',      detail: 'Texas A&M University',         sub: '2025 – Present' },
+      { label: 'Research Assistant',   detail: 'The Graduate Center, CUNY',    sub: '2022 – 2025'   },
+      { label: 'Research Assistant',   detail: 'NYU Center for Urban Science', sub: '2017 – 2021'   },
+    ]
+  },
+  {
+    id: 'research', label: 'Research', icon: '🔬',
+    items: [
+      {
+        label: 'Edge Intelligence',
+        gist: 'Designing systems that run DNN inference at the network edge under tight latency and resource constraints.',
+        sub: ''
+      },
+      {
+        label: 'Reinforcement Learning',
+        gist: 'Applying RL to orchestrate resource allocation and decision-making in dynamic edge environments.',
+        sub: ''
+      },
+      {
+        label: 'Multimodal AI',
+        gist: 'Enabling vision and language models to collaborate under real-world compute limits.',
+        sub: ''
+      },
+      {
+        label: 'Adversarial Security',
+        gist: 'Studying how adversarial attacks exploit collaborative inference pipelines and building defenses.',
+        sub: ''
+      },
+      {
+        label: 'Inference Optimization',
+        gist: 'Optimizing inference-time execution to meet strict latency budgets on heterogeneous hardware.',
+        sub: ''
+      },
+    ]
+  },
+  {
+    id: 'contact', label: 'Contact', icon: '✉️',
+    items: [
+      { label: 'Academic Email',   detail: 'motahare@tamu.edu',        sub: 'TAMU',       href: 'mailto:motahare@tamu.edu' },
+      { label: 'Google Scholar',   detail: 'Publications & citations', sub: '',           href: 'https://scholar.google.com/citations?user=c5teoEQAAAAJ' },
+      { label: 'GitHub',           detail: 'Open-source repositories', sub: 'Motahareee', href: 'https://github.com/Motahareee' },
+      { label: 'LinkedIn',         detail: 'Professional profile',     sub: '',           href: 'https://linkedin.com/in/motahare-mounesan' },
+    ]
+  },
+];
+CATS.forEach(c => { c.color = PAL[c.id]; });
+
+// ══════════════════════════════════════════════════════
+//  GEOMETRY
+// ══════════════════════════════════════════════════════
+const SUN_R  = 120;
+const NODE_R = 52;
+const SUB_OR = 175;
+const RW     = 162;   // fixed block width for research nodes (title + line + gist)
+
+// Asymmetric layout: each node has its own angle and orbit radius
+// Left edges shorter, right edges longer — feels organic, not mechanical
+const LAYOUT = [
+  { angle: -155, orbit: 200 },   // Education   — short left arm
+  { angle: -112, orbit: 268 },   // Experience  — medium left
+  { angle:  -60, orbit: 310 },   // Research    — long right (biggest node)
+  { angle:  -22, orbit: 230 },   // Contact     — medium-short right
+];
+CATS.forEach((c, i) => {
+  c.angle = LAYOUT[i].angle * Math.PI / 180;
+  c.x = Math.cos(c.angle) * LAYOUT[i].orbit;
+  c.y = Math.sin(c.angle) * LAYOUT[i].orbit;
 });
 
-/* mobile toggle */
-document.getElementById('mobToggle').addEventListener('click', function() {
-  document.getElementById('sidebar').classList.toggle('open');
-});
-document.querySelectorAll('.sb-nav a').forEach(function(a) {
-  a.addEventListener('click', function() {
-    document.getElementById('sidebar').classList.remove('open');
-  });
+// ══════════════════════════════════════════════════════
+//  SVG + DEFS
+// ══════════════════════════════════════════════════════
+let W = window.innerWidth, H = window.innerHeight;
+const svg  = d3.select('#graph').attr('width', W).attr('height', H);
+const defs = svg.append('defs');
+
+/* glow filters */
+const mkGlow = (id, dev, mul) => {
+  const f = defs.append('filter').attr('id', id)
+    .attr('x', '-120%').attr('y', '-120%').attr('width', '340%').attr('height', '340%');
+  const blur = f.append('feGaussianBlur').attr('stdDeviation', dev).attr('result', 'b');
+  if (mul) f.append('feComposite').attr('in', 'b').attr('operator', 'over').attr('in2', 'b').attr('result', 'b2');
+  const m = f.append('feMerge');
+  m.append('feMergeNode').attr('in', mul ? 'b2' : 'b');
+  m.append('feMergeNode').attr('in', 'SourceGraphic');
+};
+mkGlow('glow-xs',  3);
+mkGlow('glow-sm',  6);
+mkGlow('glow-md', 12);
+mkGlow('glow-lg', 22);
+
+/* sun clip — upper half (y < 0) */
+defs.append('clipPath').attr('id', 'sun-clip')
+  .append('rect').attr('x', -2000).attr('y', -2000).attr('width', 4000).attr('height', 2000);
+
+/* sun radial gradient — warm sunrise */
+const sunGrad = defs.append('radialGradient').attr('id', 'sun-grad')
+  .attr('cx', '50%').attr('cy', '100%').attr('r', '100%');
+sunGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#FFF8EC').attr('stop-opacity', 1);
+sunGrad.append('stop').attr('offset', '18%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.85);
+sunGrad.append('stop').attr('offset', '42%').attr('stop-color', '#C084FC').attr('stop-opacity', 0.45);
+sunGrad.append('stop').attr('offset', '70%').attr('stop-color', '#4338CA').attr('stop-opacity', 0.18);
+sunGrad.append('stop').attr('offset','100%').attr('stop-color', '#06091C').attr('stop-opacity', 0);
+
+/* horizon glow gradient */
+const hzGrad = defs.append('linearGradient').attr('id', 'hz-grad')
+  .attr('x1', '0%').attr('y1', '0%').attr('x2', '100%').attr('y2', '0%');
+hzGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
+hzGrad.append('stop').attr('offset', '30%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.35);
+hzGrad.append('stop').attr('offset', '50%').attr('stop-color', '#FFF8EC').attr('stop-opacity', 0.7);
+hzGrad.append('stop').attr('offset', '70%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.35);
+hzGrad.append('stop').attr('offset','100%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
+
+/* per-cat: orb gradient & edge gradient */
+CATS.forEach(c => {
+  // node orb (soft glow disc)
+  const og = defs.append('radialGradient').attr('id', `og-${c.id}`)
+    .attr('cx', '50%').attr('cy', '50%').attr('r', '50%');
+  og.append('stop').attr('offset',  '0%').attr('stop-color', c.color).attr('stop-opacity', 0.62);
+  og.append('stop').attr('offset', '50%').attr('stop-color', c.color).attr('stop-opacity', 0.18);
+  og.append('stop').attr('offset','100%').attr('stop-color', c.color).attr('stop-opacity', 0);
+
+  // node core bright spot
+  const cg = defs.append('radialGradient').attr('id', `cg-${c.id}`)
+    .attr('cx', '42%').attr('cy', '38%').attr('r', '55%');
+  cg.append('stop').attr('offset',  '0%').attr('stop-color', '#ffffff').attr('stop-opacity', 0.75);
+  cg.append('stop').attr('offset', '60%').attr('stop-color', c.color ).attr('stop-opacity', 0.2);
+  cg.append('stop').attr('offset','100%').attr('stop-color', c.color ).attr('stop-opacity', 0);
+
+  // edge gradient
+  const eg = defs.append('linearGradient').attr('id', `eg-${c.id}`)
+    .attr('gradientUnits', 'userSpaceOnUse')
+    .attr('x1', 0).attr('y1', 0).attr('x2', c.x).attr('y2', c.y);
+  eg.append('stop').attr('offset',  '0%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.22);
+  eg.append('stop').attr('offset','100%').attr('stop-color', c.color  ).attr('stop-opacity', 0.45);
 });
 
-/* active nav */
-(function() {
-  var sections = document.querySelectorAll('main section[id]');
-  var links = document.querySelectorAll('.sb-nav a');
-  function sync() {
-    var y = window.scrollY + 120, cur = '';
-    sections.forEach(function(s) { if (y >= s.offsetTop) cur = s.id; });
-    links.forEach(function(a) {
-      var href = a.getAttribute('href').replace('#','');
-      a.classList.toggle('active', href === cur || (href === 'background' && cur === 'hero'));
-    });
-  }
-  window.addEventListener('scroll', sync, { passive: true });
-  sync();
+/* background gradient */
+const bgGrad = defs.append('radialGradient').attr('id', 'bg-grad')
+  .attr('cx', '50%').attr('cy', '52%').attr('r', '58%');
+bgGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#120D2E');
+bgGrad.append('stop').attr('offset','100%').attr('stop-color', '#06091C');
+
+// ══════════════════════════════════════════════════════
+//  ZOOM + SCENE
+// ══════════════════════════════════════════════════════
+const scene = svg.append('g');
+const zoomB = d3.zoom().scaleExtent([0.15, 8])
+  .on('zoom', e => scene.attr('transform', e.transform));
+svg.call(zoomB);
+svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2));
+svg.on('click', () => { if (STATE === 'expanded') collapse(); });
+
+// ══════════════════════════════════════════════════════
+//  BACKGROUND
+// ══════════════════════════════════════════════════════
+const bgLayer = scene.append('g').attr('pointer-events', 'none');
+
+bgLayer.append('rect')
+  .attr('x', -9999).attr('y', -9999).attr('width', 19998).attr('height', 19998)
+  .attr('fill', 'url(#bg-grad)');
+
+// two-scale dot grid for visual depth
+[{ s: 28, r: 0.65, o: 0.09 }, { s: 84, r: 1.4, o: 0.055 }].forEach(({ s, r, o }, li) => {
+  const pid = `dp${li}`;
+  const p = defs.append('pattern').attr('id', pid)
+    .attr('width', s).attr('height', s).attr('patternUnits', 'userSpaceOnUse');
+  p.append('circle').attr('cx', 1).attr('cy', 1).attr('r', r)
+    .attr('fill', `rgba(255,255,255,${o})`);
+  bgLayer.append('rect')
+    .attr('x', -9999).attr('y', -9999).attr('width', 19998).attr('height', 19998)
+    .attr('fill', `url(#${pid})`);
+});
+
+// warm ambient wash behind horizon
+const warmGrad = defs.append('radialGradient').attr('id', 'warm-wash')
+  .attr('cx', '50%').attr('cy', '100%').attr('r', '70%');
+warmGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#78350F').attr('stop-opacity', 0.28);
+warmGrad.append('stop').attr('offset','100%').attr('stop-color', '#78350F').attr('stop-opacity', 0);
+bgLayer.append('ellipse').attr('rx', 700).attr('ry', 320)
+  .attr('fill', 'url(#warm-wash)');
+
+// ══════════════════════════════════════════════════════
+//  OVERVIEW EDGES (sun center → primary nodes)
+// ══════════════════════════════════════════════════════
+const ovEdgeLayer = scene.append('g').attr('pointer-events', 'none');
+const ovEdgeSel = {};
+CATS.forEach(c => {
+  // bloom
+  ovEdgeLayer.append('line')
+    .attr('x1', 0).attr('y1', -SUN_R * 0.1).attr('x2', c.x).attr('y2', c.y)
+    .attr('stroke', c.color).attr('stroke-width', 5).attr('stroke-opacity', 0.05)
+    .attr('filter', 'url(#glow-sm)');
+  // crisp
+  ovEdgeSel[c.id] = ovEdgeLayer.append('line')
+    .attr('x1', 0).attr('y1', -SUN_R * 0.1).attr('x2', c.x).attr('y2', c.y)
+    .attr('stroke', `url(#eg-${c.id})`).attr('stroke-width', 0.8);
+});
+
+// ══════════════════════════════════════════════════════
+//  RISING SUN
+// ══════════════════════════════════════════════════════
+const sunG = scene.append('g').attr('pointer-events', 'none');
+
+// outermost atmosphere glow
+sunG.append('circle').attr('class', 'sun-pulse')
+  .attr('r', SUN_R * 1.5).attr('fill', 'none')
+  .attr('stroke', '#FBBF24').attr('stroke-width', 1)
+  .attr('stroke-opacity', 0.12).attr('filter', 'url(#glow-lg)')
+  .attr('clip-path', 'url(#sun-clip)');
+
+// corona rings
+[1.25, 1.08].forEach((mult, ri) => {
+  sunG.append('circle')
+    .attr('r', SUN_R * mult)
+    .attr('fill', 'none')
+    .attr('stroke', '#FBBF24')
+    .attr('stroke-width', ri === 0 ? 0.5 : 0.7)
+    .attr('stroke-opacity', ri === 0 ? 0.15 : 0.25)
+    .attr('clip-path', 'url(#sun-clip)');
+});
+
+// main sun body (clipped semicircle)
+sunG.append('circle')
+  .attr('r', SUN_R)
+  .attr('fill', 'url(#sun-grad)')
+  .attr('clip-path', 'url(#sun-clip)')
+  .attr('filter', 'url(#glow-md)');
+
+// pulse animation
+(function pulse() {
+  sunG.select('.sun-pulse')
+    .transition().duration(3200).ease(d3.easeSinInOut)
+      .attr('r', SUN_R * 1.75).attr('stroke-opacity', 0.22)
+    .transition().duration(3200).ease(d3.easeSinInOut)
+      .attr('r', SUN_R * 1.5).attr('stroke-opacity', 0.08)
+    .on('end', pulse);
 })();
+
+// ══════════════════════════════════════════════════════
+//  HORIZON LINE
+// ══════════════════════════════════════════════════════
+const horizG = scene.append('g').attr('pointer-events', 'none');
+
+// bloom layer
+horizG.append('line')
+  .attr('x1', -1800).attr('y1', 0).attr('x2', 1800).attr('y2', 0)
+  .attr('stroke', '#FBBF24').attr('stroke-width', 10).attr('stroke-opacity', 0.06)
+  .attr('filter', 'url(#glow-sm)');
+
+// need a fixed-size gradient rect for the horizon (linearGradient with userSpace)
+const hzG2 = defs.append('linearGradient').attr('id', 'hz2')
+  .attr('gradientUnits', 'userSpaceOnUse')
+  .attr('x1', -800).attr('y1', 0).attr('x2', 800).attr('y2', 0);
+hzG2.append('stop').attr('offset',  '0%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
+hzG2.append('stop').attr('offset', '30%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.3);
+hzG2.append('stop').attr('offset', '50%').attr('stop-color', '#FFF8EC').attr('stop-opacity', 0.65);
+hzG2.append('stop').attr('offset', '70%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.3);
+hzG2.append('stop').attr('offset','100%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
+
+horizG.append('line')
+  .attr('x1', -800).attr('y1', 0).attr('x2', 800).attr('y2', 0)
+  .attr('stroke', 'url(#hz2)').attr('stroke-width', 1);
+
+// ══════════════════════════════════════════════════════
+//  NAME + TAGLINE (below horizon)
+// ══════════════════════════════════════════════════════
+const labelG = scene.append('g').attr('pointer-events', 'none');
+
+labelG.append('text')
+  .attr('y', 40).attr('text-anchor', 'middle')
+  .attr('font-family', "'Playfair Display', Georgia, serif")
+  .attr('font-size', '26px').attr('font-weight', '400').attr('fill', 'rgba(255,248,235,0.88)')
+  .attr('letter-spacing', '0.01em')
+  .text('Motahare Mounesan');
+
+labelG.append('text')
+  .attr('y', 62).attr('text-anchor', 'middle')
+  .attr('font-family', "'JetBrains Mono', monospace")
+  .attr('font-size', '9px').attr('font-weight', '400')
+  .attr('fill', 'rgba(251,191,36,0.38)').attr('letter-spacing', '0.2em')
+  .text('RESEARCHER  &  ENGINEER');
+
+// Bio — two short lines below tagline
+const bioLines = [
+  'I build systems that learn, adapt, and decide',
+  'where computation is scarce and intelligence must travel light.',
+];
+bioLines.forEach((line, i) => {
+  labelG.append('text')
+    .attr('y', 90 + i * 18).attr('text-anchor', 'middle')
+    .attr('font-family', 'Inter, sans-serif')
+    .attr('font-size', '11px').attr('font-weight', '300')
+    .attr('fill', 'rgba(255,255,255,0.28)').attr('letter-spacing', '0.01em')
+    .text(line);
+});
+
+// ══════════════════════════════════════════════════════
+//  PRIMARY NODES  (soft orbs, no sharp border)
+// ══════════════════════════════════════════════════════
+const primLayer = scene.append('g');
+const primSel   = {};
+
+CATS.forEach(c => {
+  const g = primLayer.append('g')
+    .attr('transform', `translate(${c.x},${c.y})`)
+    .attr('cursor', 'pointer');
+  primSel[c.id] = g;
+
+  // large outer soft bloom
+  g.append('circle').attr('class', 'bloom')
+    .attr('r', NODE_R * 1.9).attr('fill', `url(#og-${c.id})`)
+    .attr('filter', 'url(#glow-sm)').attr('pointer-events', 'none');
+
+  // inner bright orb
+  g.append('circle').attr('class', 'core')
+    .attr('r', NODE_R * 0.72).attr('fill', `url(#cg-${c.id})`)
+    .attr('pointer-events', 'none');
+
+  // hit target (invisible, defines click area)
+  g.append('circle').attr('r', NODE_R * 1.4)
+    .attr('fill', 'transparent').attr('stroke', 'none');
+
+  // icon, centered
+  g.append('text')
+    .attr('y', 0).attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+    .attr('font-size', '20px').attr('pointer-events', 'none').text(c.icon);
+
+  // label below orb
+  g.append('text')
+    .attr('y', NODE_R + 20).attr('text-anchor', 'middle')
+    .attr('font-family', 'Inter, sans-serif')
+    .attr('font-size', '10.5px').attr('font-weight', '500').attr('letter-spacing', '0.1em')
+    .attr('fill', 'rgba(255,255,255,0.55)').attr('text-transform', 'uppercase')
+    .attr('pointer-events', 'none')
+    .text(c.label.toUpperCase());
+
+  // hover
+  g.on('mouseenter', function () {
+    if (STATE === 'expanded' && ACTIVE !== c.id) return;
+    d3.select(this).select('.bloom').transition().duration(220)
+      .attr('r', NODE_R * 2.3);
+    d3.select(this).select('.core').transition().duration(220)
+      .attr('r', NODE_R * 0.86);
+  }).on('mouseleave', function () {
+    d3.select(this).select('.bloom').transition().duration(220)
+      .attr('r', NODE_R * 1.9);
+    d3.select(this).select('.core').transition().duration(220)
+      .attr('r', NODE_R * 0.72);
+  }).on('click', function (e) {
+    e.stopPropagation();
+    if (STATE === 'overview') expand(c);
+    else if (STATE === 'expanded' && ACTIVE === c.id) collapse();
+  });
+});
+
+// ══════════════════════════════════════════════════════
+//  SUB-NODES  (floating pill cards)
+// ══════════════════════════════════════════════════════
+const subEdgeLayer = scene.append('g').attr('opacity', 0).attr('pointer-events', 'none');
+const subNodeLayer = scene.append('g').attr('opacity', 0).attr('pointer-events', 'none');
+
+// Pre-compute sub-node positions with collision avoidance
+function subPositions(cat) {
+  const n = cat.items.length;
+  if (n === 0) return [];
+  const spread = n <= 1 ? 0 : Math.PI * (n === 2 ? 0.52 : n === 3 ? 0.7 : n === 4 ? 0.88 : 1.08);
+  const nodes = cat.items.map((_, i) => {
+    const sa = n <= 1 ? cat.angle : cat.angle - spread/2 + (spread / (n-1)) * i;
+    return { x: cat.x + Math.cos(sa) * SUB_OR, y: cat.y + Math.sin(sa) * SUB_OR };
+  });
+  if (n <= 1) return nodes;
+  // collision radius wider for gist items (research text blocks are wider)
+  const cr = cat.items.some(it => it.gist) ? 90 : 68;
+  const sim = d3.forceSimulation(nodes)
+    .force('radial',  d3.forceRadial(SUB_OR, cat.x, cat.y).strength(0.22))
+    .force('collide', d3.forceCollide(cr).strength(1))
+    .stop();
+  for (let t = 0; t < 400; t++) sim.tick();
+  return nodes;
+}
+
+CATS.forEach(c => {
+  const positions = subPositions(c);
+  c.subs = [];
+
+  c.items.forEach((item, i) => {
+    const { x: sx, y: sy } = positions[i];
+
+    // edge bloom
+    subEdgeLayer.append('line')
+      .attr('x1', c.x).attr('y1', c.y).attr('x2', sx).attr('y2', sy)
+      .attr('stroke', c.color).attr('stroke-width', 4).attr('stroke-opacity', 0.04)
+      .attr('filter', 'url(#glow-xs)');
+    // crisp edge
+    const edge = subEdgeLayer.append('line')
+      .attr('x1', c.x).attr('y1', c.y).attr('x2', sx).attr('y2', sy)
+      .attr('stroke', c.color).attr('stroke-width', 0.65).attr('stroke-opacity', 0.35)
+      .attr('opacity', 0);
+
+    // floating text group — no background rectangle
+    const g = subNodeLayer.append('g')
+      .attr('transform', `translate(${sx},${sy})`)
+      .attr('opacity', 0)
+      .attr('cursor', item.href ? 'pointer' : 'default');
+
+    if (item.logo) {
+      // ── Rich education layout ──────────────────────────
+      // invisible hit area (taller for richer content)
+      g.append('rect')
+        .attr('x', -90).attr('y', -62).attr('width', 180).attr('height', 110)
+        .attr('fill', 'transparent').attr('stroke', 'none');
+
+      // university logo circle
+      g.append('circle')
+        .attr('class', 'logo-ring')
+        .attr('cy', -44).attr('r', 22)
+        .attr('fill', item.logo.color).attr('fill-opacity', 0.18)
+        .attr('stroke', item.logo.color).attr('stroke-width', 1.2)
+        .attr('stroke-opacity', 0.5)
+        .attr('pointer-events', 'none');
+
+      // logo initials
+      g.append('text')
+        .attr('y', -44).attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+        .attr('font-family', 'Inter, sans-serif').attr('font-size', '12px')
+        .attr('font-weight', '700').attr('letter-spacing', '0.05em')
+        .attr('fill', item.logo.color).attr('fill-opacity', 0.9)
+        .attr('pointer-events', 'none')
+        .text(item.logo.text);
+
+      // degree type — small, monospace, muted
+      g.append('text').attr('class', 'sub-label')
+        .attr('y', -16).attr('text-anchor', 'middle')
+        .attr('font-family', "'JetBrains Mono', monospace")
+        .attr('font-size', '7.5px').attr('letter-spacing', '0.14em')
+        .attr('fill', c.color).attr('fill-opacity', 0.65)
+        .attr('pointer-events', 'none')
+        .text(item.degree.toUpperCase());
+
+      // field — Playfair Display, the hero line
+      g.append('text').attr('class', 'sub-label')
+        .attr('y', 0).attr('text-anchor', 'middle')
+        .attr('font-family', "'Playfair Display', serif")
+        .attr('font-size', '14px').attr('font-weight', '400').attr('font-style', 'italic')
+        .attr('fill', 'rgba(255,255,255,0.92)')
+        .attr('pointer-events', 'none')
+        .text('Computer Science');
+
+      // institution name
+      g.append('text').attr('class', 'sub-label')
+        .attr('y', 16).attr('text-anchor', 'middle')
+        .attr('font-family', 'Inter, sans-serif').attr('font-size', '9.5px')
+        .attr('font-weight', '300').attr('fill', 'rgba(255,255,255,0.42)')
+        .attr('pointer-events', 'none')
+        .text(item.org + ', CUNY');
+
+      // year badge
+      g.append('text')
+        .attr('y', 34).attr('text-anchor', 'middle')
+        .attr('font-family', "'JetBrains Mono', monospace")
+        .attr('font-size', '8px').attr('letter-spacing', '0.1em')
+        .attr('fill', c.color).attr('fill-opacity', 0.6)
+        .attr('pointer-events', 'none')
+        .text(item.sub);
+
+    } else {
+      // ── Standard floating text layout ─────────────────
+      if (item.gist) {
+        // ── Research area layout ─────────────────────────────
+        // Title (textLength forces it to exactly RW wide)
+        // Separator line (also RW wide)
+        // Gist lines (wrapped to same RW)
+        // → everything forms a tidy rectangle
+
+        g.append('rect')
+          .attr('x', -RW/2 - 12).attr('y', -22).attr('width', RW + 24).attr('height', 82)
+          .attr('fill', 'transparent').attr('stroke', 'none');
+
+        // area name — forced to RW width so spacing matches the line
+        g.append('text').attr('class', 'sub-label')
+          .attr('y', 0).attr('text-anchor', 'middle')
+          .attr('font-family', 'Inter, sans-serif')
+          .attr('font-size', '13px').attr('font-weight', '600')
+          .attr('textLength', RW).attr('lengthAdjust', 'spacing')
+          .attr('fill', 'rgba(255,255,255,0.92)')
+          .attr('pointer-events', 'none').text(item.label);
+
+        // separator line — exactly RW wide (matches title)
+        g.append('line')
+          .attr('x1', -RW/2).attr('y1', 9).attr('x2', RW/2).attr('y2', 9)
+          .attr('stroke', c.color).attr('stroke-width', 0.8).attr('stroke-opacity', 0.45)
+          .attr('pointer-events', 'none');
+
+        // gist — word-wrapped at ~RW chars, light Inter
+        const gistWords = item.gist.split(' ');
+        const gistLines = [];
+        let cur = '';
+        gistWords.forEach(w => {
+          const test = cur ? cur + ' ' + w : w;
+          if (test.length > 30) { gistLines.push(cur); cur = w; }
+          else cur = test;
+        });
+        if (cur) gistLines.push(cur);
+        gistLines.slice(0, 3).forEach((line, li) => {
+          g.append('text').attr('class', 'sub-gist')
+            .attr('y', 23 + li * 13).attr('text-anchor', 'middle')
+            .attr('font-family', 'Inter, sans-serif')
+            .attr('font-size', '9.5px').attr('font-weight', '300')
+            .attr('fill', 'rgba(255,255,255,0.35)')
+            .attr('pointer-events', 'none').text(line);
+        });
+
+      } else {
+        // ── Standard floating text layout ───────────────────
+        g.append('rect')
+          .attr('x', -80).attr('y', -28).attr('width', 160).attr('height', 60)
+          .attr('fill', 'transparent').attr('stroke', 'none');
+
+        g.append('circle')
+          .attr('cy', -20).attr('r', 2.5)
+          .attr('fill', c.color).attr('opacity', 0.7)
+          .attr('pointer-events', 'none');
+
+        const [l1, l2] = midSplit(item.label, 14);
+        if (l2) {
+          g.append('text').attr('class', 'sub-label')
+            .attr('y', -8).attr('text-anchor', 'middle')
+            .attr('font-family', "'Playfair Display', serif")
+            .attr('font-size', '13px').attr('fill', 'rgba(255,255,255,0.88)')
+            .attr('pointer-events', 'none').text(l1);
+          g.append('text').attr('class', 'sub-label')
+            .attr('y', 8).attr('text-anchor', 'middle')
+            .attr('font-family', "'Playfair Display', serif")
+            .attr('font-size', '13px').attr('fill', 'rgba(255,255,255,0.88)')
+            .attr('pointer-events', 'none').text(l2);
+        } else {
+          g.append('text').attr('class', 'sub-label')
+            .attr('y', 0).attr('text-anchor', 'middle')
+            .attr('font-family', "'Playfair Display', serif")
+            .attr('font-size', '13px').attr('fill', 'rgba(255,255,255,0.88)')
+            .attr('pointer-events', 'none').text(l1);
+        }
+        if (item.sub) {
+          g.append('text')
+            .attr('y', l2 ? 24 : 16).attr('text-anchor', 'middle')
+            .attr('font-family', "'JetBrains Mono', monospace")
+            .attr('font-size', '8px').attr('letter-spacing', '0.12em')
+            .attr('fill', c.color).attr('opacity', 0.65)
+            .attr('pointer-events', 'none').text(item.sub);
+        }
+      }
+    }
+
+    // hover
+    g.on('mouseenter', function () {
+      d3.select(this).selectAll('.sub-label').transition().duration(140)
+        .attr('fill', 'rgba(255,255,255,1)');
+      d3.select(this).selectAll('.sub-gist').transition().duration(140)
+        .attr('fill', 'rgba(255,255,255,0.6)');
+      d3.select(this).select('.logo-ring').transition().duration(140)
+        .attr('fill-opacity', 0.28).attr('stroke-opacity', 0.85);
+      showCard(item, c);
+    }).on('mouseleave', function () {
+      d3.select(this).selectAll('.sub-label').transition().duration(140)
+        .attr('fill', 'rgba(255,255,255,0.92)');
+      d3.select(this).selectAll('.sub-gist').transition().duration(140)
+        .attr('fill', 'rgba(255,255,255,0.38)');
+      d3.select(this).select('.logo-ring').transition().duration(140)
+        .attr('fill-opacity', 0.18).attr('stroke-opacity', 0.5);
+      hideCard();
+    }).on('click', function (e) {
+      e.stopPropagation();
+      if (item.href) window.open(item.href, '_blank', 'noopener');
+    });
+
+    c.subs.push({ g, edge });
+  });
+});
+
+// ══════════════════════════════════════════════════════
+//  INFO CARD
+// ══════════════════════════════════════════════════════
+const cardEl = document.getElementById('info-card');
+function showCard(item, cat) {
+  const ey = document.getElementById('ic-cat');
+  ey.textContent = cat.label; ey.style.color = cat.color;
+  document.getElementById('ic-tt').textContent = item.label;
+  document.getElementById('ic-dt').textContent = item.logo
+    ? `${item.org}, CUNY  ·  ${item.sub}`
+    : (item.detail || '') + (item.sub ? '  ·  ' + item.sub : '');
+  const lk = document.getElementById('ic-lk');
+  lk.style.display = item.href ? 'inline-flex' : 'none';
+  lk.style.color = cat.color;
+  lk.style.borderColor = cat.color + '30';
+  if (item.href) lk.href = item.href;
+  cardEl.classList.add('show');
+}
+function hideCard() { cardEl.classList.remove('show'); }
+
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+let STATE  = 'overview';
+let ACTIVE = null;
+
+const backBtn = document.getElementById('back-btn');
+const hintEl  = document.getElementById('hint');
+
+backBtn.addEventListener('click', e => { e.stopPropagation(); collapse(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') collapse(); });
+
+function expand(cat) {
+  STATE = 'expanded'; ACTIVE = cat.id;
+  backBtn.classList.add('visible');
+  hintEl.style.opacity = '0';
+  hideCard();
+
+  subNodeLayer.interrupt().attr('opacity', 1).attr('pointer-events', 'none');
+  subEdgeLayer.interrupt().attr('opacity', 1);
+  subNodeLayer.selectAll('g').interrupt().attr('opacity', 0).attr('pointer-events', 'none');
+  subEdgeLayer.selectAll('line').interrupt().attr('opacity', 0);
+  // enable pointer events only for this category's subs
+  cat.subs.forEach(({ g }) => g.attr('pointer-events', 'all'));
+
+  CATS.forEach(d => {
+    const dim = d.id !== cat.id;
+    primSel[d.id].transition().duration(400).attr('opacity', dim ? 0.08 : 1);
+    ovEdgeSel[d.id].transition().duration(400).attr('opacity', dim ? 0.02 : 0.9);
+  });
+  sunG.transition().duration(400).attr('opacity', 0.25);
+  horizG.transition().duration(400).attr('opacity', 0.15);
+  labelG.transition().duration(400).attr('opacity', 0.1);
+
+  cat.subs.forEach(({ g, edge }, i) => {
+    const d = 120 + i * 70;
+    edge.transition().delay(d).duration(360).attr('opacity', 1);
+    g.transition().delay(d + 40).duration(380).attr('opacity', 1);
+  });
+
+  const scale = Math.min(W, H) < 560 ? 1.25 : 1.8;
+  svg.transition().duration(700).ease(d3.easeCubicInOut)
+    .call(zoomB.transform,
+      d3.zoomIdentity
+        .translate(W / 2 - cat.x * scale, H / 2 - cat.y * scale)
+        .scale(scale));
+}
+
+function collapse() {
+  if (STATE !== 'expanded') return;
+  STATE = 'overview'; ACTIVE = null;
+  backBtn.classList.remove('visible');
+  hintEl.style.opacity = '1';
+  hideCard();
+
+  CATS.forEach(c => {
+    primSel[c.id].transition().duration(400).attr('opacity', 1);
+    ovEdgeSel[c.id].transition().duration(400).attr('opacity', 1);
+  });
+  sunG.transition().duration(400).attr('opacity', 1);
+  horizG.transition().duration(400).attr('opacity', 1);
+  labelG.transition().duration(400).attr('opacity', 1);
+
+  subNodeLayer.selectAll('g').interrupt().attr('pointer-events', 'none')
+    .transition().duration(220).attr('opacity', 0);
+  subEdgeLayer.selectAll('line').transition().duration(200).attr('opacity', 0);
+  subNodeLayer.transition().delay(240).attr('opacity', 0);
+  subEdgeLayer.transition().delay(220).attr('opacity', 0);
+
+  svg.transition().duration(680).ease(d3.easeCubicInOut)
+    .call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2));
+}
+
+// ══════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════
+function txt(g, t, y, size, weight, fill) {
+  g.append('text').attr('y', y).attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'central')
+    .attr('font-family', 'Inter, sans-serif')
+    .attr('font-size', size + 'px').attr('font-weight', weight)
+    .attr('fill', fill).attr('pointer-events', 'none').text(t);
+}
+function mono(g, t, y, size, fill, op) {
+  g.append('text').attr('y', y).attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'central')
+    .attr('font-family', "'JetBrains Mono', monospace")
+    .attr('font-size', size + 'px').attr('fill', fill).attr('fill-opacity', op)
+    .attr('letter-spacing', '0.06em').attr('pointer-events', 'none').text(t);
+}
+function midSplit(text, max) {
+  if (text.length <= max) return [text, null];
+  const words = text.split(' ');
+  if (words.length < 2) return [text, null];
+  let best = 1, bestDiff = Infinity, run = words[0].length;
+  for (let i = 1; i < words.length - 1; i++) {
+    const d = Math.abs(run - text.length / 2);
+    if (d < bestDiff) { best = i; bestDiff = d; }
+    run += 1 + words[i].length;
+  }
+  return [words.slice(0, best).join(' '), words.slice(best).join(' ')];
+}
+
+window.addEventListener('resize', () => {
+  W = window.innerWidth; H = window.innerHeight;
+  svg.attr('width', W).attr('height', H);
+  if (STATE === 'overview')
+    svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2));
+});
 </script>
 </body>
 </html>
