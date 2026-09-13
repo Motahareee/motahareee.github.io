@@ -47,6 +47,15 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #06091C; }
   opacity: 0; pointer-events: none;
   transition: opacity 0.2s ease;
 }
+@media (max-width: 600px) {
+  #info-card {
+    bottom: 0; right: 0; left: 0; width: 100%;
+    border-radius: 18px 18px 0 0;
+    border-left: none; border-right: none; border-bottom: none;
+  }
+  #back-btn { top: 1rem; left: 1rem; }
+  #hint { font-size: 0.48rem; letter-spacing: 0.1em; bottom: 1.2rem; }
+}
 #info-card.show { opacity: 1; }
 .ic-ey {
   font-family: 'JetBrains Mono', monospace;
@@ -270,11 +279,18 @@ bgGrad.append('stop').attr('offset','100%').attr('stop-color', '#06091C');
 // ══════════════════════════════════════════════════════
 //  ZOOM + SCENE
 // ══════════════════════════════════════════════════════
+function getViewScale() {
+  // Scene content spans roughly ±265px horizontally, -350 to +130 vertically
+  const sx = (W * 0.90) / 530;
+  const sy = (H * 0.88) / 490;
+  return Math.min(sx, sy, 1.1);
+}
+
 const scene = svg.append('g');
-const zoomB = d3.zoom().scaleExtent([0.15, 8])
+const zoomB = d3.zoom().scaleExtent([0.1, 8])
   .on('zoom', e => scene.attr('transform', e.transform));
 svg.call(zoomB);
-svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2));
+svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2).scale(getViewScale()));
 svg.on('click', () => { if (STATE === 'expanded') collapse(); });
 
 // ══════════════════════════════════════════════════════
@@ -764,7 +780,7 @@ function expand(cat) {
     g.transition().delay(d + 40).duration(380).attr('opacity', 1);
   });
 
-  const scale = Math.min(W, H) < 560 ? 1.25 : 1.8;
+  const scale = W < 480 ? 1.0 : W < 768 ? 1.3 : 1.8;
   svg.transition().duration(700).ease(d3.easeCubicInOut)
     .call(zoomB.transform,
       d3.zoomIdentity
@@ -794,7 +810,7 @@ function collapse() {
   subEdgeLayer.transition().delay(220).attr('opacity', 0);
 
   svg.transition().duration(680).ease(d3.easeCubicInOut)
-    .call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2));
+    .call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2).scale(getViewScale()));
 }
 
 // ══════════════════════════════════════════════════════
@@ -831,8 +847,14 @@ window.addEventListener('resize', () => {
   W = window.innerWidth; H = window.innerHeight;
   svg.attr('width', W).attr('height', H);
   if (STATE === 'overview')
-    svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2));
+    svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2).scale(getViewScale()));
 });
+
+// Touch-friendly hint
+if ('ontouchstart' in window) {
+  document.getElementById('hint').innerHTML =
+    'Tap a node &nbsp;·&nbsp; Pinch to zoom &nbsp;·&nbsp; Drag to pan';
+}
 </script>
 </body>
 </html>
