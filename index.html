@@ -127,14 +127,14 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
 }
 #slides-inner iframe { width: 100%; height: 100%; border: none; }
 #slides-close {
-  position: absolute; top: 0.7rem; right: 0.9rem;
-  background: rgba(26,25,20,0.08); border: none;
-  border-radius: 50%; width: 32px; height: 32px;
-  font-size: 1rem; cursor: pointer; color: rgba(26,25,20,0.6);
+  position: absolute; top: 0.8rem; right: 0.9rem;
+  background: rgba(26,25,20,0.1); border: none;
+  border-radius: 50%; width: 40px; height: 40px;
+  font-size: 1.1rem; cursor: pointer; color: rgba(26,25,20,0.7);
   display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s;
+  transition: background 0.15s; z-index: 10;
 }
-#slides-close:hover { background: rgba(26,25,20,0.15); }
+#slides-close:hover { background: rgba(26,25,20,0.2); }
 .news-slides-btn {
   display: inline-flex; align-items: center; gap: 0.25rem;
   font-size: 0.62rem; font-family: 'JetBrains Mono', monospace;
@@ -228,7 +228,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   </div>
   <div class="news-row">
     <span class="news-date">May 2025</span><span class="news-sep">·</span>
-    <span><a href="https://ieeexplore.ieee.org/abstract/document/11073623" target="_blank" rel="noopener">Infer-EDGE: Dynamic DNN Inference Optimization in Just-in-Time Edge-AI Implementations</a> presented at NOMS 2025, Hawaii <a class="news-slides-btn" onclick="openSlides('slides/NOMS.pdf')">▶ slides</a></span>
+    <span><a href="https://ieeexplore.ieee.org/abstract/document/11073623" target="_blank" rel="noopener">Infer-EDGE: Dynamic DNN Inference Optimization in Just-in-Time Edge-AI Implementations</a> presented at NOMS 2025, Hawaii <button class="news-slides-btn" type="button" onclick="openSlides('slides/NOMS.pdf')">▶ slides</button></span>
   </div>
   <div id="news-arrow">↓</div>
 </div>
