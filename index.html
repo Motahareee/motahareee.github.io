@@ -168,7 +168,7 @@ const CATS = [
         dept: 'Department of Computer Science',
         org: 'The Graduate Center', uni: 'City University of New York',
         sub: '2022 – 2025', logo: { text: 'GC', color: '#1B4D8E' },
-        href: 'https://www.gc.cuny.edu'
+        href: 'https://www.gc.cuny.edu', advisor: 'Advisor: Prof. Saptarshi Debroy'
       },
       {
         label: 'Dissertation',
@@ -191,7 +191,7 @@ const CATS = [
   {
     id: 'experience', label: 'Experience', icon: '💼',
     items: [
-      { label: 'Postdoctoral RA',      detail: 'Texas A&M University',         sub: '2025 – Present' },
+      { label: 'Postdoctoral RA',      detail: 'Texas A&M University',         sub: '2025 – Present', advisor: 'Supervisor: Prof. Irfan Khan' },
       { label: 'Research Assistant',   detail: 'The Graduate Center, CUNY',    sub: '2022 – 2025'   },
       { label: 'Research Assistant',   detail: 'NYU Center for Urban Science', sub: '2017 – 2021'   },
     ]
@@ -541,6 +541,12 @@ function showTerminal(cat) {
       meta.className = 'term-item-meta';
       meta.textContent = metaParts.join('  ·  ');
       block.appendChild(meta);
+    }
+    if (item.advisor) {
+      const adv = document.createElement('div');
+      adv.className = 'term-item-meta';
+      adv.textContent = item.advisor;
+      block.appendChild(adv);
     }
 
     // gist paragraph (research)
