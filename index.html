@@ -449,7 +449,7 @@ sunG.append('circle')
 // ══════════════════════════════════════════════════════
 //  HORIZON LINE
 // ══════════════════════════════════════════════════════
-const horizG = scene.append('g').attr('pointer-events', 'none');
+const horizG = scene.append('g').attr('pointer-events', 'none').attr('transform', `translate(0, ${SUN_R * 0.32})`);
 
 // bloom layer
 horizG.append('line')
@@ -471,7 +471,7 @@ horizG.append('line')
 // ══════════════════════════════════════════════════════
 //  NAME + TAGLINE (below horizon)
 // ══════════════════════════════════════════════════════
-const labelG = scene.append('g').attr('pointer-events', 'none').attr('transform', 'translate(0,46)');
+const labelG = scene.append('g').attr('pointer-events', 'none').attr('transform', `translate(0,${SUN_R * 0.32 + 46})`);
 
 const nameLine = labelG.append('text')
   .attr('y', 40).attr('text-anchor', 'middle')
@@ -516,7 +516,7 @@ const totalNavW = CATS.length * PW + (CATS.length - 1) * GAP;
 CATS.forEach((c, i) => {
   const x = -totalNavW / 2 + i * (PW + GAP) + PW / 2;
   const g = navLayer.append('g')
-    .attr('transform', `translate(${x}, 194)`)
+    .attr('transform', `translate(${x}, ${SUN_R * 0.32 + 194})`)
     .attr('cursor', 'pointer');
 
   const pill = g.append('rect')
