@@ -263,6 +263,15 @@ mkGlow('glow-lg', 22);
 defs.append('clipPath').attr('id', 'sun-clip')
   .append('rect').attr('x', -2000).attr('y', -2000).attr('width', 4000).attr('height', 2000);
 
+/* photo clip — circle intersected with upper half */
+defs.append('clipPath').attr('id', 'photo-clip')
+  .append('circle').attr('r', SUN_R).attr('cx', 0).attr('cy', 0)
+  .attr('clip-path', 'url(#sun-clip)');
+
+/* grayscale filter */
+defs.append('filter').attr('id', 'grayscale')
+  .append('feColorMatrix').attr('type', 'saturate').attr('values', '0');
+
 /* sun radial gradient — soft violet */
 const sunGrad = defs.append('radialGradient').attr('id', 'sun-grad')
   .attr('cx', '50%').attr('cy', '100%').attr('r', '100%');
@@ -300,7 +309,7 @@ const scene = svg.append('g');
 const zoomB = d3.zoom().scaleExtent([0.1, 8])
   .on('zoom', e => scene.attr('transform', e.transform));
 svg.call(zoomB);
-svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2).scale(getViewScale()));
+svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H * 0.42).scale(getViewScale()));
 svg.on('click', () => { if (STATE === 'expanded') collapse(); });
 
 // ══════════════════════════════════════════════════════
@@ -349,12 +358,23 @@ sunG.append('circle').attr('class', 'sun-pulse')
     .attr('clip-path', 'url(#sun-clip)');
 });
 
-// main sun body (clipped semicircle)
+// portrait photo in semicircle (grayscale)
+sunG.append('image')
+  .attr('href', 'images/IMG_5254.jpg')
+  .attr('x', -SUN_R).attr('y', -SUN_R)
+  .attr('width', SUN_R * 2).attr('height', SUN_R * 2)
+  .attr('preserveAspectRatio', 'xMidYMid slice')
+  .attr('clip-path', 'url(#photo-clip)')
+  .attr('filter', 'url(#grayscale)')
+  .attr('opacity', 0.82);
+
+// main sun body (clipped semicircle — gradient overlay)
 sunG.append('circle')
   .attr('r', SUN_R)
   .attr('fill', 'url(#sun-grad)')
   .attr('clip-path', 'url(#sun-clip)')
-  .attr('filter', 'url(#glow-md)');
+  .attr('filter', 'url(#glow-md)')
+  .attr('opacity', 0.55);
 
 // pulse animation
 (function pulse() {
@@ -606,7 +626,7 @@ window.addEventListener('resize', () => {
   W = window.innerWidth; H = window.innerHeight;
   svg.attr('width', W).attr('height', H);
   if (STATE === 'overview')
-    svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2).scale(getViewScale()));
+    svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H * 0.42).scale(getViewScale()));
 });
 
 // Touch-friendly hint
