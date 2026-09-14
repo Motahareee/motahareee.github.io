@@ -168,13 +168,11 @@ const CATS = [
         dept: 'Department of Computer Science',
         org: 'The Graduate Center', uni: 'City University of New York',
         sub: '2022 – 2025', logo: { text: 'GC', color: '#1B4D8E' },
-        href: 'https://www.gc.cuny.edu', advisor: 'Advisor: Prof. Saptarshi Debroy'
-      },
-      {
-        label: 'Dissertation',
-        detail: 'Reinforcement Learning Based Resource Management in Edge Systems',
-        sub: '2025',
-        href: 'https://academicworks.cuny.edu/gc_etds/6502/'
+        href: 'https://www.gc.cuny.edu', advisor: 'Advisor: Prof. Saptarshi Debroy',
+        thesis: {
+          title: 'Reinforcement Learning Based Resource Management in Edge Systems',
+          href: 'https://academicworks.cuny.edu/gc_etds/6502/'
+        }
       },
       {
         label: 'M.Phil. in Computer Science',
@@ -541,6 +539,12 @@ function showTerminal(cat) {
       adv.className = 'term-item-meta';
       adv.textContent = item.advisor;
       block.appendChild(adv);
+    }
+    if (item.thesis) {
+      const th = document.createElement('div');
+      th.className = 'term-item-meta';
+      th.innerHTML = `Dissertation: <a href="${item.thesis.href}" target="_blank" rel="noopener" style="color:inherit;opacity:0.7;text-decoration:underline;text-underline-offset:2px">${item.thesis.title}</a>`;
+      block.appendChild(th);
     }
 
     // gist paragraph (research)
