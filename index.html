@@ -117,6 +117,41 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   #back-btn { top: 1rem; left: 1rem; }
   #hint { font-size: 0.48rem; letter-spacing: 0.1em; bottom: 1.2rem; }
 }
+
+/* news feed */
+#news-panel {
+  position: fixed; top: 74%; left: 50%; transform: translateX(-50%);
+  z-index: 20; width: 90%; max-width: 540px;
+  display: flex; flex-direction: column; gap: 0.42rem;
+  transition: opacity 0.35s;
+  pointer-events: none;
+}
+#news-panel.hidden { opacity: 0; }
+.news-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(26,25,20,0.22); margin-bottom: 0.1rem;
+  text-align: center;
+}
+.news-row {
+  display: flex; align-items: baseline; gap: 0.55rem;
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 300;
+  color: rgba(26,25,20,0.5); line-height: 1.4;
+}
+.news-date {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
+  color: rgba(109,40,217,0.55); flex-shrink: 0; min-width: 58px;
+}
+.news-sep { color: rgba(26,25,20,0.18); flex-shrink: 0; }
+.news-row a {
+  color: inherit; pointer-events: all;
+  text-decoration: underline; text-underline-offset: 2px;
+  text-decoration-color: rgba(26,25,20,0.2);
+}
+.news-row a:hover { color: rgba(26,25,20,0.8); }
+@media (max-width: 600px) {
+  #news-panel { top: 72%; font-size: 0.65rem; }
+}
 </style>
 </head>
 <body>
@@ -130,6 +165,26 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   Overview
 </button>
 <div id="hint">Click a section &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Drag to pan</div>
+
+<div id="news-panel">
+  <div class="news-header">Recent Updates</div>
+  <div class="news-row">
+    <span class="news-date">Aug 2026</span><span class="news-sep">·</span>
+    <span>Paper accepted at <a href="https://acm-ieee-sec.org/2025/" target="_blank" rel="noopener">IEEE/ACM SEC Edge Intelligence Workshop</a></span>
+  </div>
+  <div class="news-row">
+    <span class="news-date">Jun 2026</span><span class="news-sep">·</span>
+    <span>Celebrated Ph.D. graduation at The Graduate Center, CUNY</span>
+  </div>
+  <div class="news-row">
+    <span class="news-date">Nov 2025</span><span class="news-sep">·</span>
+    <span>Work presented at the <a href="https://cnsm-conf.org/2025/" target="_blank" rel="noopener">21st International Conference on Network and Service Management (CNSM 2025)</a></span>
+  </div>
+  <div class="news-row">
+    <span class="news-date">2025</span><span class="news-sep">·</span>
+    <span>Joined Texas A&amp;M University as Postdoctoral Research Associate</span>
+  </div>
+</div>
 <div id="terminal">
   <div class="term-titlebar">
     <div class="term-dots">
@@ -268,10 +323,9 @@ mkGlow('glow-lg', 22);
 defs.append('clipPath').attr('id', 'sun-clip')
   .append('rect').attr('x', -2000).attr('y', -2000).attr('width', 4000).attr('height', 2000);
 
-/* photo clip — circle intersected with upper half */
+/* photo clip — full circle (slightly past horizon so chin shows) */
 defs.append('clipPath').attr('id', 'photo-clip')
-  .append('circle').attr('r', SUN_R).attr('cx', 0).attr('cy', 0)
-  .attr('clip-path', 'url(#sun-clip)');
+  .append('circle').attr('r', SUN_R).attr('cx', 0).attr('cy', 0);
 
 /* grayscale filter */
 defs.append('filter').attr('id', 'grayscale')
@@ -610,8 +664,9 @@ function hideTerminal() { termEl.classList.remove('open'); }
 let STATE  = 'overview';
 let ACTIVE = null;
 
-const backBtn = document.getElementById('back-btn');
-const hintEl  = document.getElementById('hint');
+const backBtn   = document.getElementById('back-btn');
+const hintEl    = document.getElementById('hint');
+const newsPanel = document.getElementById('news-panel');
 
 backBtn.addEventListener('click', e => { e.stopPropagation(); collapse(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') collapse(); });
@@ -620,6 +675,7 @@ function expand(cat) {
   STATE = 'expanded'; ACTIVE = cat.id;
   backBtn.classList.add('visible');
   hintEl.style.opacity = '0';
+  newsPanel.classList.add('hidden');
   scene.transition().duration(350).attr('opacity', 0.45);
   showTerminal(cat);
 }
@@ -629,6 +685,7 @@ function collapse() {
   STATE = 'overview'; ACTIVE = null;
   backBtn.classList.remove('visible');
   hintEl.style.opacity = '1';
+  newsPanel.classList.remove('hidden');
   scene.transition().duration(350).attr('opacity', 1);
   hideTerminal();
 }
