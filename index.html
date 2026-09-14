@@ -713,9 +713,23 @@ function showTerminal(cat) {
     // merged emails list
     if (item.emails) {
       item.emails.forEach(e => {
+        const realEmail = e.href.replace('mailto:', '');
         const meta = document.createElement('div');
         meta.className = 'term-item-meta';
+        meta.style.display = 'flex'; meta.style.alignItems = 'center'; meta.style.gap = '0.5rem';
         meta.innerHTML = `<a href="${e.href}" style="color:inherit;opacity:0.7;text-decoration:underline;text-underline-offset:2px">${e.detail}</a>  <span style="opacity:0.4">${e.sub}</span>`;
+        const copyBtn = document.createElement('button');
+        copyBtn.textContent = 'copy';
+        copyBtn.style.cssText = 'font-family:JetBrains Mono,monospace;font-size:0.55rem;background:none;border:1px solid rgba(26,25,20,0.15);border-radius:3px;padding:0.1rem 0.35rem;cursor:pointer;color:rgba(26,25,20,0.4);transition:all 0.15s;';
+        copyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(realEmail).then(() => {
+            copyBtn.textContent = 'copied!';
+            copyBtn.style.color = 'rgba(4,120,87,0.8)';
+            copyBtn.style.borderColor = 'rgba(4,120,87,0.3)';
+            setTimeout(() => { copyBtn.textContent = 'copy'; copyBtn.style.color = 'rgba(26,25,20,0.4)'; copyBtn.style.borderColor = 'rgba(26,25,20,0.15)'; }, 2000);
+          });
+        });
+        meta.appendChild(copyBtn);
         block.appendChild(meta);
       });
     }
