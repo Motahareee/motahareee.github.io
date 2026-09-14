@@ -225,8 +225,10 @@ const CATS = [
   {
     id: 'contact', label: 'Contact', icon: '✉️',
     items: [
-      { label: 'Email',            detail: 'motahare@tamu.edu',        sub: 'TAMU',       href: 'mailto:motahare@tamu.edu' },
-      { label: 'Email',            detail: 'motaharemounesan@gmail.com', sub: 'Gmail',     href: 'mailto:motaharemounesan@gmail.com' },
+      { label: 'Email', emails: [
+          { detail: 'motahare@tamu.edu',          sub: 'TAMU',  href: 'mailto:motahare@tamu.edu' },
+          { detail: 'motaharemounesan@gmail.com',  sub: 'Gmail', href: 'mailto:motaharemounesan@gmail.com' },
+        ] },
       { label: 'Google Scholar',   detail: 'Publications & citations', sub: '',           href: 'https://scholar.google.com/citations?user=c5teoEQAAAAJ' },
       { label: 'GitHub',           detail: 'Open-source repositories', sub: 'Motahareee', href: 'https://github.com/Motahareee' },
       { label: 'LinkedIn',         detail: 'Professional profile',     sub: '',           href: 'https://linkedin.com/in/motahare-mounesan' },
@@ -363,7 +365,7 @@ sunG.append('circle').attr('class', 'sun-pulse')
 
 // portrait photo in semicircle (grayscale)
 sunG.append('image')
-  .attr('href', 'images/IMG_5254.jpg')
+  .attr('href', 'ICON.gif')
   .attr('x', -SUN_R).attr('y', -SUN_R)
   .attr('width', SUN_R * 2).attr('height', SUN_R * 2)
   .attr('preserveAspectRatio', 'xMidYMid slice')
@@ -538,6 +540,16 @@ function showTerminal(cat) {
     }
     head.appendChild(title);
     block.appendChild(head);
+
+    // merged emails list
+    if (item.emails) {
+      item.emails.forEach(e => {
+        const meta = document.createElement('div');
+        meta.className = 'term-item-meta';
+        meta.innerHTML = `<a href="${e.href}" style="color:inherit;opacity:0.7;text-decoration:underline;text-underline-offset:2px">${e.detail}</a>  <span style="opacity:0.4">${e.sub}</span>`;
+        block.appendChild(meta);
+      });
+    }
 
     // meta line (org/detail + year)
     const metaParts = [];
