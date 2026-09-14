@@ -16,19 +16,8 @@
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
-#hero { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+#hero { position: relative; width: 100%; height: 65vh; min-height: 380px; overflow: hidden; }
 #graph { display: block; width: 100%; height: 100%; cursor: default; }
-#scroll-hint {
-  position: absolute; bottom: 1.4rem; left: 50%; transform: translateX(-50%);
-  font-family: 'JetBrains Mono', monospace; font-size: 0.5rem;
-  letter-spacing: 0.18em; color: rgba(26,25,20,0.25);
-  pointer-events: none; white-space: nowrap;
-  animation: hintBounce 2.5s ease-in-out infinite;
-}
-@keyframes hintBounce {
-  0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
-  50% { opacity: 1; transform: translateX(-50%) translateY(5px); }
-}
 #news-panel {
   max-width: 540px; width: 90%; margin: 0 auto;
   display: flex; flex-direction: column; gap: 0.55rem;
@@ -271,7 +260,6 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
     Overview
   </button>
   <div id="hint">Click a section to explore</div>
-  <div id="scroll-hint">↓ recent updates</div>
 </section>
 
 <div id="news-panel">
@@ -442,7 +430,8 @@ const SUN_R = 172;
 // ══════════════════════════════════════════════════════
 //  SVG + DEFS
 // ══════════════════════════════════════════════════════
-let W = window.innerWidth, H = window.innerHeight;
+const heroEl = document.getElementById('hero');
+let W = window.innerWidth, H = heroEl.clientHeight;
 const svg  = d3.select('#graph').attr('width', W).attr('height', H);
 const defs = svg.append('defs');
 
@@ -505,12 +494,12 @@ function isMobile() { return W < 600; }
 function getViewScale() {
   const mobile = isMobile();
   const sx = (W * (mobile ? 0.96 : 0.88)) / 440;
-  const sy = (H * (mobile ? 0.68 : 0.84)) / 348;
+  const sy = (H * 0.88) / 370;
   return Math.min(sx, sy, 1.4);
 }
 
 function getVCenter() {
-  return isMobile() ? H * 0.37 : H * 0.42;
+  return H * 0.48;
 }
 
 const scene = svg.append('g');
@@ -883,7 +872,7 @@ function collapse() {
 }
 
 window.addEventListener('resize', () => {
-  W = window.innerWidth; H = window.innerHeight;
+  W = window.innerWidth; H = heroEl.clientHeight;
   svg.attr('width', W).attr('height', H);
   if (STATE === 'overview')
     svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, getVCenter()).scale(getViewScale()));
