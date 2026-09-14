@@ -164,7 +164,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   </svg>
   Overview
 </button>
-<div id="hint">Click a section &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Drag to pan</div>
+<div id="hint">Click a section to explore</div>
 
 <div id="news-panel">
   <div class="news-header">Recent Updates</div>
@@ -370,6 +370,12 @@ const zoomB = d3.zoom().scaleExtent([0.1, 8])
   .on('zoom', e => scene.attr('transform', e.transform));
 svg.call(zoomB);
 svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H * 0.42).scale(getViewScale()));
+// disable user zoom/pan interaction — keep only programmatic transforms
+svg.on('wheel.zoom', null)
+   .on('mousedown.zoom', null)
+   .on('touchstart.zoom', null)
+   .on('touchmove.zoom', null)
+   .on('dblclick.zoom', null);
 svg.on('click', () => { if (STATE === 'expanded') collapse(); });
 
 // ══════════════════════════════════════════════════════
@@ -714,8 +720,7 @@ window.addEventListener('resize', () => {
 
 // Touch-friendly hint
 if ('ontouchstart' in window) {
-  document.getElementById('hint').innerHTML =
-    'Tap a section &nbsp;·&nbsp; Pinch to zoom &nbsp;·&nbsp; Drag to pan';
+  document.getElementById('hint').innerHTML = 'Tap a section to explore';
 }
 </script>
 </body>
