@@ -8,16 +8,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100%; overflow: hidden; background: #06091C; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
 #graph { display: block; width: 100%; height: 100%; cursor: default; }
 
 #back-btn {
   position: fixed; top: 1.8rem; left: 1.8rem; z-index: 40;
   display: flex; align-items: center; gap: 0.45rem;
   padding: 0.48rem 1.1rem; border-radius: 100px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.5);
+  background: rgba(26,25,20,0.04);
+  border: 1px solid rgba(26,25,20,0.12);
+  color: rgba(26,25,20,0.5);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
   cursor: pointer; backdrop-filter: blur(20px);
@@ -25,13 +25,13 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #06091C; }
   opacity: 0; pointer-events: none;
 }
 #back-btn.visible { opacity: 1; pointer-events: all; }
-#back-btn:hover   { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
+#back-btn:hover   { background: rgba(26,25,20,0.07); color: rgba(26,25,20,0.9); }
 
 #hint {
   position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
-  color: rgba(255,255,255,0.12); pointer-events: none;
+  color: rgba(26,25,20,0.22); pointer-events: none;
   transition: opacity 0.5s; white-space: nowrap;
 }
 
@@ -39,10 +39,10 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #06091C; }
 #info-card {
   position: fixed; bottom: 1.8rem; right: 1.8rem; z-index: 40;
   width: 300px; padding: 1.5rem 1.6rem; border-radius: 20px;
-  background: rgba(6,9,28,0.88);
-  border: 1px solid rgba(255,255,255,0.07);
-  box-shadow: 0 40px 100px rgba(0,0,0,0.6),
-              inset 0 1px 0 rgba(255,255,255,0.06);
+  background: rgba(255,255,253,0.96);
+  border: 1px solid rgba(26,25,20,0.08);
+  box-shadow: 0 8px 40px rgba(26,25,20,0.1),
+              0 1px 0 rgba(26,25,20,0.05);
   backdrop-filter: blur(32px);
   opacity: 0; pointer-events: none;
   transition: opacity 0.2s ease;
@@ -65,22 +65,22 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #06091C; }
 .ic-tt {
   font-family: 'Playfair Display', serif;
   font-size: 1.05rem; line-height: 1.5;
-  color: rgba(255,255,255,0.9); margin-bottom: 0.4rem;
+  color: #1A1914; margin-bottom: 0.4rem;
 }
 .ic-dt {
   font-family: 'Inter', sans-serif;
   font-size: 0.73rem; line-height: 1.7;
-  color: rgba(255,255,255,0.33);
+  color: rgba(26,25,20,0.48);
 }
 .ic-lk {
   display: inline-flex; align-items: center; gap: 0.35rem;
   margin-top: 1rem; padding: 0.38rem 0.9rem; border-radius: 100px;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(26,25,20,0.14);
   font-family: 'Inter', sans-serif; font-size: 0.68rem; font-weight: 500;
   letter-spacing: 0.04em; text-decoration: none;
   transition: background 0.2s, border-color 0.2s;
 }
-.ic-lk:hover { background: rgba(255,255,255,0.07); }
+.ic-lk:hover { background: rgba(26,25,20,0.05); }
 </style>
 </head>
 <body>
@@ -108,10 +108,10 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #06091C; }
 //  PALETTE
 // ══════════════════════════════════════════════════════
 const PAL = {
-  education:  '#A78BFA',
-  experience: '#6EE7B7',
-  research:   '#93C5FD',
-  contact:    '#FCD34D',
+  education:  '#6D28D9',
+  experience: '#047857',
+  research:   '#1D4ED8',
+  contact:    '#92400E',
 };
 
 // ══════════════════════════════════════════════════════
@@ -235,7 +235,7 @@ sunGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#FFF8EC').attr(
 sunGrad.append('stop').attr('offset', '18%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.85);
 sunGrad.append('stop').attr('offset', '42%').attr('stop-color', '#C084FC').attr('stop-opacity', 0.45);
 sunGrad.append('stop').attr('offset', '70%').attr('stop-color', '#4338CA').attr('stop-opacity', 0.18);
-sunGrad.append('stop').attr('offset','100%').attr('stop-color', '#06091C').attr('stop-opacity', 0);
+sunGrad.append('stop').attr('offset','100%').attr('stop-color', '#F8F7F3').attr('stop-opacity', 0);
 
 /* horizon glow gradient */
 const hzGrad = defs.append('linearGradient').attr('id', 'hz-grad')
@@ -258,7 +258,7 @@ CATS.forEach(c => {
   // node core bright spot
   const cg = defs.append('radialGradient').attr('id', `cg-${c.id}`)
     .attr('cx', '42%').attr('cy', '38%').attr('r', '55%');
-  cg.append('stop').attr('offset',  '0%').attr('stop-color', '#ffffff').attr('stop-opacity', 0.75);
+  cg.append('stop').attr('offset',  '0%').attr('stop-color', '#ffffff').attr('stop-opacity', 0.6);
   cg.append('stop').attr('offset', '60%').attr('stop-color', c.color ).attr('stop-opacity', 0.2);
   cg.append('stop').attr('offset','100%').attr('stop-color', c.color ).attr('stop-opacity', 0);
 
@@ -266,15 +266,15 @@ CATS.forEach(c => {
   const eg = defs.append('linearGradient').attr('id', `eg-${c.id}`)
     .attr('gradientUnits', 'userSpaceOnUse')
     .attr('x1', 0).attr('y1', 0).attr('x2', c.x).attr('y2', c.y);
-  eg.append('stop').attr('offset',  '0%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.22);
-  eg.append('stop').attr('offset','100%').attr('stop-color', c.color  ).attr('stop-opacity', 0.45);
+  eg.append('stop').attr('offset',  '0%').attr('stop-color', '#D4A017').attr('stop-opacity', 0.3);
+  eg.append('stop').attr('offset','100%').attr('stop-color', c.color  ).attr('stop-opacity', 0.55);
 });
 
 /* background gradient */
 const bgGrad = defs.append('radialGradient').attr('id', 'bg-grad')
   .attr('cx', '50%').attr('cy', '52%').attr('r', '58%');
-bgGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#120D2E');
-bgGrad.append('stop').attr('offset','100%').attr('stop-color', '#06091C');
+bgGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#F0EFE9');
+bgGrad.append('stop').attr('offset','100%').attr('stop-color', '#F8F7F3');
 
 // ══════════════════════════════════════════════════════
 //  ZOOM + SCENE
@@ -303,12 +303,12 @@ bgLayer.append('rect')
   .attr('fill', 'url(#bg-grad)');
 
 // two-scale dot grid for visual depth
-[{ s: 28, r: 0.65, o: 0.09 }, { s: 84, r: 1.4, o: 0.055 }].forEach(({ s, r, o }, li) => {
+[{ s: 28, r: 0.65, o: 0.07 }, { s: 84, r: 1.4, o: 0.04 }].forEach(({ s, r, o }, li) => {
   const pid = `dp${li}`;
   const p = defs.append('pattern').attr('id', pid)
     .attr('width', s).attr('height', s).attr('patternUnits', 'userSpaceOnUse');
   p.append('circle').attr('cx', 1).attr('cy', 1).attr('r', r)
-    .attr('fill', `rgba(255,255,255,${o})`);
+    .attr('fill', `rgba(26,25,20,${o})`);
   bgLayer.append('rect')
     .attr('x', -9999).attr('y', -9999).attr('width', 19998).attr('height', 19998)
     .attr('fill', `url(#${pid})`);
@@ -317,8 +317,8 @@ bgLayer.append('rect')
 // warm ambient wash behind horizon
 const warmGrad = defs.append('radialGradient').attr('id', 'warm-wash')
   .attr('cx', '50%').attr('cy', '100%').attr('r', '70%');
-warmGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#78350F').attr('stop-opacity', 0.28);
-warmGrad.append('stop').attr('offset','100%').attr('stop-color', '#78350F').attr('stop-opacity', 0);
+warmGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#FDE68A').attr('stop-opacity', 0.35);
+warmGrad.append('stop').attr('offset','100%').attr('stop-color', '#FDE68A').attr('stop-opacity', 0);
 bgLayer.append('ellipse').attr('rx', 700).attr('ry', 320)
   .attr('fill', 'url(#warm-wash)');
 
@@ -331,7 +331,7 @@ CATS.forEach(c => {
   // bloom
   ovEdgeLayer.append('line')
     .attr('x1', 0).attr('y1', -SUN_R * 0.1).attr('x2', c.x).attr('y2', c.y)
-    .attr('stroke', c.color).attr('stroke-width', 5).attr('stroke-opacity', 0.05)
+    .attr('stroke', c.color).attr('stroke-width', 5).attr('stroke-opacity', 0.08)
     .attr('filter', 'url(#glow-sm)');
   // crisp
   ovEdgeSel[c.id] = ovEdgeLayer.append('line')
@@ -387,7 +387,7 @@ const horizG = scene.append('g').attr('pointer-events', 'none');
 // bloom layer
 horizG.append('line')
   .attr('x1', -1800).attr('y1', 0).attr('x2', 1800).attr('y2', 0)
-  .attr('stroke', '#FBBF24').attr('stroke-width', 10).attr('stroke-opacity', 0.06)
+  .attr('stroke', '#FBBF24').attr('stroke-width', 10).attr('stroke-opacity', 0.08)
   .attr('filter', 'url(#glow-sm)');
 
 // need a fixed-size gradient rect for the horizon (linearGradient with userSpace)
@@ -395,9 +395,9 @@ const hzG2 = defs.append('linearGradient').attr('id', 'hz2')
   .attr('gradientUnits', 'userSpaceOnUse')
   .attr('x1', -800).attr('y1', 0).attr('x2', 800).attr('y2', 0);
 hzG2.append('stop').attr('offset',  '0%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
-hzG2.append('stop').attr('offset', '30%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.3);
-hzG2.append('stop').attr('offset', '50%').attr('stop-color', '#FFF8EC').attr('stop-opacity', 0.65);
-hzG2.append('stop').attr('offset', '70%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.3);
+hzG2.append('stop').attr('offset', '30%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.25);
+hzG2.append('stop').attr('offset', '50%').attr('stop-color', '#FFF8EC').attr('stop-opacity', 0.5);
+hzG2.append('stop').attr('offset', '70%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.25);
 hzG2.append('stop').attr('offset','100%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
 
 horizG.append('line')
@@ -412,7 +412,7 @@ const labelG = scene.append('g').attr('pointer-events', 'none');
 labelG.append('text')
   .attr('y', 40).attr('text-anchor', 'middle')
   .attr('font-family', "'Playfair Display', Georgia, serif")
-  .attr('font-size', '26px').attr('font-weight', '400').attr('fill', 'rgba(255,248,235,0.88)')
+  .attr('font-size', '26px').attr('font-weight', '400').attr('fill', 'rgba(26,25,20,0.88)')
   .attr('letter-spacing', '0.01em')
   .text('Motahare Mounesan');
 
@@ -420,7 +420,7 @@ labelG.append('text')
   .attr('y', 62).attr('text-anchor', 'middle')
   .attr('font-family', "'JetBrains Mono', monospace")
   .attr('font-size', '9px').attr('font-weight', '400')
-  .attr('fill', 'rgba(251,191,36,0.38)').attr('letter-spacing', '0.2em')
+  .attr('fill', 'rgba(146,64,14,0.6)').attr('letter-spacing', '0.2em')
   .text('RESEARCHER  &  ENGINEER');
 
 // Bio — two short lines below tagline
@@ -433,7 +433,7 @@ bioLines.forEach((line, i) => {
     .attr('y', 90 + i * 18).attr('text-anchor', 'middle')
     .attr('font-family', 'Inter, sans-serif')
     .attr('font-size', '11px').attr('font-weight', '300')
-    .attr('fill', 'rgba(255,255,255,0.28)').attr('letter-spacing', '0.01em')
+    .attr('fill', 'rgba(26,25,20,0.45)').attr('letter-spacing', '0.01em')
     .text(line);
 });
 
@@ -473,7 +473,7 @@ CATS.forEach(c => {
     .attr('y', NODE_R + 20).attr('text-anchor', 'middle')
     .attr('font-family', 'Inter, sans-serif')
     .attr('font-size', '10.5px').attr('font-weight', '500').attr('letter-spacing', '0.1em')
-    .attr('fill', 'rgba(255,255,255,0.55)').attr('text-transform', 'uppercase')
+    .attr('fill', 'rgba(26,25,20,0.55)').attr('text-transform', 'uppercase')
     .attr('pointer-events', 'none')
     .text(c.label.toUpperCase());
 
@@ -532,12 +532,12 @@ CATS.forEach(c => {
     // edge bloom
     subEdgeLayer.append('line')
       .attr('x1', c.x).attr('y1', c.y).attr('x2', sx).attr('y2', sy)
-      .attr('stroke', c.color).attr('stroke-width', 4).attr('stroke-opacity', 0.04)
+      .attr('stroke', c.color).attr('stroke-width', 4).attr('stroke-opacity', 0.07)
       .attr('filter', 'url(#glow-xs)');
     // crisp edge
     const edge = subEdgeLayer.append('line')
       .attr('x1', c.x).attr('y1', c.y).attr('x2', sx).attr('y2', sy)
-      .attr('stroke', c.color).attr('stroke-width', 0.65).attr('stroke-opacity', 0.35)
+      .attr('stroke', c.color).attr('stroke-width', 0.65).attr('stroke-opacity', 0.45)
       .attr('opacity', 0);
 
     // floating text group — no background rectangle
@@ -585,7 +585,7 @@ CATS.forEach(c => {
         .attr('y', 0).attr('text-anchor', 'middle')
         .attr('font-family', "'Playfair Display', serif")
         .attr('font-size', '14px').attr('font-weight', '400').attr('font-style', 'italic')
-        .attr('fill', 'rgba(255,255,255,0.92)')
+        .attr('fill', 'rgba(26,25,20,0.88)')
         .attr('pointer-events', 'none')
         .text('Computer Science');
 
@@ -593,7 +593,7 @@ CATS.forEach(c => {
       g.append('text').attr('class', 'sub-label')
         .attr('y', 16).attr('text-anchor', 'middle')
         .attr('font-family', 'Inter, sans-serif').attr('font-size', '9.5px')
-        .attr('font-weight', '300').attr('fill', 'rgba(255,255,255,0.42)')
+        .attr('font-weight', '300').attr('fill', 'rgba(26,25,20,0.42)')
         .attr('pointer-events', 'none')
         .text(item.org + ', CUNY');
 
@@ -625,7 +625,7 @@ CATS.forEach(c => {
           .attr('font-family', 'Inter, sans-serif')
           .attr('font-size', '13px').attr('font-weight', '600')
           .attr('textLength', RW).attr('lengthAdjust', 'spacing')
-          .attr('fill', 'rgba(255,255,255,0.92)')
+          .attr('fill', 'rgba(26,25,20,0.88)')
           .attr('pointer-events', 'none').text(item.label);
 
         // separator line — exactly RW wide (matches title)
@@ -649,7 +649,7 @@ CATS.forEach(c => {
             .attr('y', 23 + li * 13).attr('text-anchor', 'middle')
             .attr('font-family', 'Inter, sans-serif')
             .attr('font-size', '9.5px').attr('font-weight', '300')
-            .attr('fill', 'rgba(255,255,255,0.35)')
+            .attr('fill', 'rgba(26,25,20,0.42)')
             .attr('pointer-events', 'none').text(line);
         });
 
@@ -669,18 +669,18 @@ CATS.forEach(c => {
           g.append('text').attr('class', 'sub-label')
             .attr('y', -8).attr('text-anchor', 'middle')
             .attr('font-family', "'Playfair Display', serif")
-            .attr('font-size', '13px').attr('fill', 'rgba(255,255,255,0.88)')
+            .attr('font-size', '13px').attr('fill', 'rgba(26,25,20,0.85)')
             .attr('pointer-events', 'none').text(l1);
           g.append('text').attr('class', 'sub-label')
             .attr('y', 8).attr('text-anchor', 'middle')
             .attr('font-family', "'Playfair Display', serif")
-            .attr('font-size', '13px').attr('fill', 'rgba(255,255,255,0.88)')
+            .attr('font-size', '13px').attr('fill', 'rgba(26,25,20,0.85)')
             .attr('pointer-events', 'none').text(l2);
         } else {
           g.append('text').attr('class', 'sub-label')
             .attr('y', 0).attr('text-anchor', 'middle')
             .attr('font-family', "'Playfair Display', serif")
-            .attr('font-size', '13px').attr('fill', 'rgba(255,255,255,0.88)')
+            .attr('font-size', '13px').attr('fill', 'rgba(26,25,20,0.85)')
             .attr('pointer-events', 'none').text(l1);
         }
         if (item.sub) {
@@ -697,17 +697,17 @@ CATS.forEach(c => {
     // hover
     g.on('mouseenter', function () {
       d3.select(this).selectAll('.sub-label').transition().duration(140)
-        .attr('fill', 'rgba(255,255,255,1)');
+        .attr('fill', 'rgba(26,25,20,1)');
       d3.select(this).selectAll('.sub-gist').transition().duration(140)
-        .attr('fill', 'rgba(255,255,255,0.6)');
+        .attr('fill', 'rgba(26,25,20,0.6)');
       d3.select(this).select('.logo-ring').transition().duration(140)
         .attr('fill-opacity', 0.28).attr('stroke-opacity', 0.85);
       showCard(item, c);
     }).on('mouseleave', function () {
       d3.select(this).selectAll('.sub-label').transition().duration(140)
-        .attr('fill', 'rgba(255,255,255,0.92)');
+        .attr('fill', 'rgba(26,25,20,0.88)');
       d3.select(this).selectAll('.sub-gist').transition().duration(140)
-        .attr('fill', 'rgba(255,255,255,0.38)');
+        .attr('fill', 'rgba(26,25,20,0.38)');
       d3.select(this).select('.logo-ring').transition().duration(140)
         .attr('fill-opacity', 0.18).attr('stroke-opacity', 0.5);
       hideCard();
