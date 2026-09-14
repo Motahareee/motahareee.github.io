@@ -393,12 +393,17 @@ horizG.append('line')
 // ══════════════════════════════════════════════════════
 const labelG = scene.append('g').attr('pointer-events', 'none');
 
-labelG.append('text')
+const nameLine = labelG.append('text')
   .attr('y', 40).attr('text-anchor', 'middle')
   .attr('font-family', "'Playfair Display', Georgia, serif")
   .attr('font-size', '26px').attr('font-weight', '400').attr('fill', 'rgba(26,25,20,0.88)')
-  .attr('letter-spacing', '0.01em')
-  .text('Motahare Mounesan');
+  .attr('letter-spacing', '0.01em');
+nameLine.append('tspan').text('Motahare Mounesan');
+nameLine.append('tspan')
+  .attr('font-size', '13px').attr('font-family', 'Inter, sans-serif')
+  .attr('font-weight', '400').attr('fill', 'rgba(26,25,20,0.35)')
+  .attr('dx', '8').attr('dy', '-2')
+  .text('Ph.D.');
 
 labelG.append('text')
   .attr('y', 62).attr('text-anchor', 'middle')
