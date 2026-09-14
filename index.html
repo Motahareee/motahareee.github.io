@@ -124,7 +124,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
   </svg>
   Overview
 </button>
-<div id="hint">Select a node to explore &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Drag to pan</div>
+<div id="hint">Click a section &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Drag to pan</div>
 <div id="terminal">
   <div class="term-titlebar">
     <div class="term-dots">
@@ -220,24 +220,7 @@ CATS.forEach(c => { c.color = PAL[c.id]; });
 // ══════════════════════════════════════════════════════
 //  GEOMETRY
 // ══════════════════════════════════════════════════════
-const SUN_R  = 120;
-const NODE_R = 40;
-const SUB_OR = 175;
-const RW     = 162;   // fixed block width for research nodes (title + line + gist)
-
-// Asymmetric layout: each node has its own angle and orbit radius
-// Left edges shorter, right edges longer — feels organic, not mechanical
-const LAYOUT = [
-  { angle: -155, orbit: 200 },   // Education   — short left arm
-  { angle: -112, orbit: 268 },   // Experience  — medium left
-  { angle:  -60, orbit: 310 },   // Research    — long right (biggest node)
-  { angle:  -22, orbit: 230 },   // Contact     — medium-short right
-];
-CATS.forEach((c, i) => {
-  c.angle = LAYOUT[i].angle * Math.PI / 180;
-  c.x = Math.cos(c.angle) * LAYOUT[i].orbit;
-  c.y = Math.sin(c.angle) * LAYOUT[i].orbit;
-});
+const SUN_R = 120;
 
 // ══════════════════════════════════════════════════════
 //  SVG + DEFS
@@ -283,29 +266,6 @@ hzGrad.append('stop').attr('offset', '50%').attr('stop-color', '#FFF8EC').attr('
 hzGrad.append('stop').attr('offset', '70%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.35);
 hzGrad.append('stop').attr('offset','100%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
 
-/* per-cat: orb gradient & edge gradient */
-CATS.forEach(c => {
-  // node orb (soft glow disc)
-  const og = defs.append('radialGradient').attr('id', `og-${c.id}`)
-    .attr('cx', '50%').attr('cy', '50%').attr('r', '50%');
-  og.append('stop').attr('offset',  '0%').attr('stop-color', c.color).attr('stop-opacity', 0.62);
-  og.append('stop').attr('offset', '50%').attr('stop-color', c.color).attr('stop-opacity', 0.18);
-  og.append('stop').attr('offset','100%').attr('stop-color', c.color).attr('stop-opacity', 0);
-
-  // node core bright spot
-  const cg = defs.append('radialGradient').attr('id', `cg-${c.id}`)
-    .attr('cx', '42%').attr('cy', '38%').attr('r', '55%');
-  cg.append('stop').attr('offset',  '0%').attr('stop-color', '#ffffff').attr('stop-opacity', 0.6);
-  cg.append('stop').attr('offset', '60%').attr('stop-color', c.color ).attr('stop-opacity', 0.2);
-  cg.append('stop').attr('offset','100%').attr('stop-color', c.color ).attr('stop-opacity', 0);
-
-  // edge gradient
-  const eg = defs.append('linearGradient').attr('id', `eg-${c.id}`)
-    .attr('gradientUnits', 'userSpaceOnUse')
-    .attr('x1', 0).attr('y1', 0).attr('x2', c.x).attr('y2', c.y);
-  eg.append('stop').attr('offset',  '0%').attr('stop-color', '#D4A017').attr('stop-opacity', 0.3);
-  eg.append('stop').attr('offset','100%').attr('stop-color', c.color  ).attr('stop-opacity', 0.55);
-});
 
 /* background gradient */
 const bgGrad = defs.append('radialGradient').attr('id', 'bg-grad')
@@ -317,10 +277,10 @@ bgGrad.append('stop').attr('offset','100%').attr('stop-color', '#F8F7F3');
 //  ZOOM + SCENE
 // ══════════════════════════════════════════════════════
 function getViewScale() {
-  // Scene content spans roughly ±265px horizontally, -350 to +130 vertically
-  const sx = (W * 0.90) / 530;
-  const sy = (H * 0.88) / 490;
-  return Math.min(sx, sy, 1.1);
+  // Content: sun ≈ 150px above horizon, nav pills ≈ 165px below, ±210px wide
+  const sx = (W * 0.88) / 440;
+  const sy = (H * 0.84) / 320;
+  return Math.min(sx, sy, 1.4);
 }
 
 const scene = svg.append('g');
@@ -359,22 +319,6 @@ warmGrad.append('stop').attr('offset','100%').attr('stop-color', '#FDE68A').attr
 bgLayer.append('ellipse').attr('rx', 700).attr('ry', 320)
   .attr('fill', 'url(#warm-wash)');
 
-// ══════════════════════════════════════════════════════
-//  OVERVIEW EDGES (sun center → primary nodes)
-// ══════════════════════════════════════════════════════
-const ovEdgeLayer = scene.append('g').attr('pointer-events', 'none');
-const ovEdgeSel = {};
-CATS.forEach(c => {
-  // bloom
-  ovEdgeLayer.append('line')
-    .attr('x1', 0).attr('y1', -SUN_R * 0.1).attr('x2', c.x).attr('y2', c.y)
-    .attr('stroke', c.color).attr('stroke-width', 5).attr('stroke-opacity', 0.08)
-    .attr('filter', 'url(#glow-sm)');
-  // crisp
-  ovEdgeSel[c.id] = ovEdgeLayer.append('line')
-    .attr('x1', 0).attr('y1', -SUN_R * 0.1).attr('x2', c.x).attr('y2', c.y)
-    .attr('stroke', `url(#eg-${c.id})`).attr('stroke-width', 0.8);
-});
 
 // ══════════════════════════════════════════════════════
 //  RISING SUN
@@ -475,59 +419,46 @@ bioLines.forEach((line, i) => {
 });
 
 // ══════════════════════════════════════════════════════
-//  PRIMARY NODES  (soft orbs, no sharp border)
+//  NAV PILLS  (below name/bio)
 // ══════════════════════════════════════════════════════
-const primLayer = scene.append('g');
-const primSel   = {};
+const navLayer = scene.append('g');
+const PW = 92, PH = 28, GAP = 10;
+const totalNavW = CATS.length * PW + (CATS.length - 1) * GAP;
 
-CATS.forEach(c => {
-  const g = primLayer.append('g')
-    .attr('transform', `translate(${c.x},${c.y})`)
+CATS.forEach((c, i) => {
+  const x = -totalNavW / 2 + i * (PW + GAP) + PW / 2;
+  const g = navLayer.append('g')
+    .attr('transform', `translate(${x}, 148)`)
     .attr('cursor', 'pointer');
-  primSel[c.id] = g;
 
-  // large outer soft bloom
-  g.append('circle').attr('class', 'bloom')
-    .attr('r', NODE_R * 1.9).attr('fill', `url(#og-${c.id})`)
-    .attr('filter', 'url(#glow-sm)').attr('pointer-events', 'none');
+  const pill = g.append('rect')
+    .attr('x', -PW/2).attr('y', -PH/2).attr('width', PW).attr('height', PH).attr('rx', PH/2)
+    .attr('fill', 'transparent')
+    .attr('stroke', c.color).attr('stroke-width', 1).attr('stroke-opacity', 0.35);
 
-  // inner bright orb
-  g.append('circle').attr('class', 'core')
-    .attr('r', NODE_R * 0.72).attr('fill', `url(#cg-${c.id})`)
-    .attr('pointer-events', 'none');
-
-  // hit target (invisible, defines click area)
-  g.append('circle').attr('r', NODE_R * 1.4)
-    .attr('fill', 'transparent').attr('stroke', 'none');
-
-  // custom CS icon
-  drawIcon(g, c.id, c.color);
-
-  // label below orb
-  g.append('text')
-    .attr('y', NODE_R + 18).attr('text-anchor', 'middle')
-    .attr('font-family', 'Inter, sans-serif')
-    .attr('font-size', '10.5px').attr('font-weight', '500').attr('letter-spacing', '0.1em')
-    .attr('fill', 'rgba(26,25,20,0.55)').attr('text-transform', 'uppercase')
+  const label = g.append('text')
+    .attr('y', 0).attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+    .attr('font-family', 'Inter, sans-serif').attr('font-size', '9px')
+    .attr('font-weight', '500').attr('letter-spacing', '0.1em')
+    .attr('fill', c.color).attr('fill-opacity', 0.6)
     .attr('pointer-events', 'none')
     .text(c.label.toUpperCase());
 
-  // hover
-  g.on('mouseenter', function () {
-    if (STATE === 'expanded' && ACTIVE !== c.id) return;
-    d3.select(this).select('.bloom').transition().duration(220)
-      .attr('r', NODE_R * 2.3);
-    d3.select(this).select('.core').transition().duration(220)
-      .attr('r', NODE_R * 0.86);
-  }).on('mouseleave', function () {
-    d3.select(this).select('.bloom').transition().duration(220)
-      .attr('r', NODE_R * 1.9);
-    d3.select(this).select('.core').transition().duration(220)
-      .attr('r', NODE_R * 0.72);
-  }).on('click', function (e) {
+  g.append('rect')
+    .attr('x', -PW/2).attr('y', -PH/2).attr('width', PW).attr('height', PH).attr('rx', PH/2)
+    .attr('fill', 'transparent');
+
+  g.on('mouseenter', () => {
+    pill.transition().duration(150).attr('stroke-opacity', 0.8)
+      .attr('fill', c.color).attr('fill-opacity', 0.07);
+    label.transition().duration(150).attr('fill-opacity', 1);
+  }).on('mouseleave', () => {
+    pill.transition().duration(150).attr('stroke-opacity', 0.35).attr('fill', 'transparent');
+    label.transition().duration(150).attr('fill-opacity', 0.6);
+  }).on('click', e => {
     e.stopPropagation();
-    if (STATE === 'overview') expand(c);
-    else if (STATE === 'expanded' && ACTIVE === c.id) collapse();
+    if (STATE === 'expanded' && ACTIVE === c.id) collapse();
+    else expand(c);
   });
 });
 
@@ -635,16 +566,7 @@ function expand(cat) {
   STATE = 'expanded'; ACTIVE = cat.id;
   backBtn.classList.add('visible');
   hintEl.style.opacity = '0';
-
-  CATS.forEach(d => {
-    const dim = d.id !== cat.id;
-    primSel[d.id].transition().duration(380).attr('opacity', dim ? 0.12 : 1);
-    ovEdgeSel[d.id].transition().duration(380).attr('opacity', dim ? 0.04 : 0.9);
-  });
-  sunG.transition().duration(380).attr('opacity', 0.35);
-  horizG.transition().duration(380).attr('opacity', 0.25);
-  labelG.transition().duration(380).attr('opacity', 0.18);
-
+  scene.transition().duration(350).attr('opacity', 0.45);
   showTerminal(cat);
 }
 
@@ -653,90 +575,13 @@ function collapse() {
   STATE = 'overview'; ACTIVE = null;
   backBtn.classList.remove('visible');
   hintEl.style.opacity = '1';
-
+  scene.transition().duration(350).attr('opacity', 1);
   hideTerminal();
-
-  CATS.forEach(c => {
-    primSel[c.id].transition().duration(400).attr('opacity', 1);
-    ovEdgeSel[c.id].transition().duration(400).attr('opacity', 1);
-  });
-  sunG.transition().duration(400).attr('opacity', 1);
-  horizG.transition().duration(400).attr('opacity', 1);
-  labelG.transition().duration(400).attr('opacity', 1);
-
-  svg.transition().duration(680).ease(d3.easeCubicInOut)
-    .call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2).scale(getViewScale()));
 }
 
 // ══════════════════════════════════════════════════════
 //  HELPERS
 // ══════════════════════════════════════════════════════
-function drawIcon(parent, id, color) {
-  const g = parent.append('g').attr('pointer-events', 'none');
-  const sw = 1.7;
-  const base = { fill: 'none', stroke: color, 'stroke-width': sw,
-                 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
-  const apply = el => Object.entries(base).forEach(([k, v]) => el.attr(k, v));
-
-  if (id === 'education') {
-    // graduation cap + tassel
-    apply(g.append('polyline').attr('points', '-12,2 0,-8 12,2'));
-    apply(g.append('path').attr('d', 'M-8,2 L-8,9 Q0,14 8,9 L8,2'));
-    g.append('line').attr('x1', -12).attr('y1', 2).attr('x2', 12).attr('y2', 2)
-      .attr('stroke', color).attr('stroke-width', sw).attr('stroke-linecap', 'round');
-    g.append('line').attr('x1', 10).attr('y1', 2).attr('x2', 10).attr('y2', 9)
-      .attr('stroke', color).attr('stroke-width', sw).attr('stroke-linecap', 'round');
-    g.append('circle').attr('cx', 10).attr('cy', 11).attr('r', 2).attr('fill', color);
-
-  } else if (id === 'experience') {
-    // </> terminal brackets
-    apply(g.append('polyline').attr('points', '-5,-9 -12,0 -5,9'));
-    apply(g.append('polyline').attr('points', '5,-9 12,0 5,9'));
-    g.append('line').attr('x1', -2).attr('y1', -10).attr('x2', 2).attr('y2', 10)
-      .attr('stroke', color).attr('stroke-width', sw).attr('stroke-linecap', 'round');
-
-  } else if (id === 'research') {
-    // atom: nucleus + 3 orbits at 0°, 60°, -60°
-    g.append('circle').attr('r', 2.8).attr('fill', color);
-    [0, 60, -60].forEach(deg =>
-      g.append('ellipse').attr('rx', 11).attr('ry', 4)
-        .attr('transform', `rotate(${deg})`)
-        .attr('fill', 'none').attr('stroke', color).attr('stroke-width', sw * 0.85)
-    );
-
-  } else if (id === 'contact') {
-    // envelope with fold
-    apply(g.append('rect').attr('x', -12).attr('y', -8).attr('width', 24).attr('height', 16).attr('rx', 2));
-    apply(g.append('polyline').attr('points', '-12,-8 0,4 12,-8'));
-  }
-}
-
-function txt(g, t, y, size, weight, fill) {
-  g.append('text').attr('y', y).attr('text-anchor', 'middle')
-    .attr('dominant-baseline', 'central')
-    .attr('font-family', 'Inter, sans-serif')
-    .attr('font-size', size + 'px').attr('font-weight', weight)
-    .attr('fill', fill).attr('pointer-events', 'none').text(t);
-}
-function mono(g, t, y, size, fill, op) {
-  g.append('text').attr('y', y).attr('text-anchor', 'middle')
-    .attr('dominant-baseline', 'central')
-    .attr('font-family', "'JetBrains Mono', monospace")
-    .attr('font-size', size + 'px').attr('fill', fill).attr('fill-opacity', op)
-    .attr('letter-spacing', '0.06em').attr('pointer-events', 'none').text(t);
-}
-function midSplit(text, max) {
-  if (text.length <= max) return [text, null];
-  const words = text.split(' ');
-  if (words.length < 2) return [text, null];
-  let best = 1, bestDiff = Infinity, run = words[0].length;
-  for (let i = 1; i < words.length - 1; i++) {
-    const d = Math.abs(run - text.length / 2);
-    if (d < bestDiff) { best = i; bestDiff = d; }
-    run += 1 + words[i].length;
-  }
-  return [words.slice(0, best).join(' '), words.slice(best).join(' ')];
-}
 
 window.addEventListener('resize', () => {
   W = window.innerWidth; H = window.innerHeight;
@@ -748,7 +593,7 @@ window.addEventListener('resize', () => {
 // Touch-friendly hint
 if ('ontouchstart' in window) {
   document.getElementById('hint').innerHTML =
-    'Tap a node &nbsp;·&nbsp; Pinch to zoom &nbsp;·&nbsp; Drag to pan';
+    'Tap a section &nbsp;·&nbsp; Pinch to zoom &nbsp;·&nbsp; Drag to pan';
 }
 </script>
 </body>
