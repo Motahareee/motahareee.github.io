@@ -206,8 +206,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
 }
 #news-panel.hidden { opacity: 0; pointer-events: none; }
 #news-arrow {
-  position: absolute; right: -1.2rem; top: 50%; transform: translateY(-50%);
-  color: rgba(109,40,217,0.4); font-size: 0.75rem;
+  position: fixed; right: calc(5% - 1.4rem);
+  color: rgba(109,40,217,0.45); font-size: 0.9rem;
   pointer-events: none; transition: opacity 0.3s;
 }
 #news-arrow.gone { opacity: 0; }
@@ -276,8 +276,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
     <span class="news-date">May 2025</span><span class="news-sep">·</span>
     <span><a href="https://ieeexplore.ieee.org/abstract/document/11073623" target="_blank" rel="noopener">Infer-EDGE: Dynamic DNN Inference Optimization in Just-in-Time Edge-AI Implementations</a> presented at NOMS 2025, Hawaii <button class="news-slides-btn" type="button" onclick="openSlides('slides/NOMS.pdf')">▶ slides</button></span>
   </div>
-  <div id="news-arrow">↓</div>
 </div>
+<div id="news-arrow">↓</div>
 <div id="gallery-modal">
   <div id="gallery-inner">
     <img id="gallery-img" src="" alt="">
@@ -820,7 +820,9 @@ function positionNews() {
   const pillsBottomScene = SUN_R * 0.32 + 129 + PH / 2;
   const screenY = H * 0.42 + pillsBottomScene * scale + 20;
   newsPanel.style.top = screenY + 'px';
+  const panelH = Math.min(H - screenY - 56, newsPanel.scrollHeight);
   newsPanel.style.maxHeight = (H - screenY - 56) + 'px';
+  newsArrow.style.top = (screenY + panelH / 2) + 'px';
 }
 
 positionNews();
