@@ -153,22 +153,18 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   display: flex; flex-direction: column; gap: 0.42rem;
   transition: opacity 0.35s;
   pointer-events: all;
+  position: relative;
   max-height: 28vh; overflow-y: auto;
   scrollbar-width: thin; scrollbar-color: rgba(26,25,20,0.1) transparent;
   padding-bottom: 3rem;
 }
 #news-panel.hidden { opacity: 0; pointer-events: none; }
-.news-scroll-fade {
-  position: sticky; bottom: 0;
-  display: flex; flex-direction: column; align-items: center;
-  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.97) 60%);
-  padding: 1.4rem 0 0.2rem;
-  color: rgba(109,40,217,0.45);
-  font-size: 0.65rem; letter-spacing: 0.08em;
-  pointer-events: none;
-  transition: opacity 0.3s;
+#news-arrow {
+  position: absolute; right: -1.2rem; top: 50%; transform: translateY(-50%);
+  color: rgba(109,40,217,0.4); font-size: 0.75rem;
+  pointer-events: none; transition: opacity 0.3s;
 }
-.news-scroll-fade.gone { opacity: 0; }
+#news-arrow.gone { opacity: 0; }
 .news-header {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase;
@@ -234,7 +230,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
     <span class="news-date">May 2025</span><span class="news-sep">·</span>
     <span><a href="https://ieeexplore.ieee.org/abstract/document/11073623" target="_blank" rel="noopener">Infer-EDGE: Dynamic DNN Inference Optimization in Just-in-Time Edge-AI Implementations</a> presented at NOMS 2025, Hawaii <a class="news-slides-btn" onclick="openSlides('slides/NOMS.pdf')">▶ slides</a></span>
   </div>
-  <div class="news-scroll-fade" id="news-fade">↓ scroll</div>
+  <div id="news-arrow">↓</div>
 </div>
 <div id="slides-modal">
   <div id="slides-inner">
@@ -732,10 +728,10 @@ let ACTIVE = null;
 const backBtn   = document.getElementById('back-btn');
 const hintEl    = document.getElementById('hint');
 const newsPanel = document.getElementById('news-panel');
-const newsFade  = document.getElementById('news-fade');
+const newsArrow = document.getElementById('news-arrow');
 newsPanel.addEventListener('scroll', () => {
   const atBottom = newsPanel.scrollHeight - newsPanel.scrollTop - newsPanel.clientHeight < 8;
-  newsFade.classList.toggle('gone', atBottom);
+  newsArrow.classList.toggle('gone', atBottom);
 });
 
 backBtn.addEventListener('click', e => { e.stopPropagation(); collapse(); });
