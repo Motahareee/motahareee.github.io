@@ -167,7 +167,7 @@ const CATS = [
         label: 'Ph.D. in Computer Science', degree: 'Doctor of Philosophy',
         dept: 'Department of Computer Science',
         org: 'The Graduate Center', uni: 'City University of New York',
-        sub: '2022 – 2025', logo: { text: 'GC', color: '#1B4D8E' },
+        sub: '2025', logo: { text: 'GC', color: '#1B4D8E' },
         href: 'https://www.gc.cuny.edu', advisor: 'Advisor: Prof. Saptarshi Debroy',
         thesis: {
           title: 'Reinforcement Learning Based Resource Management in Edge Systems',
@@ -182,7 +182,7 @@ const CATS = [
       {
         label: 'B.S. in Computer Science',
         detail: 'University of Tehran',
-        sub: ''
+        sub: '2015'
       },
     ]
   },
@@ -263,23 +263,21 @@ mkGlow('glow-lg', 22);
 defs.append('clipPath').attr('id', 'sun-clip')
   .append('rect').attr('x', -2000).attr('y', -2000).attr('width', 4000).attr('height', 2000);
 
-/* sun radial gradient — warm sunrise */
+/* sun radial gradient — soft violet */
 const sunGrad = defs.append('radialGradient').attr('id', 'sun-grad')
   .attr('cx', '50%').attr('cy', '100%').attr('r', '100%');
-sunGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#FFF8EC').attr('stop-opacity', 1);
-sunGrad.append('stop').attr('offset', '18%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.85);
-sunGrad.append('stop').attr('offset', '42%').attr('stop-color', '#C084FC').attr('stop-opacity', 0.45);
-sunGrad.append('stop').attr('offset', '70%').attr('stop-color', '#4338CA').attr('stop-opacity', 0.18);
+sunGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#FFFFFF').attr('stop-opacity', 1);
+sunGrad.append('stop').attr('offset', '22%').attr('stop-color', '#DDD6FE').attr('stop-opacity', 0.8);
+sunGrad.append('stop').attr('offset', '55%').attr('stop-color', '#A78BFA').attr('stop-opacity', 0.35);
+sunGrad.append('stop').attr('offset', '80%').attr('stop-color', '#6D28D9').attr('stop-opacity', 0.1);
 sunGrad.append('stop').attr('offset','100%').attr('stop-color', '#FFFFFF').attr('stop-opacity', 0);
 
-/* horizon glow gradient */
+/* horizon gradient */
 const hzGrad = defs.append('linearGradient').attr('id', 'hz-grad')
   .attr('x1', '0%').attr('y1', '0%').attr('x2', '100%').attr('y2', '0%');
-hzGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
-hzGrad.append('stop').attr('offset', '30%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.35);
-hzGrad.append('stop').attr('offset', '50%').attr('stop-color', '#FFF8EC').attr('stop-opacity', 0.7);
-hzGrad.append('stop').attr('offset', '70%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.35);
-hzGrad.append('stop').attr('offset','100%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
+hzGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#A78BFA').attr('stop-opacity', 0);
+hzGrad.append('stop').attr('offset', '50%').attr('stop-color', '#A78BFA').attr('stop-opacity', 0.3);
+hzGrad.append('stop').attr('offset','100%').attr('stop-color', '#A78BFA').attr('stop-opacity', 0);
 
 
 /* background gradient */
@@ -326,13 +324,6 @@ bgLayer.append('rect')
     .attr('fill', `url(#${pid})`);
 });
 
-// warm ambient wash behind horizon
-const warmGrad = defs.append('radialGradient').attr('id', 'warm-wash')
-  .attr('cx', '50%').attr('cy', '100%').attr('r', '70%');
-warmGrad.append('stop').attr('offset',  '0%').attr('stop-color', '#FDE68A').attr('stop-opacity', 0.35);
-warmGrad.append('stop').attr('offset','100%').attr('stop-color', '#FDE68A').attr('stop-opacity', 0);
-bgLayer.append('ellipse').attr('rx', 700).attr('ry', 320)
-  .attr('fill', 'url(#warm-wash)');
 
 
 // ══════════════════════════════════════════════════════
@@ -343,8 +334,8 @@ const sunG = scene.append('g').attr('pointer-events', 'none');
 // outermost atmosphere glow
 sunG.append('circle').attr('class', 'sun-pulse')
   .attr('r', SUN_R * 1.5).attr('fill', 'none')
-  .attr('stroke', '#FBBF24').attr('stroke-width', 1)
-  .attr('stroke-opacity', 0.12).attr('filter', 'url(#glow-lg)')
+  .attr('stroke', '#A78BFA').attr('stroke-width', 1)
+  .attr('stroke-opacity', 0.15).attr('filter', 'url(#glow-lg)')
   .attr('clip-path', 'url(#sun-clip)');
 
 // corona rings
@@ -352,9 +343,9 @@ sunG.append('circle').attr('class', 'sun-pulse')
   sunG.append('circle')
     .attr('r', SUN_R * mult)
     .attr('fill', 'none')
-    .attr('stroke', '#FBBF24')
+    .attr('stroke', '#A78BFA')
     .attr('stroke-width', ri === 0 ? 0.5 : 0.7)
-    .attr('stroke-opacity', ri === 0 ? 0.15 : 0.25)
+    .attr('stroke-opacity', ri === 0 ? 0.12 : 0.2)
     .attr('clip-path', 'url(#sun-clip)');
 });
 
@@ -383,18 +374,15 @@ const horizG = scene.append('g').attr('pointer-events', 'none');
 // bloom layer
 horizG.append('line')
   .attr('x1', -1800).attr('y1', 0).attr('x2', 1800).attr('y2', 0)
-  .attr('stroke', '#FBBF24').attr('stroke-width', 10).attr('stroke-opacity', 0.08)
+  .attr('stroke', '#A78BFA').attr('stroke-width', 8).attr('stroke-opacity', 0.06)
   .attr('filter', 'url(#glow-sm)');
 
-// need a fixed-size gradient rect for the horizon (linearGradient with userSpace)
 const hzG2 = defs.append('linearGradient').attr('id', 'hz2')
   .attr('gradientUnits', 'userSpaceOnUse')
   .attr('x1', -800).attr('y1', 0).attr('x2', 800).attr('y2', 0);
-hzG2.append('stop').attr('offset',  '0%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
-hzG2.append('stop').attr('offset', '30%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.25);
-hzG2.append('stop').attr('offset', '50%').attr('stop-color', '#FFF8EC').attr('stop-opacity', 0.5);
-hzG2.append('stop').attr('offset', '70%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0.25);
-hzG2.append('stop').attr('offset','100%').attr('stop-color', '#FBBF24').attr('stop-opacity', 0);
+hzG2.append('stop').attr('offset',  '0%').attr('stop-color', '#A78BFA').attr('stop-opacity', 0);
+hzG2.append('stop').attr('offset', '50%').attr('stop-color', '#A78BFA').attr('stop-opacity', 0.35);
+hzG2.append('stop').attr('offset','100%').attr('stop-color', '#A78BFA').attr('stop-opacity', 0);
 
 horizG.append('line')
   .attr('x1', -800).attr('y1', 0).attr('x2', 800).attr('y2', 0)
@@ -416,7 +404,7 @@ labelG.append('text')
   .attr('y', 62).attr('text-anchor', 'middle')
   .attr('font-family', "'JetBrains Mono', monospace")
   .attr('font-size', '9px').attr('font-weight', '400')
-  .attr('fill', 'rgba(146,64,14,0.6)').attr('letter-spacing', '0.2em')
+  .attr('fill', 'rgba(109,40,217,0.45)').attr('letter-spacing', '0.2em')
   .text('RESEARCHER  &  ENGINEER');
 
 // Bio — two short lines below tagline
