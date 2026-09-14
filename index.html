@@ -35,52 +35,83 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
   transition: opacity 0.5s; white-space: nowrap;
 }
 
-/* info card */
-#info-card {
-  position: fixed; bottom: 1.8rem; right: 1.8rem; z-index: 40;
-  width: 300px; padding: 1.5rem 1.6rem; border-radius: 20px;
-  background: rgba(255,255,253,0.96);
-  border: 1px solid rgba(26,25,20,0.08);
-  box-shadow: 0 8px 40px rgba(26,25,20,0.1),
-              0 1px 0 rgba(26,25,20,0.05);
-  backdrop-filter: blur(32px);
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.2s ease;
+/* terminal panel */
+#terminal {
+  position: fixed; top: 0; right: 0; height: 100%; width: 400px; z-index: 50;
+  background: #0D1117;
+  border-left: 1px solid rgba(255,255,255,0.07);
+  box-shadow: -20px 0 60px rgba(0,0,0,0.18);
+  display: flex; flex-direction: column;
+  font-family: 'JetBrains Mono', monospace;
+  transform: translateX(100%);
+  transition: transform 0.42s cubic-bezier(0.16,1,0.3,1);
+  pointer-events: none;
 }
+#terminal.open { transform: translateX(0); pointer-events: all; }
+.term-titlebar {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.85rem 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+.term-dots { display: flex; gap: 6px; }
+.term-dot { width: 12px; height: 12px; border-radius: 50%; }
+.term-dot.r { background: #FF5F57; } .term-dot.y { background: #FEBC2E; } .term-dot.g { background: #28C840; }
+.term-path {
+  flex: 1; font-size: 0.62rem; color: rgba(255,255,255,0.25);
+  letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.term-path b { color: rgba(255,255,255,0.6); font-weight: 500; }
+#term-close {
+  background: none; border: none; color: rgba(255,255,255,0.2);
+  font-size: 1rem; cursor: pointer; padding: 0; line-height: 1;
+  transition: color 0.15s;
+}
+#term-close:hover { color: rgba(255,255,255,0.6); }
+#term-body {
+  flex: 1; overflow-y: auto; padding: 1.4rem 1.5rem 2rem;
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+.term-cmd {
+  font-size: 0.65rem; color: rgba(255,255,255,0.22);
+  letter-spacing: 0.04em; margin-bottom: 1.6rem;
+}
+.term-cmd span { color: rgba(255,255,255,0.45); }
+.term-item { margin-bottom: 1.5rem; animation: termFadeIn 0.3s ease both; }
+@keyframes termFadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+.term-item-head {
+  display: flex; align-items: baseline; gap: 0.55rem;
+  font-size: 0.8rem; font-weight: 500; margin-bottom: 0.3rem;
+}
+.term-arrow { font-size: 0.65rem; flex-shrink: 0; }
+.term-item-title { color: rgba(255,255,255,0.88); }
+.term-item-title a { color: inherit; text-decoration: none; }
+.term-item-title a:hover { text-decoration: underline; }
+.term-item-meta {
+  font-size: 0.62rem; color: rgba(255,255,255,0.28);
+  padding-left: 1.2rem; margin-bottom: 0.25rem; letter-spacing: 0.02em;
+}
+.term-item-gist {
+  font-size: 0.63rem; line-height: 1.65;
+  color: rgba(255,255,255,0.38); padding-left: 1.2rem;
+  font-family: 'Inter', sans-serif; font-weight: 300;
+}
+.term-divider {
+  border: none; border-top: 1px solid rgba(255,255,255,0.06);
+  margin: 0 0 1.5rem;
+}
+.term-cursor { display: inline-block; animation: blink 1.1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.term-cursor-line { font-size: 0.65rem; color: rgba(255,255,255,0.22); margin-top: 1rem; }
 @media (max-width: 600px) {
-  #info-card {
-    bottom: 0; right: 0; left: 0; width: 100%;
-    border-radius: 18px 18px 0 0;
-    border-left: none; border-right: none; border-bottom: none;
-  }
+  #terminal { width: 100%; height: 62vh; top: auto; bottom: 0; right: 0;
+    border-left: none; border-top: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px 16px 0 0;
+    transform: translateY(100%); }
+  #terminal.open { transform: translateY(0); }
   #back-btn { top: 1rem; left: 1rem; }
   #hint { font-size: 0.48rem; letter-spacing: 0.1em; bottom: 1.2rem; }
 }
-#info-card.show { opacity: 1; }
-.ic-ey {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase;
-  margin-bottom: 0.55rem; opacity: 0.9;
-}
-.ic-tt {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.05rem; line-height: 1.5;
-  color: #1A1914; margin-bottom: 0.4rem;
-}
-.ic-dt {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.73rem; line-height: 1.7;
-  color: rgba(26,25,20,0.48);
-}
-.ic-lk {
-  display: inline-flex; align-items: center; gap: 0.35rem;
-  margin-top: 1rem; padding: 0.38rem 0.9rem; border-radius: 100px;
-  border: 1px solid rgba(26,25,20,0.14);
-  font-family: 'Inter', sans-serif; font-size: 0.68rem; font-weight: 500;
-  letter-spacing: 0.04em; text-decoration: none;
-  transition: background 0.2s, border-color 0.2s;
-}
-.ic-lk:hover { background: rgba(26,25,20,0.05); }
 </style>
 </head>
 <body>
@@ -94,11 +125,17 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
   Overview
 </button>
 <div id="hint">Select a node to explore &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Drag to pan</div>
-<div id="info-card">
-  <div class="ic-ey" id="ic-cat"></div>
-  <div class="ic-tt" id="ic-tt"></div>
-  <div class="ic-dt" id="ic-dt"></div>
-  <a   class="ic-lk" id="ic-lk" href="#" target="_blank" rel="noopener">View ↗</a>
+<div id="terminal">
+  <div class="term-titlebar">
+    <div class="term-dots">
+      <div class="term-dot r"></div>
+      <div class="term-dot y"></div>
+      <div class="term-dot g"></div>
+    </div>
+    <div class="term-path">~/motahare/<b id="term-cat-slug">—</b></div>
+    <button id="term-close" aria-label="Close">✕</button>
+  </div>
+  <div id="term-body"></div>
 </div>
 
 <script>
@@ -497,246 +534,90 @@ CATS.forEach(c => {
 // ══════════════════════════════════════════════════════
 //  SUB-NODES  (floating pill cards)
 // ══════════════════════════════════════════════════════
-const subEdgeLayer = scene.append('g').attr('opacity', 0).attr('pointer-events', 'none');
-const subNodeLayer = scene.append('g').attr('opacity', 0).attr('pointer-events', 'none');
-
-// Pre-compute sub-node positions with collision avoidance
-function subPositions(cat) {
-  const n = cat.items.length;
-  if (n === 0) return [];
-  const spread = n <= 1 ? 0 : Math.PI * (n === 2 ? 0.52 : n === 3 ? 0.7 : n === 4 ? 0.88 : 1.08);
-  const nodes = cat.items.map((_, i) => {
-    const sa = n <= 1 ? cat.angle : cat.angle - spread/2 + (spread / (n-1)) * i;
-    return { x: cat.x + Math.cos(sa) * SUB_OR, y: cat.y + Math.sin(sa) * SUB_OR };
-  });
-  if (n <= 1) return nodes;
-  // collision radius wider for gist items (research text blocks are wider)
-  const cr = cat.items.some(it => it.gist) ? 90 : 68;
-  const sim = d3.forceSimulation(nodes)
-    .force('radial',  d3.forceRadial(SUB_OR, cat.x, cat.y).strength(0.22))
-    .force('collide', d3.forceCollide(cr).strength(1))
-    .stop();
-  for (let t = 0; t < 400; t++) sim.tick();
-  return nodes;
-}
-
-CATS.forEach(c => {
-  const positions = subPositions(c);
-  c.subs = [];
-
-  c.items.forEach((item, i) => {
-    const { x: sx, y: sy } = positions[i];
-
-    // edge bloom
-    subEdgeLayer.append('line')
-      .attr('x1', c.x).attr('y1', c.y).attr('x2', sx).attr('y2', sy)
-      .attr('stroke', c.color).attr('stroke-width', 4).attr('stroke-opacity', 0.07)
-      .attr('filter', 'url(#glow-xs)');
-    // crisp edge
-    const edge = subEdgeLayer.append('line')
-      .attr('x1', c.x).attr('y1', c.y).attr('x2', sx).attr('y2', sy)
-      .attr('stroke', c.color).attr('stroke-width', 0.65).attr('stroke-opacity', 0.45)
-      .attr('opacity', 0);
-
-    // floating text group — no background rectangle
-    const g = subNodeLayer.append('g')
-      .attr('transform', `translate(${sx},${sy})`)
-      .attr('opacity', 0)
-      .attr('cursor', item.href ? 'pointer' : 'default');
-
-    if (item.logo) {
-      // ── Rich education layout ──────────────────────────
-      // invisible hit area (taller for richer content)
-      g.append('rect')
-        .attr('x', -90).attr('y', -62).attr('width', 180).attr('height', 110)
-        .attr('fill', 'transparent').attr('stroke', 'none');
-
-      // university logo circle
-      g.append('circle')
-        .attr('class', 'logo-ring')
-        .attr('cy', -44).attr('r', 22)
-        .attr('fill', item.logo.color).attr('fill-opacity', 0.18)
-        .attr('stroke', item.logo.color).attr('stroke-width', 1.2)
-        .attr('stroke-opacity', 0.5)
-        .attr('pointer-events', 'none');
-
-      // logo initials
-      g.append('text')
-        .attr('y', -44).attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-        .attr('font-family', 'Inter, sans-serif').attr('font-size', '12px')
-        .attr('font-weight', '700').attr('letter-spacing', '0.05em')
-        .attr('fill', item.logo.color).attr('fill-opacity', 0.9)
-        .attr('pointer-events', 'none')
-        .text(item.logo.text);
-
-      // degree type — small, monospace, muted
-      g.append('text').attr('class', 'sub-label')
-        .attr('y', -16).attr('text-anchor', 'middle')
-        .attr('font-family', "'JetBrains Mono', monospace")
-        .attr('font-size', '7.5px').attr('letter-spacing', '0.14em')
-        .attr('fill', c.color).attr('fill-opacity', 0.65)
-        .attr('pointer-events', 'none')
-        .text(item.degree.toUpperCase());
-
-      // field — Playfair Display, the hero line
-      g.append('text').attr('class', 'sub-label')
-        .attr('y', 0).attr('text-anchor', 'middle')
-        .attr('font-family', "'Playfair Display', serif")
-        .attr('font-size', '14px').attr('font-weight', '400').attr('font-style', 'italic')
-        .attr('fill', 'rgba(26,25,20,0.88)')
-        .attr('pointer-events', 'none')
-        .text('Computer Science');
-
-      // institution name
-      g.append('text').attr('class', 'sub-label')
-        .attr('y', 16).attr('text-anchor', 'middle')
-        .attr('font-family', 'Inter, sans-serif').attr('font-size', '9.5px')
-        .attr('font-weight', '300').attr('fill', 'rgba(26,25,20,0.42)')
-        .attr('pointer-events', 'none')
-        .text(item.org + ', CUNY');
-
-      // year badge
-      g.append('text')
-        .attr('y', 34).attr('text-anchor', 'middle')
-        .attr('font-family', "'JetBrains Mono', monospace")
-        .attr('font-size', '8px').attr('letter-spacing', '0.1em')
-        .attr('fill', c.color).attr('fill-opacity', 0.6)
-        .attr('pointer-events', 'none')
-        .text(item.sub);
-
-    } else {
-      // ── Standard floating text layout ─────────────────
-      if (item.gist) {
-        // ── Research area layout ─────────────────────────────
-        // Title (textLength forces it to exactly RW wide)
-        // Separator line (also RW wide)
-        // Gist lines (wrapped to same RW)
-        // → everything forms a tidy rectangle
-
-        g.append('rect')
-          .attr('x', -RW/2 - 12).attr('y', -22).attr('width', RW + 24).attr('height', 82)
-          .attr('fill', 'transparent').attr('stroke', 'none');
-
-        // area name — forced to RW width so spacing matches the line
-        g.append('text').attr('class', 'sub-label')
-          .attr('y', 0).attr('text-anchor', 'middle')
-          .attr('font-family', 'Inter, sans-serif')
-          .attr('font-size', '13px').attr('font-weight', '600')
-          .attr('textLength', RW).attr('lengthAdjust', 'spacing')
-          .attr('fill', 'rgba(26,25,20,0.88)')
-          .attr('pointer-events', 'none').text(item.label);
-
-        // separator line — exactly RW wide (matches title)
-        g.append('line')
-          .attr('x1', -RW/2).attr('y1', 9).attr('x2', RW/2).attr('y2', 9)
-          .attr('stroke', c.color).attr('stroke-width', 0.8).attr('stroke-opacity', 0.45)
-          .attr('pointer-events', 'none');
-
-        // gist — word-wrapped at ~RW chars, light Inter
-        const gistWords = item.gist.split(' ');
-        const gistLines = [];
-        let cur = '';
-        gistWords.forEach(w => {
-          const test = cur ? cur + ' ' + w : w;
-          if (test.length > 30) { gistLines.push(cur); cur = w; }
-          else cur = test;
-        });
-        if (cur) gistLines.push(cur);
-        gistLines.slice(0, 3).forEach((line, li) => {
-          g.append('text').attr('class', 'sub-gist')
-            .attr('y', 23 + li * 13).attr('text-anchor', 'middle')
-            .attr('font-family', 'Inter, sans-serif')
-            .attr('font-size', '9.5px').attr('font-weight', '300')
-            .attr('fill', 'rgba(26,25,20,0.42)')
-            .attr('pointer-events', 'none').text(line);
-        });
-
-      } else {
-        // ── Standard floating text layout ───────────────────
-        g.append('rect')
-          .attr('x', -80).attr('y', -28).attr('width', 160).attr('height', 60)
-          .attr('fill', 'transparent').attr('stroke', 'none');
-
-        g.append('circle')
-          .attr('cy', -20).attr('r', 2.5)
-          .attr('fill', c.color).attr('opacity', 0.7)
-          .attr('pointer-events', 'none');
-
-        const [l1, l2] = midSplit(item.label, 14);
-        if (l2) {
-          g.append('text').attr('class', 'sub-label')
-            .attr('y', -8).attr('text-anchor', 'middle')
-            .attr('font-family', "'Playfair Display', serif")
-            .attr('font-size', '13px').attr('fill', 'rgba(26,25,20,0.85)')
-            .attr('pointer-events', 'none').text(l1);
-          g.append('text').attr('class', 'sub-label')
-            .attr('y', 8).attr('text-anchor', 'middle')
-            .attr('font-family', "'Playfair Display', serif")
-            .attr('font-size', '13px').attr('fill', 'rgba(26,25,20,0.85)')
-            .attr('pointer-events', 'none').text(l2);
-        } else {
-          g.append('text').attr('class', 'sub-label')
-            .attr('y', 0).attr('text-anchor', 'middle')
-            .attr('font-family', "'Playfair Display', serif")
-            .attr('font-size', '13px').attr('fill', 'rgba(26,25,20,0.85)')
-            .attr('pointer-events', 'none').text(l1);
-        }
-        if (item.sub) {
-          g.append('text')
-            .attr('y', l2 ? 24 : 16).attr('text-anchor', 'middle')
-            .attr('font-family', "'JetBrains Mono', monospace")
-            .attr('font-size', '8px').attr('letter-spacing', '0.12em')
-            .attr('fill', c.color).attr('opacity', 0.65)
-            .attr('pointer-events', 'none').text(item.sub);
-        }
-      }
-    }
-
-    // hover
-    g.on('mouseenter', function () {
-      d3.select(this).selectAll('.sub-label').transition().duration(140)
-        .attr('fill', 'rgba(26,25,20,1)');
-      d3.select(this).selectAll('.sub-gist').transition().duration(140)
-        .attr('fill', 'rgba(26,25,20,0.6)');
-      d3.select(this).select('.logo-ring').transition().duration(140)
-        .attr('fill-opacity', 0.28).attr('stroke-opacity', 0.85);
-      showCard(item, c);
-    }).on('mouseleave', function () {
-      d3.select(this).selectAll('.sub-label').transition().duration(140)
-        .attr('fill', 'rgba(26,25,20,0.88)');
-      d3.select(this).selectAll('.sub-gist').transition().duration(140)
-        .attr('fill', 'rgba(26,25,20,0.38)');
-      d3.select(this).select('.logo-ring').transition().duration(140)
-        .attr('fill-opacity', 0.18).attr('stroke-opacity', 0.5);
-      hideCard();
-    }).on('click', function (e) {
-      e.stopPropagation();
-      if (item.href) window.open(item.href, '_blank', 'noopener');
-    });
-
-    c.subs.push({ g, edge });
-  });
+//  TERMINAL PANEL
+// ══════════════════════════════════════════════════════
+const termEl   = document.getElementById('terminal');
+const termBody = document.getElementById('term-body');
+document.getElementById('term-close').addEventListener('click', e => {
+  e.stopPropagation(); collapse();
 });
 
-// ══════════════════════════════════════════════════════
-//  INFO CARD
-// ══════════════════════════════════════════════════════
-const cardEl = document.getElementById('info-card');
-function showCard(item, cat) {
-  const ey = document.getElementById('ic-cat');
-  ey.textContent = cat.label; ey.style.color = cat.color;
-  document.getElementById('ic-tt').textContent = item.label;
-  document.getElementById('ic-dt').textContent = item.logo
-    ? `${item.org}, CUNY  ·  ${item.sub}`
-    : (item.detail || '') + (item.sub ? '  ·  ' + item.sub : '');
-  const lk = document.getElementById('ic-lk');
-  lk.style.display = item.href ? 'inline-flex' : 'none';
-  lk.style.color = cat.color;
-  lk.style.borderColor = cat.color + '30';
-  if (item.href) lk.href = item.href;
-  cardEl.classList.add('show');
+function showTerminal(cat) {
+  document.getElementById('term-cat-slug').textContent = cat.id;
+  termBody.innerHTML = '';
+
+  // shell prompt line
+  const cmd = document.createElement('div');
+  cmd.className = 'term-cmd';
+  cmd.innerHTML = `<span style="color:${cat.color}">❯</span> <span>ls ./${cat.id}/</span>`;
+  termBody.appendChild(cmd);
+
+  cat.items.forEach((item, i) => {
+    const block = document.createElement('div');
+    block.className = 'term-item';
+    block.style.animationDelay = `${i * 70}ms`;
+
+    // header row: arrow + title (linkable if href exists)
+    const head = document.createElement('div');
+    head.className = 'term-item-head';
+    const arrow = document.createElement('span');
+    arrow.className = 'term-arrow';
+    arrow.style.color = cat.color;
+    arrow.textContent = '▸';
+    head.appendChild(arrow);
+    const title = document.createElement('span');
+    title.className = 'term-item-title';
+    if (item.href) {
+      const a = document.createElement('a');
+      a.href = item.href; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = item.label;
+      title.appendChild(a);
+    } else {
+      title.textContent = item.label;
+    }
+    head.appendChild(title);
+    block.appendChild(head);
+
+    // meta line (org/detail + year)
+    const metaParts = [];
+    if (item.org)    metaParts.push(item.org + ', CUNY');
+    if (item.detail) metaParts.push(item.detail);
+    if (item.sub)    metaParts.push(item.sub);
+    if (metaParts.length) {
+      const meta = document.createElement('div');
+      meta.className = 'term-item-meta';
+      meta.textContent = metaParts.join('  ·  ');
+      block.appendChild(meta);
+    }
+
+    // gist paragraph (research)
+    if (item.gist) {
+      const gist = document.createElement('div');
+      gist.className = 'term-item-gist';
+      gist.textContent = item.gist;
+      block.appendChild(gist);
+    }
+
+    termBody.appendChild(block);
+
+    // thin divider between items
+    if (i < cat.items.length - 1) {
+      const hr = document.createElement('hr');
+      hr.className = 'term-divider';
+      termBody.appendChild(hr);
+    }
+  });
+
+  // blinking cursor at the end
+  const cur = document.createElement('div');
+  cur.className = 'term-cursor-line';
+  cur.innerHTML = `<span style="color:${cat.color}">❯</span> <span class="term-cursor">▌</span>`;
+  termBody.appendChild(cur);
+
+  termEl.classList.add('open');
 }
-function hideCard() { cardEl.classList.remove('show'); }
+
+function hideTerminal() { termEl.classList.remove('open'); }
 
 // ══════════════════════════════════════════════════════
 //  STATE
@@ -754,36 +635,17 @@ function expand(cat) {
   STATE = 'expanded'; ACTIVE = cat.id;
   backBtn.classList.add('visible');
   hintEl.style.opacity = '0';
-  hideCard();
-
-  subNodeLayer.interrupt().attr('opacity', 1).attr('pointer-events', 'none');
-  subEdgeLayer.interrupt().attr('opacity', 1);
-  subNodeLayer.selectAll('g').interrupt().attr('opacity', 0).attr('pointer-events', 'none');
-  subEdgeLayer.selectAll('line').interrupt().attr('opacity', 0);
-  // enable pointer events only for this category's subs
-  cat.subs.forEach(({ g }) => g.attr('pointer-events', 'all'));
 
   CATS.forEach(d => {
     const dim = d.id !== cat.id;
-    primSel[d.id].transition().duration(400).attr('opacity', dim ? 0.08 : 1);
-    ovEdgeSel[d.id].transition().duration(400).attr('opacity', dim ? 0.02 : 0.9);
+    primSel[d.id].transition().duration(380).attr('opacity', dim ? 0.12 : 1);
+    ovEdgeSel[d.id].transition().duration(380).attr('opacity', dim ? 0.04 : 0.9);
   });
-  sunG.transition().duration(400).attr('opacity', 0.25);
-  horizG.transition().duration(400).attr('opacity', 0.15);
-  labelG.transition().duration(400).attr('opacity', 0.1);
+  sunG.transition().duration(380).attr('opacity', 0.35);
+  horizG.transition().duration(380).attr('opacity', 0.25);
+  labelG.transition().duration(380).attr('opacity', 0.18);
 
-  cat.subs.forEach(({ g, edge }, i) => {
-    const d = 120 + i * 70;
-    edge.transition().delay(d).duration(360).attr('opacity', 1);
-    g.transition().delay(d + 40).duration(380).attr('opacity', 1);
-  });
-
-  const scale = W < 480 ? 1.0 : W < 768 ? 1.3 : 1.8;
-  svg.transition().duration(700).ease(d3.easeCubicInOut)
-    .call(zoomB.transform,
-      d3.zoomIdentity
-        .translate(W / 2 - cat.x * scale, H / 2 - cat.y * scale)
-        .scale(scale));
+  showTerminal(cat);
 }
 
 function collapse() {
@@ -791,7 +653,8 @@ function collapse() {
   STATE = 'overview'; ACTIVE = null;
   backBtn.classList.remove('visible');
   hintEl.style.opacity = '1';
-  hideCard();
+
+  hideTerminal();
 
   CATS.forEach(c => {
     primSel[c.id].transition().duration(400).attr('opacity', 1);
@@ -800,12 +663,6 @@ function collapse() {
   sunG.transition().duration(400).attr('opacity', 1);
   horizG.transition().duration(400).attr('opacity', 1);
   labelG.transition().duration(400).attr('opacity', 1);
-
-  subNodeLayer.selectAll('g').interrupt().attr('pointer-events', 'none')
-    .transition().duration(220).attr('opacity', 0);
-  subEdgeLayer.selectAll('line').transition().duration(200).attr('opacity', 0);
-  subNodeLayer.transition().delay(240).attr('opacity', 0);
-  subEdgeLayer.transition().delay(220).attr('opacity', 0);
 
   svg.transition().duration(680).ease(d3.easeCubicInOut)
     .call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H / 2).scale(getViewScale()));
