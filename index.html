@@ -729,6 +729,7 @@ function showTerminal(cat) {
   if (cat.id === 'research') {
     const scholar = document.createElement('div');
     scholar.className = 'term-item-meta';
+    scholar.style.gridColumn = '1 / -1';
     scholar.style.marginBottom = '1.2rem';
     scholar.innerHTML = `<a href="https://scholar.google.com/citations?user=c5teoEQAAAAJ&hl=en" target="_blank" rel="noopener" style="color:rgba(29,78,216,0.7);text-decoration:underline;text-underline-offset:2px;font-family:'JetBrains Mono',monospace;font-size:0.62rem;letter-spacing:0.04em;">→ Full publication list on Google Scholar</a>`;
     termBody.appendChild(scholar);
