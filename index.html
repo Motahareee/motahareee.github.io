@@ -112,6 +112,52 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   #hint { font-size: 0.48rem; letter-spacing: 0.1em; bottom: 1.2rem; }
 }
 
+/* photo gallery modal */
+#gallery-modal {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+}
+#gallery-modal.open { display: flex; }
+#gallery-inner {
+  position: relative; max-width: 90vw; max-height: 88vh;
+  display: flex; align-items: center; justify-content: center;
+}
+#gallery-img {
+  max-width: 88vw; max-height: 84vh;
+  border-radius: 10px; box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  object-fit: contain;
+}
+#gallery-close {
+  position: fixed; top: 1.2rem; right: 1.2rem;
+  background: rgba(255,255,255,0.15); border: none;
+  border-radius: 50%; width: 42px; height: 42px;
+  font-size: 1.1rem; cursor: pointer; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+#gallery-close:hover { background: rgba(255,255,255,0.25); }
+#gallery-prev, #gallery-next {
+  position: fixed; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,0.12); border: none;
+  border-radius: 50%; width: 42px; height: 42px;
+  font-size: 1.1rem; cursor: pointer; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+#gallery-prev { left: 1rem; } #gallery-next { right: 1rem; }
+#gallery-prev:hover, #gallery-next:hover { background: rgba(255,255,255,0.25); }
+#gallery-prev.hidden, #gallery-next.hidden { display: none; }
+.news-photos-btn {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  font-size: 0.62rem; font-family: 'JetBrains Mono', monospace;
+  color: rgba(109,40,217,0.7); cursor: pointer; pointer-events: all;
+  border: 1px solid rgba(109,40,217,0.25); border-radius: 4px;
+  padding: 0.1rem 0.4rem; margin-left: 0.4rem;
+  background: none; white-space: nowrap; transition: background 0.15s;
+}
+.news-photos-btn:hover { background: rgba(109,40,217,0.06); }
+
 /* slides modal */
 #slides-modal {
   display: none; position: fixed; inset: 0; z-index: 200;
@@ -212,7 +258,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   </div>
   <div class="news-row">
     <span class="news-date">Jun 2026</span><span class="news-sep">·</span>
-    <span>Got hooded at Lincoln Center 🎓 at the CUNY Ph.D. Convocation Ceremony!</span>
+    <span>Got hooded at Lincoln Center 🎓 at the CUNY Ph.D. Convocation Ceremony! <button class="news-photos-btn" type="button" onclick="openGallery('hooding')">📷 photos</button></span>
   </div>
   <div class="news-row">
     <span class="news-date">Oct 2025</span><span class="news-sep">·</span>
@@ -232,6 +278,15 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   </div>
   <div id="news-arrow">↓</div>
 </div>
+<div id="gallery-modal">
+  <div id="gallery-inner">
+    <img id="gallery-img" src="" alt="">
+  </div>
+  <button id="gallery-close">✕</button>
+  <button id="gallery-prev">‹</button>
+  <button id="gallery-next">›</button>
+</div>
+
 <div id="slides-modal">
   <div id="slides-inner">
     <button id="slides-close" aria-label="Close">✕</button>
@@ -782,6 +837,40 @@ window.addEventListener('resize', () => {
 if ('ontouchstart' in window) {
   document.getElementById('hint').innerHTML = 'Tap a section to explore';
 }
+
+// photo gallery
+const GALLERIES = {
+  hooding: ['photos/hooding/74bfc585-a727-45e8-ad4f-5d3f5381d2d5.jpg'],
+};
+const galleryModal = document.getElementById('gallery-modal');
+const galleryImg   = document.getElementById('gallery-img');
+const galleryPrev  = document.getElementById('gallery-prev');
+const galleryNext  = document.getElementById('gallery-next');
+let galleryPhotos = [], galleryIdx = 0;
+
+function openGallery(key) {
+  galleryPhotos = GALLERIES[key] || [];
+  galleryIdx = 0;
+  updateGallery();
+  galleryModal.classList.add('open');
+}
+function updateGallery() {
+  galleryImg.src = galleryPhotos[galleryIdx];
+  galleryPrev.classList.toggle('hidden', galleryIdx === 0);
+  galleryNext.classList.toggle('hidden', galleryIdx === galleryPhotos.length - 1);
+}
+function closeGallery() { galleryModal.classList.remove('open'); galleryImg.src = ''; }
+
+document.getElementById('gallery-close').addEventListener('click', closeGallery);
+galleryModal.addEventListener('click', e => { if (e.target === galleryModal || e.target === document.getElementById('gallery-inner')) closeGallery(); });
+galleryPrev.addEventListener('click', () => { if (galleryIdx > 0) { galleryIdx--; updateGallery(); } });
+galleryNext.addEventListener('click', () => { if (galleryIdx < galleryPhotos.length - 1) { galleryIdx++; updateGallery(); } });
+document.addEventListener('keydown', e => {
+  if (!galleryModal.classList.contains('open')) return;
+  if (e.key === 'Escape') closeGallery();
+  if (e.key === 'ArrowLeft' && galleryIdx > 0) { galleryIdx--; updateGallery(); }
+  if (e.key === 'ArrowRight' && galleryIdx < galleryPhotos.length - 1) { galleryIdx++; updateGallery(); }
+});
 
 // slides modal
 const slidesModal = document.getElementById('slides-modal');
