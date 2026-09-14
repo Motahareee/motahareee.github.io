@@ -27,13 +27,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
 #back-btn.visible { opacity: 1; pointer-events: all; }
 #back-btn:hover   { background: rgba(26,25,20,0.07); color: rgba(26,25,20,0.9); }
 
-#hint {
-  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
-  color: rgba(26,25,20,0.22); pointer-events: none;
-  transition: opacity 0.5s; white-space: nowrap;
-}
+#hint { display: none; }
 
 /* terminal panel */
 #terminal {
@@ -758,6 +752,7 @@ function positionNews() {
   const pillsBottomScene = SUN_R * 0.32 + 129 + PH / 2;
   const screenY = H * 0.42 + pillsBottomScene * scale + 20;
   newsPanel.style.top = screenY + 'px';
+  newsPanel.style.maxHeight = (H - screenY - 32) + 'px';
 }
 
 positionNews();
