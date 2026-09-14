@@ -917,6 +917,7 @@ slidesModal.addEventListener('click', e => { if (e.target === slidesModal) close
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSlides(); });
 
 function openSlides(src) {
+  if (window.innerWidth < 600) { window.open(src, '_blank'); return; }
   slidesFrame.src = src;
   slidesModal.classList.add('open');
 }
