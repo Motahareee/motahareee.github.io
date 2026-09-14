@@ -386,6 +386,11 @@ const CATS = [
         gist: 'Studying how adversarial attacks exploit collaborative inference pipelines and building defenses.',
         sub: ''
       },
+      {
+        label: 'LLM Training & Alignment',
+        gist: 'Exploring methods for improving and adapting large language models through supervised, preference-based, and reinforcement learning. My work focuses on efficient model training and learning from feedback, with an interest in methods such as DPO, RLHF, and GRPO.',
+        sub: 'new direction'
+      },
     ]
   },
   {
@@ -747,12 +752,19 @@ function showTerminal(cat) {
     const metaParts = [];
     if (item.org)    metaParts.push(item.org + ', CUNY');
     if (item.detail) metaParts.push(item.detail);
-    if (item.sub)    metaParts.push(item.sub);
+    const isNewDir = item.sub === 'new direction';
+    if (item.sub && !isNewDir) metaParts.push(item.sub);
     if (metaParts.length) {
       const meta = document.createElement('div');
       meta.className = 'term-item-meta';
       meta.textContent = metaParts.join('  ·  ');
       block.appendChild(meta);
+    }
+    if (isNewDir) {
+      const badge = document.createElement('span');
+      badge.textContent = '✦ new direction';
+      badge.style.cssText = 'display:inline-block;font-size:0.55rem;font-family:"JetBrains Mono",monospace;letter-spacing:0.1em;text-transform:uppercase;color:rgba(109,40,217,0.7);border:1px solid rgba(109,40,217,0.3);border-radius:4px;padding:0.1rem 0.4rem;margin-left:1.2rem;margin-top:0.2rem;';
+      block.appendChild(badge);
     }
     if (item.advisor) {
       const adv = document.createElement('div');
