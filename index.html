@@ -272,7 +272,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   </div>
   <div class="news-row">
     <span class="news-date">Jun 2025</span><span class="news-sep">·</span>
-    <span>Defended Ph.D. thesis — <a href="https://academicworks.cuny.edu/gc_etds/6502/" target="_blank" rel="noopener">Reinforcement Learning Based Resource Management in Edge Systems</a></span>
+    <span>Defended Ph.D. thesis — <a href="https://academicworks.cuny.edu/gc_etds/6502/" target="_blank" rel="noopener">Reinforcement Learning Based Resource Management in Edge Systems</a>
+    <button type="button" class="news-photos-btn" onclick="openGallery('defense')">📷 photos</button></span>
   </div>
   <div class="news-row">
     <span class="news-date">May 2025</span><span class="news-sep">·</span>
@@ -871,6 +872,7 @@ if ('ontouchstart' in window) {
 // photo gallery
 const GALLERIES = {
   hooding: ['photos/hooding/74bfc585-a727-45e8-ad4f-5d3f5381d2d5.jpg'],
+  defense: ['photos/defense/1000145696.jpg'],
 };
 const galleryModal = document.getElementById('gallery-modal');
 const galleryImg   = document.getElementById('gallery-img');
