@@ -44,6 +44,23 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   pointer-events: none;
 }
 #terminal.open { transform: translateY(0); pointer-events: all; }
+#terminal { position: relative; }
+#term-more {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  pointer-events: none; transition: opacity 0.35s; z-index: 5;
+}
+#term-more.gone { opacity: 0; }
+#term-more-fade {
+  height: 52px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), #ffffff);
+}
+#term-more-dots {
+  background: #ffffff; text-align: center;
+  padding: 0.1rem 0 0.7rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 0.25em;
+  color: rgba(26,25,20,0.22);
+}
 .term-titlebar {
   display: flex; align-items: center; gap: 0.6rem;
   padding: 0.85rem 1.2rem;
@@ -277,7 +294,11 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   </div>
   <div class="news-row">
     <span class="news-date">May 2025</span><span class="news-sep">·</span>
-    <span><a href="https://ieeexplore.ieee.org/abstract/document/11073623" target="_blank" rel="noopener">Infer-EDGE: Dynamic DNN Inference Optimization in Just-in-Time Edge-AI Implementations</a> presented at NOMS 2025, Hawaii <button class="news-slides-btn" type="button" onclick="openSlides('slides/NOMS.pdf')">▶ slides</button></span>
+    <span><a href="https://ieeexplore.ieee.org/abstract/document/11073623" target="_blank" rel="noopener">Infer-EDGE: Dynamic DNN Inference Optimization in Just-in-Time Edge-AI Implementations</a> presented at NOMS 2025, Hawaii</span>
+  </div>
+  <div class="news-row">
+    <span class="news-date">Oct 2024</span><span class="news-sep">·</span>
+    <span><a href="#" target="_blank" rel="noopener">EdgeRL: Reinforcement Learning-Driven Deep Learning Model Inference Optimization at Edge</a> presented at the 20th CNSM 2024, Prague, Czech Republic <button class="news-slides-btn" type="button" onclick="openSlides('slides/EdgeRL.pdf')">▶ slides</button></span>
   </div>
 </div>
 <div id="news-arrow">↓</div>
@@ -308,6 +329,10 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
     <button id="term-close" aria-label="Close">✕</button>
   </div>
   <div id="term-body"></div>
+  <div id="term-more">
+    <div id="term-more-fade"></div>
+    <div id="term-more-dots">· · ·</div>
+  </div>
 </div>
 
 <script>
@@ -681,8 +706,15 @@ CATS.forEach((c, i) => {
 // ══════════════════════════════════════════════════════
 const termEl   = document.getElementById('terminal');
 const termBody = document.getElementById('term-body');
+const termMore = document.getElementById('term-more');
 document.getElementById('terminal').addEventListener('click', e => e.stopPropagation());
 document.getElementById('term-close').addEventListener('click', () => collapse());
+
+function updateTermMore() {
+  const atBottom = termBody.scrollTop + termBody.clientHeight >= termBody.scrollHeight - 8;
+  termMore.classList.toggle('gone', atBottom);
+}
+termBody.addEventListener('scroll', updateTermMore);
 
 function showTerminal(cat) {
   document.getElementById('term-cat-slug').textContent = cat.id;
@@ -800,6 +832,8 @@ function showTerminal(cat) {
   termBody.appendChild(cur);
 
   termEl.classList.add('open');
+  termBody.scrollTop = 0;
+  setTimeout(updateTermMore, 50);
 }
 
 function hideTerminal() { termEl.classList.remove('open'); }
