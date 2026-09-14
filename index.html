@@ -323,9 +323,10 @@ mkGlow('glow-lg', 22);
 defs.append('clipPath').attr('id', 'sun-clip')
   .append('rect').attr('x', -2000).attr('y', -2000).attr('width', 4000).attr('height', 2000);
 
-/* photo clip — full circle (slightly past horizon so chin shows) */
+/* photo clip — upper 66% of circle (GIF already has circular transparency) */
 defs.append('clipPath').attr('id', 'photo-clip')
-  .append('circle').attr('r', SUN_R).attr('cx', 0).attr('cy', 0);
+  .append('rect').attr('x', -SUN_R).attr('y', -SUN_R)
+  .attr('width', SUN_R * 2).attr('height', SUN_R * 1.32);
 
 /* grayscale filter */
 defs.append('filter').attr('id', 'grayscale')
