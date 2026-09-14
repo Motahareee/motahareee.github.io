@@ -184,7 +184,7 @@ CATS.forEach(c => { c.color = PAL[c.id]; });
 //  GEOMETRY
 // ══════════════════════════════════════════════════════
 const SUN_R  = 120;
-const NODE_R = 52;
+const NODE_R = 40;
 const SUB_OR = 175;
 const RW     = 162;   // fixed block width for research nodes (title + line + gist)
 
@@ -463,14 +463,12 @@ CATS.forEach(c => {
   g.append('circle').attr('r', NODE_R * 1.4)
     .attr('fill', 'transparent').attr('stroke', 'none');
 
-  // icon, centered
-  g.append('text')
-    .attr('y', 0).attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-    .attr('font-size', '20px').attr('pointer-events', 'none').text(c.icon);
+  // custom CS icon
+  drawIcon(g, c.id, c.color);
 
   // label below orb
   g.append('text')
-    .attr('y', NODE_R + 20).attr('text-anchor', 'middle')
+    .attr('y', NODE_R + 18).attr('text-anchor', 'middle')
     .attr('font-family', 'Inter, sans-serif')
     .attr('font-size', '10.5px').attr('font-weight', '500').attr('letter-spacing', '0.1em')
     .attr('fill', 'rgba(26,25,20,0.55)').attr('text-transform', 'uppercase')
@@ -816,6 +814,46 @@ function collapse() {
 // ══════════════════════════════════════════════════════
 //  HELPERS
 // ══════════════════════════════════════════════════════
+function drawIcon(parent, id, color) {
+  const g = parent.append('g').attr('pointer-events', 'none');
+  const sw = 1.7;
+  const base = { fill: 'none', stroke: color, 'stroke-width': sw,
+                 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
+  const apply = el => Object.entries(base).forEach(([k, v]) => el.attr(k, v));
+
+  if (id === 'education') {
+    // graduation cap + tassel
+    apply(g.append('polyline').attr('points', '-12,2 0,-8 12,2'));
+    apply(g.append('path').attr('d', 'M-8,2 L-8,9 Q0,14 8,9 L8,2'));
+    g.append('line').attr('x1', -12).attr('y1', 2).attr('x2', 12).attr('y2', 2)
+      .attr('stroke', color).attr('stroke-width', sw).attr('stroke-linecap', 'round');
+    g.append('line').attr('x1', 10).attr('y1', 2).attr('x2', 10).attr('y2', 9)
+      .attr('stroke', color).attr('stroke-width', sw).attr('stroke-linecap', 'round');
+    g.append('circle').attr('cx', 10).attr('cy', 11).attr('r', 2).attr('fill', color);
+
+  } else if (id === 'experience') {
+    // </> terminal brackets
+    apply(g.append('polyline').attr('points', '-5,-9 -12,0 -5,9'));
+    apply(g.append('polyline').attr('points', '5,-9 12,0 5,9'));
+    g.append('line').attr('x1', -2).attr('y1', -10).attr('x2', 2).attr('y2', 10)
+      .attr('stroke', color).attr('stroke-width', sw).attr('stroke-linecap', 'round');
+
+  } else if (id === 'research') {
+    // atom: nucleus + 3 orbits at 0°, 60°, -60°
+    g.append('circle').attr('r', 2.8).attr('fill', color);
+    [0, 60, -60].forEach(deg =>
+      g.append('ellipse').attr('rx', 11).attr('ry', 4)
+        .attr('transform', `rotate(${deg})`)
+        .attr('fill', 'none').attr('stroke', color).attr('stroke-width', sw * 0.85)
+    );
+
+  } else if (id === 'contact') {
+    // envelope with fold
+    apply(g.append('rect').attr('x', -12).attr('y', -8).attr('width', 24).attr('height', 16).attr('rx', 2));
+    apply(g.append('polyline').attr('points', '-12,-8 0,4 12,-8'));
+  }
+}
+
 function txt(g, t, y, size, weight, fill) {
   g.append('text').attr('y', y).attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'central')
