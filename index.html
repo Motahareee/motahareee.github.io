@@ -120,7 +120,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
 
 /* news feed */
 #news-panel {
-  position: fixed; top: 74%; left: 50%; transform: translateX(-50%);
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
   z-index: 20; width: 90%; max-width: 540px;
   display: flex; flex-direction: column; gap: 0.42rem;
   transition: opacity 0.35s;
@@ -695,11 +695,21 @@ function collapse() {
 //  HELPERS
 // ══════════════════════════════════════════════════════
 
+function positionNews() {
+  const scale = getViewScale();
+  const pillsBottomScene = SUN_R * 0.32 + 194 + PH / 2;
+  const screenY = H * 0.42 + pillsBottomScene * scale + 20;
+  newsPanel.style.top = screenY + 'px';
+}
+
+positionNews();
+
 window.addEventListener('resize', () => {
   W = window.innerWidth; H = window.innerHeight;
   svg.attr('width', W).attr('height', H);
   if (STATE === 'overview')
     svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H * 0.42).scale(getViewScale()));
+  positionNews();
 });
 
 // Touch-friendly hint
