@@ -486,9 +486,8 @@ CATS.forEach((c, i) => {
 // ══════════════════════════════════════════════════════
 const termEl   = document.getElementById('terminal');
 const termBody = document.getElementById('term-body');
-document.getElementById('term-close').addEventListener('click', e => {
-  e.stopPropagation(); collapse();
-});
+document.getElementById('terminal').addEventListener('click', e => e.stopPropagation());
+document.getElementById('term-close').addEventListener('click', () => collapse());
 
 function showTerminal(cat) {
   document.getElementById('term-cat-slug').textContent = cat.id;
