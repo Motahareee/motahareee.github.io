@@ -194,7 +194,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
 
 /* news feed */
 #news-panel {
-  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  position: fixed; top: 70%; left: 50%; transform: translateX(-50%);
   z-index: 20; width: 90%; max-width: 540px;
   display: flex; flex-direction: column; gap: 0.42rem;
   transition: opacity 0.35s;
@@ -815,13 +815,16 @@ function collapse() {
 // ══════════════════════════════════════════════════════
 
 function positionNews() {
-  const scale = getViewScale();
-  const pillsBottomScene = SUN_R * 0.32 + 129 + PH / 2;
-  const screenY = H * 0.42 + pillsBottomScene * scale + 20;
-  newsPanel.style.top = screenY + 'px';
-  const panelH = Math.min(H - screenY - 56, newsPanel.scrollHeight);
-  newsPanel.style.maxHeight = (H - screenY - 56) + 'px';
-  newsArrow.style.top = (screenY + panelH / 2) + 'px';
+  try {
+    const scale = getViewScale();
+    const pillsBottomScene = SUN_R * 0.32 + 129 + PH / 2;
+    const screenY = H * 0.42 + pillsBottomScene * scale + 20;
+    const available = H - screenY - 56;
+    if (available < 40) return;
+    newsPanel.style.top = screenY + 'px';
+    newsPanel.style.maxHeight = available + 'px';
+    newsArrow.style.top = (screenY + available / 2) + 'px';
+  } catch(e) { console.warn('positionNews error:', e); }
 }
 
 positionNews();
