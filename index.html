@@ -233,7 +233,10 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
 }
 .news-row a:hover { color: rgba(26,25,20,0.8); }
 @media (max-width: 600px) {
-  #news-panel { top: 72%; font-size: 0.65rem; }
+  #news-panel { width: 96%; padding-bottom: 2rem; }
+  .news-row { font-size: 0.68rem; gap: 0.4rem; }
+  .news-date { min-width: 50px; font-size: 0.56rem; }
+  #slides-inner { height: 70vh; }
 }
 </style>
 </head>
@@ -466,18 +469,24 @@ bgGrad.append('stop').attr('offset','100%').attr('stop-color', '#FFFFFF');
 // ══════════════════════════════════════════════════════
 //  ZOOM + SCENE
 // ══════════════════════════════════════════════════════
+function isMobile() { return W < 600; }
+
 function getViewScale() {
-  // Content: sun ≈ 150px above horizon, nav pills ≈ 165px below, ±210px wide
-  const sx = (W * 0.88) / 440;
-  const sy = (H * 0.84) / 348;
+  const mobile = isMobile();
+  const sx = (W * (mobile ? 0.96 : 0.88)) / 440;
+  const sy = (H * (mobile ? 0.68 : 0.84)) / 348;
   return Math.min(sx, sy, 1.4);
+}
+
+function getVCenter() {
+  return isMobile() ? H * 0.37 : H * 0.42;
 }
 
 const scene = svg.append('g');
 const zoomB = d3.zoom().scaleExtent([0.1, 8])
   .on('zoom', e => scene.attr('transform', e.transform));
 svg.call(zoomB);
-svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H * 0.42).scale(getViewScale()));
+svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, getVCenter()).scale(getViewScale()));
 // disable user zoom/pan interaction — keep only programmatic transforms
 svg.on('wheel.zoom', null)
    .on('mousedown.zoom', null)
@@ -838,13 +847,14 @@ function collapse() {
 function positionNews() {
   try {
     const scale = getViewScale();
+    const vCenter = getVCenter();
     const pillsBottomScene = SUN_R * 0.32 + 129 + PH / 2;
-    const screenY = H * 0.42 + pillsBottomScene * scale + 20;
-    const available = H - screenY - 56;
+    const screenY = vCenter + pillsBottomScene * scale + 16;
+    const available = H - screenY - 44;
     if (available < 40) return;
     newsPanel.style.top = screenY + 'px';
     newsPanel.style.maxHeight = available + 'px';
-    newsArrow.style.top = (screenY + available / 2) + 'px';
+    newsArrow.style.top = (screenY + Math.min(available / 2, 90)) + 'px';
   } catch(e) { console.warn('positionNews error:', e); }
 }
 
@@ -854,7 +864,7 @@ window.addEventListener('resize', () => {
   W = window.innerWidth; H = window.innerHeight;
   svg.attr('width', W).attr('height', H);
   if (STATE === 'overview')
-    svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, H * 0.42).scale(getViewScale()));
+    svg.call(zoomB.transform, d3.zoomIdentity.translate(W / 2, getVCenter()).scale(getViewScale()));
   positionNews();
 });
 
