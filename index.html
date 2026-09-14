@@ -51,21 +51,17 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
   pointer-events: none;
 }
 #terminal.open { transform: translateY(0); pointer-events: all; }
-#term-more {
+#terminal.scrolled::after { opacity: 0; }
+#terminal.open::after {
+  content: '· · ·';
   position: absolute; bottom: 0; left: 0; right: 0;
-  pointer-events: none; transition: opacity 0.35s; z-index: 5;
-}
-#term-more.gone { opacity: 0; }
-#term-more-fade {
-  height: 52px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0), #ffffff);
-}
-#term-more-dots {
-  background: #ffffff; text-align: center;
-  padding: 0.1rem 0 0.7rem;
+  text-align: center; padding: 0.3rem 0 0.6rem;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.65rem; letter-spacing: 0.25em;
   color: rgba(26,25,20,0.22);
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, #fff 40%);
+  pointer-events: none;
+  transition: opacity 0.3s;
 }
 .term-titlebar {
   display: flex; align-items: center; gap: 0.6rem;
@@ -335,10 +331,6 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #FFFFFF; }
     <button id="term-close" aria-label="Close">✕</button>
   </div>
   <div id="term-body"></div>
-  <div id="term-more">
-    <div id="term-more-fade"></div>
-    <div id="term-more-dots">· · ·</div>
-  </div>
 </div>
 
 <script>
@@ -716,15 +708,13 @@ CATS.forEach((c, i) => {
 // ══════════════════════════════════════════════════════
 const termEl   = document.getElementById('terminal');
 const termBody = document.getElementById('term-body');
-const termMore = document.getElementById('term-more');
 document.getElementById('terminal').addEventListener('click', e => e.stopPropagation());
 document.getElementById('term-close').addEventListener('click', () => collapse());
 
-function updateTermMore() {
+termBody.addEventListener('scroll', () => {
   const atBottom = termBody.scrollTop + termBody.clientHeight >= termBody.scrollHeight - 8;
-  termMore.classList.toggle('gone', atBottom);
-}
-termBody.addEventListener('scroll', updateTermMore);
+  termEl.classList.toggle('scrolled', atBottom);
+});
 
 function showTerminal(cat) {
   document.getElementById('term-cat-slug').textContent = cat.id;
@@ -850,8 +840,8 @@ function showTerminal(cat) {
   termBody.appendChild(cur);
 
   termEl.classList.add('open');
+  termEl.classList.remove('scrolled');
   termBody.scrollTop = 0;
-  setTimeout(updateTermMore, 50);
 }
 
 function hideTerminal() { termEl.classList.remove('open'); }
