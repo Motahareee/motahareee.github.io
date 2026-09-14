@@ -37,17 +37,19 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
 
 /* terminal panel */
 #terminal {
-  position: fixed; top: 0; right: 0; height: 100%; width: 400px; z-index: 50;
+  position: fixed; bottom: 0; left: 0; right: 0; width: 100%;
+  height: 52vh; max-height: 480px; z-index: 50;
   background: #0D1117;
-  border-left: 1px solid rgba(255,255,255,0.07);
-  box-shadow: -20px 0 60px rgba(0,0,0,0.18);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -12px 60px rgba(0,0,0,0.18);
   display: flex; flex-direction: column;
   font-family: 'JetBrains Mono', monospace;
-  transform: translateX(100%);
+  transform: translateY(100%);
   transition: transform 0.42s cubic-bezier(0.16,1,0.3,1);
   pointer-events: none;
 }
-#terminal.open { transform: translateX(0); pointer-events: all; }
+#terminal.open { transform: translateY(0); pointer-events: all; }
 .term-titlebar {
   display: flex; align-items: center; gap: 0.6rem;
   padding: 0.85rem 1.2rem;
@@ -71,6 +73,13 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
 #term-body {
   flex: 1; overflow-y: auto; padding: 1.4rem 1.5rem 2rem;
   scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+  max-width: 860px; margin: 0 auto; width: 100%;
+}
+/* on wide screens lay items in a 2-column grid */
+@media (min-width: 700px) {
+  #term-body { display: grid; grid-template-columns: 1fr 1fr; column-gap: 2.5rem; align-content: start; }
+  .term-cmd  { grid-column: 1 / -1; }
+  .term-cursor-line { grid-column: 1 / -1; }
 }
 .term-cmd {
   font-size: 0.65rem; color: rgba(255,255,255,0.22);
@@ -104,11 +113,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
 @keyframes blink { 50% { opacity: 0; } }
 .term-cursor-line { font-size: 0.65rem; color: rgba(255,255,255,0.22); margin-top: 1rem; }
 @media (max-width: 600px) {
-  #terminal { width: 100%; height: 62vh; top: auto; bottom: 0; right: 0;
-    border-left: none; border-top: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px 16px 0 0;
-    transform: translateY(100%); }
-  #terminal.open { transform: translateY(0); }
+  #terminal { height: 65vh; max-height: none; }
   #back-btn { top: 1rem; left: 1rem; }
   #hint { font-size: 0.48rem; letter-spacing: 0.1em; bottom: 1.2rem; }
 }
