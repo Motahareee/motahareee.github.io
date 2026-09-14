@@ -39,10 +39,10 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
 #terminal {
   position: fixed; bottom: 0; left: 0; right: 0; width: 100%;
   height: 52vh; max-height: 480px; z-index: 50;
-  background: #0D1117;
-  border-top: 1px solid rgba(255,255,255,0.07);
+  background: #FFFFFF;
+  border-top: 1px solid rgba(26,25,20,0.08);
   border-radius: 16px 16px 0 0;
-  box-shadow: 0 -12px 60px rgba(0,0,0,0.18);
+  box-shadow: 0 -8px 40px rgba(26,25,20,0.1);
   display: flex; flex-direction: column;
   font-family: 'JetBrains Mono', monospace;
   transform: translateY(100%);
@@ -53,26 +53,26 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
 .term-titlebar {
   display: flex; align-items: center; gap: 0.6rem;
   padding: 0.85rem 1.2rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(26,25,20,0.07);
   flex-shrink: 0;
 }
 .term-dots { display: flex; gap: 6px; }
 .term-dot { width: 12px; height: 12px; border-radius: 50%; }
 .term-dot.r { background: #FF5F57; } .term-dot.y { background: #FEBC2E; } .term-dot.g { background: #28C840; }
 .term-path {
-  flex: 1; font-size: 0.62rem; color: rgba(255,255,255,0.25);
+  flex: 1; font-size: 0.62rem; color: rgba(26,25,20,0.3);
   letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.term-path b { color: rgba(255,255,255,0.6); font-weight: 500; }
+.term-path b { color: rgba(26,25,20,0.65); font-weight: 500; }
 #term-close {
-  background: none; border: none; color: rgba(255,255,255,0.2);
+  background: none; border: none; color: rgba(26,25,20,0.25);
   font-size: 1rem; cursor: pointer; padding: 0; line-height: 1;
   transition: color 0.15s;
 }
-#term-close:hover { color: rgba(255,255,255,0.6); }
+#term-close:hover { color: rgba(26,25,20,0.7); }
 #term-body {
   flex: 1; overflow-y: auto; padding: 1.4rem 1.5rem 2rem;
-  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+  scrollbar-width: thin; scrollbar-color: rgba(26,25,20,0.1) transparent;
   max-width: 860px; margin: 0 auto; width: 100%;
 }
 /* on wide screens lay items in a 2-column grid */
@@ -82,10 +82,10 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
   .term-cursor-line { grid-column: 1 / -1; }
 }
 .term-cmd {
-  font-size: 0.65rem; color: rgba(255,255,255,0.22);
+  font-size: 0.65rem; color: rgba(26,25,20,0.25);
   letter-spacing: 0.04em; margin-bottom: 1.6rem;
 }
-.term-cmd span { color: rgba(255,255,255,0.45); }
+.term-cmd span { color: rgba(26,25,20,0.45); }
 .term-item { margin-bottom: 1.5rem; animation: termFadeIn 0.3s ease both; }
 @keyframes termFadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
 .term-item-head {
@@ -93,25 +93,25 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #F8F7F3; }
   font-size: 0.8rem; font-weight: 500; margin-bottom: 0.3rem;
 }
 .term-arrow { font-size: 0.65rem; flex-shrink: 0; }
-.term-item-title { color: rgba(255,255,255,0.88); }
+.term-item-title { color: rgba(26,25,20,0.88); }
 .term-item-title a { color: inherit; text-decoration: none; }
 .term-item-title a:hover { text-decoration: underline; }
 .term-item-meta {
-  font-size: 0.62rem; color: rgba(255,255,255,0.28);
+  font-size: 0.62rem; color: rgba(26,25,20,0.38);
   padding-left: 1.2rem; margin-bottom: 0.25rem; letter-spacing: 0.02em;
 }
 .term-item-gist {
   font-size: 0.63rem; line-height: 1.65;
-  color: rgba(255,255,255,0.38); padding-left: 1.2rem;
+  color: rgba(26,25,20,0.45); padding-left: 1.2rem;
   font-family: 'Inter', sans-serif; font-weight: 300;
 }
 .term-divider {
-  border: none; border-top: 1px solid rgba(255,255,255,0.06);
+  border: none; border-top: 1px solid rgba(26,25,20,0.07);
   margin: 0 0 1.5rem;
 }
 .term-cursor { display: inline-block; animation: blink 1.1s step-end infinite; }
 @keyframes blink { 50% { opacity: 0; } }
-.term-cursor-line { font-size: 0.65rem; color: rgba(255,255,255,0.22); margin-top: 1rem; }
+.term-cursor-line { font-size: 0.65rem; color: rgba(26,25,20,0.25); margin-top: 1rem; }
 @media (max-width: 600px) {
   #terminal { height: 65vh; max-height: none; }
   #back-btn { top: 1rem; left: 1rem; }
