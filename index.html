@@ -237,20 +237,20 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 }
 .news-row {
   display: flex; align-items: baseline; gap: 0.55rem;
-  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 300;
-  color: rgba(26,25,20,0.5); line-height: 1.4;
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 400;
+  color: rgba(0,0,0,0.85); line-height: 1.4;
 }
 .news-date {
   font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
-  color: rgba(109,40,217,0.55); flex-shrink: 0; min-width: 58px;
+  color: rgba(109,40,217,0.85); flex-shrink: 0; min-width: 58px;
 }
 .news-sep { color: rgba(26,25,20,0.18); flex-shrink: 0; }
 .news-row a {
   color: inherit; pointer-events: all;
   text-decoration: underline; text-underline-offset: 2px;
-  text-decoration-color: rgba(26,25,20,0.2);
+  text-decoration-color: rgba(26,25,20,0.3);
 }
-.news-row a:hover { color: rgba(26,25,20,0.8); }
+.news-row a:hover { color: #000000; }
 @media (max-width: 600px) {
   #news-panel { width: 96%; }
   .news-row { font-size: 0.68rem; gap: 0.4rem; }
@@ -629,20 +629,20 @@ const labelG = scene.append('g').attr('pointer-events', 'none').attr('transform'
 const nameLine = labelG.append('text')
   .attr('y', 40).attr('text-anchor', 'middle')
   .attr('font-family', "'Playfair Display', Georgia, serif")
-  .attr('font-size', '26px').attr('font-weight', '400').attr('fill', 'rgba(26,25,20,0.88)')
+  .attr('font-size', '26px').attr('font-weight', '400').attr('fill', '#000000')
   .attr('letter-spacing', '0.01em');
 nameLine.append('tspan').text('Motahare Mounesan');
 nameLine.append('tspan')
   .attr('font-size', '13px').attr('font-family', 'Inter, sans-serif')
-  .attr('font-weight', '400').attr('fill', 'rgba(26,25,20,0.35)')
+  .attr('font-weight', '400').attr('fill', 'rgba(0,0,0,0.55)')
   .attr('dx', '8').attr('dy', '-2')
   .text('Ph.D.');
 
 labelG.append('text')
   .attr('y', 62).attr('text-anchor', 'middle')
   .attr('font-family', "'JetBrains Mono', monospace")
-  .attr('font-size', '9px').attr('font-weight', '400')
-  .attr('fill', 'rgba(109,40,217,0.45)').attr('letter-spacing', '0.2em')
+  .attr('font-size', '9px').attr('font-weight', '500')
+  .attr('fill', 'rgba(109,40,217,0.8)').attr('letter-spacing', '0.2em')
   .text('RESEARCHER  &  ENGINEER');
 
 // Bio — two short lines below tagline
@@ -654,8 +654,8 @@ bioLines.forEach((line, i) => {
   labelG.append('text')
     .attr('y', 90 + i * 18).attr('text-anchor', 'middle')
     .attr('font-family', 'Inter, sans-serif')
-    .attr('font-size', '11px').attr('font-weight', '300')
-    .attr('fill', 'rgba(26,25,20,0.45)').attr('letter-spacing', '0.01em')
+    .attr('font-size', '11px').attr('font-weight', '400')
+    .attr('fill', 'rgba(0,0,0,0.72)').attr('letter-spacing', '0.01em')
     .text(line);
 });
 
