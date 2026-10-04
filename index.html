@@ -4,16 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Motahare Mounesan</title>
-<meta name="description" content="Postdoctoral Research Associate at Texas A&M University. Researcher in reinforcement learning, multimodal AI, and edge intelligence.">
-<meta property="og:title" content="Motahare Mounesan — Researcher & Engineer">
-<meta property="og:description" content="Postdoctoral Research Associate at Texas A&M University. Working on reinforcement learning, multimodal AI, and edge intelligence.">
-<meta property="og:image" content="https://motahareee.github.io/ICON.gif">
+<meta name="description" content="Postdoctoral Researcher at Texas A&amp;M University working on edge AI, and on how reinforcement learning and large language models can improve each other.">
+<meta property="og:title" content="Motahare Mounesan, Postdoctoral Researcher">
+<meta property="og:description" content="Postdoctoral Researcher at Texas A&amp;M University working on edge AI, and on how reinforcement learning and large language models can improve each other.">
+<meta property="og:image" content="https://motahareee.github.io/images/og-portrait.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Portrait of Motahare Mounesan">
 <meta property="og:url" content="https://motahareee.github.io">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Motahare Mounesan — Researcher & Engineer">
-<meta name="twitter:description" content="Postdoctoral Research Associate at Texas A&M University. Working on reinforcement learning, multimodal AI, and edge intelligence.">
-<meta name="twitter:image" content="https://motahareee.github.io/ICON.gif">
+<meta name="twitter:title" content="Motahare Mounesan, Postdoctoral Researcher">
+<meta name="twitter:description" content="Postdoctoral Researcher at Texas A&amp;M University working on edge AI, and on how reinforcement learning and large language models can improve each other.">
+<meta name="twitter:image" content="https://motahareee.github.io/images/og-portrait.jpg">
+<meta name="twitter:image:alt" content="Portrait of Motahare Mounesan">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QZSTMCXKL3"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -26,28 +30,13 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 #news-panel {
-  max-width: 540px; width: 90%; margin: 0 auto;
-  display: flex; flex-direction: column; gap: 0.55rem;
-  padding: 1.2rem 1.5rem 4rem;
+  max-width: 680px; width: 92%; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 0.95rem;
+  padding: 2.5rem 1.5rem 4rem;
   transition: opacity 0.35s;
 }
 #news-panel.hidden { opacity: 0; pointer-events: none; }
 
-#back-btn {
-  position: fixed; top: 1.8rem; left: 1.8rem; z-index: 40;
-  display: flex; align-items: center; gap: 0.45rem;
-  padding: 0.48rem 1.1rem; border-radius: 100px;
-  background: rgba(255,255,255,0.88);
-  border: 1px solid rgba(26,25,20,0.12);
-  color: rgba(26,25,20,0.7);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
-  cursor: pointer; backdrop-filter: blur(20px);
-  transition: opacity 0.3s, color 0.2s, background 0.2s;
-  opacity: 0; pointer-events: none;
-}
-#back-btn.visible { opacity: 1; pointer-events: all; }
-#back-btn:hover   { background: #FFFFFF; color: rgba(26,25,20,0.9); }
 
 #hint { display: none; }
 
@@ -143,7 +132,6 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 @media (prefers-reduced-motion: reduce) { .term-item { animation: none; } .term-cursor { animation: none; } }
 @media (max-width: 600px) {
   #terminal { height: 65vh; max-height: none; }
-  #back-btn { top: 1rem; left: 1rem; }
   #hint { font-size: 0.48rem; letter-spacing: 0.1em; bottom: 1.2rem; }
 }
 
@@ -183,26 +171,16 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 #gallery-prev { left: 1rem; } #gallery-next { right: 1rem; }
 #gallery-prev:hover, #gallery-next:hover { background: rgba(255,255,255,0.25); }
 #gallery-prev.hidden, #gallery-next.hidden { display: none; }
-.news-photos-btn {
-  display: inline-flex; align-items: center; gap: 0.25rem;
-  font-size: 0.62rem; font-family: 'JetBrains Mono', monospace;
-  color: rgba(43,76,147,0.7); cursor: pointer; pointer-events: all;
-  border: 1px solid rgba(43,76,147,0.25); border-radius: 4px;
-  padding: 0.1rem 0.4rem; margin-left: 0.4rem;
-  background: none; white-space: nowrap; transition: background 0.15s;
+.news-photos-btn, .news-slides-btn {
+  display: inline-flex; align-items: center; gap: 0.35rem; vertical-align: 0.08em;
+  margin-left: 0.45rem; padding: 0.15rem 0.55rem; border: none; border-radius: 6px;
+  background: #14161C; color: #E6E6EC; cursor: pointer; text-decoration: none; white-space: nowrap;
+  font: 500 0.75rem 'JetBrains Mono', monospace;
+  transition: box-shadow 0.15s;
 }
-.news-photos-btn:hover { background: rgba(43,76,147,0.06); }
-
-.news-slides-btn {
-  display: inline-flex; align-items: center; gap: 0.25rem;
-  font-size: 0.62rem; font-family: 'JetBrains Mono', monospace;
-  color: rgba(43,76,147,0.7); cursor: pointer; pointer-events: all;
-  border: 1px solid rgba(43,76,147,0.25); border-radius: 4px;
-  padding: 0.1rem 0.4rem; margin-left: 0.4rem;
-  text-decoration: none; white-space: nowrap;
-  transition: background 0.15s;
-}
-.news-slides-btn:hover { background: rgba(43,76,147,0.06); }
+.news-photos-btn .p, .news-slides-btn .p { color: #8FB0F0; }
+.news-photos-btn:hover, .news-slides-btn:hover { box-shadow: 0 0 0 2px #8FB0F0; }
+.news-photos-btn:focus-visible, .news-slides-btn:focus-visible { outline: 2px solid #2B4C93; outline-offset: 2px; }
 
 .news-header {
   font-family: 'JetBrains Mono', monospace;
@@ -212,73 +190,56 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 }
 .news-row {
   display: flex; align-items: baseline; gap: 0.55rem;
-  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 400;
-  color: rgba(0,0,0,0.85); line-height: 1.4;
+  font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 400;
+  color: #23232B; line-height: 1.55;
 }
 .news-date {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
-  color: rgba(43,76,147,0.85); flex-shrink: 0; min-width: 58px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 500;
+  color: #2B4C93; flex-shrink: 0; min-width: 78px;
 }
-.news-sep { color: rgba(26,25,20,0.18); flex-shrink: 0; }
+.news-sep { color: rgba(26,25,20,0.3); flex-shrink: 0; }
 .news-row a {
   color: inherit; pointer-events: all;
   text-decoration: underline; text-underline-offset: 2px;
-  text-decoration-color: rgba(26,25,20,0.3);
+  text-decoration-color: rgba(43,76,147,0.45); text-decoration-thickness: 1px;
 }
-.news-row a:hover { color: #000000; }
+.news-row a:hover { color: #2B4C93; text-decoration-color: #2B4C93; }
+.news-row a.news-slides-btn, .news-row a.news-slides-btn:hover { color: #E6E6EC; text-decoration: none; }
 @media (max-width: 600px) {
   #news-panel { width: 96%; }
-  .news-row { font-size: 0.68rem; gap: 0.4rem; }
-  .news-date { min-width: 50px; font-size: 0.56rem; }
+  .news-row { font-size: 0.9rem; gap: 0.5rem; }
+  .news-date { min-width: 64px; font-size: 0.74rem; }
 }
 
-/* hello greeting — a cartwheel in from the left, then the bubble pops */
+/* hello greeting — a small terminal message that drops out of the top bar and types itself */
 #hello {
-  position: fixed; left: 1.25rem; top: calc(1.25rem + env(safe-area-inset-top, 0px)); z-index: 45;
-  display: flex; align-items: flex-start; gap: 0.5rem;
-  opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+  position: fixed; left: 1.5rem; top: calc(1.25rem + env(safe-area-inset-top, 0px)); z-index: 55;
+  width: min(340px, calc(100vw - 2rem));
+  padding: 0.85rem 2.4rem 0.9rem 1rem; border-radius: 10px;
+  background: #14161C; color: #E6E6EC; box-shadow: 0 14px 40px rgba(20,22,28,0.3);
+  font: 400 0.85rem/1.55 'JetBrains Mono', monospace;
+  opacity: 0; transform: translateY(-14px); pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16,1,0.3,1);
 }
-#hello.show { opacity: 1; pointer-events: auto; }
-.hello-wave {
-  width: 52px; height: 52px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.3rem; line-height: 1;
-}
-#hello.show .hello-wave { animation: cartwheel 1.2s cubic-bezier(0.25,0.7,0.3,1) both; }
-@keyframes cartwheel {
-  from { transform: translateX(-190px) rotate(-720deg); }
-  to   { transform: none; }
-}
-#hello.show .hello-bubble { animation: bubblePop 0.4s cubic-bezier(0.16,1,0.3,1) 1.1s both; }
-@keyframes bubblePop {
-  from { opacity: 0; transform: scale(0.8) translateX(-10px); }
-  to   { opacity: 1; transform: none; }
-}
-.hello-bubble {
-  position: relative; max-width: 250px; transform-origin: left top;
-  background: #FFFFFF; color: #23232B;
-  border: 1px solid rgba(43,76,147,0.25); border-radius: 4px 14px 14px 14px;
-  box-shadow: 0 10px 30px rgba(26,25,20,0.12);
-  padding: 0.7rem 2rem 0.75rem 0.9rem;
-  font-family: 'Inter', sans-serif; font-size: 0.85rem; line-height: 1.4;
-}
-.hello-bubble strong { font-weight: 600; }
-.hello-sub { font-size: 0.75rem; color: rgba(26,25,20,0.65); margin-top: 0.2rem; }
-#hello-contact {
-  display: inline-block; margin-top: 0.45rem; text-decoration: none;
-  font: 600 0.75rem 'Inter', sans-serif; color: #A94F4C; cursor: pointer;
-}
-#hello-contact:hover { text-decoration: underline; text-underline-offset: 2px; }
+#hello.show { opacity: 1; transform: none; pointer-events: auto; }
+#hello .p { color: #8FB0F0; }
+#hello .caret { display: inline-block; width: 0.55em; animation: blink 1.1s step-end infinite; }
+#hello.done .caret { display: none; }
+.hello-out, #hello-contact { opacity: 0; transition: opacity 0.3s ease; }
+#hello.done .hello-out, #hello.done #hello-contact { opacity: 1; }
+.hello-out { margin: 0.3rem 0 0.45rem; color: #FFFFFF; }
+#hello-contact { display: inline-block; color: #F08F8A; text-decoration: none; }
+#hello-contact:hover { text-decoration: underline; text-underline-offset: 3px; }
 #hello-close {
-  position: absolute; top: 0.35rem; right: 0.45rem;
-  background: none; border: none; cursor: pointer;
-  font-size: 0.8rem; color: rgba(26,25,20,0.35); padding: 0.2rem;
+  position: absolute; top: 0.55rem; right: 0.7rem;
+  background: none; border: none; cursor: pointer; padding: 0.2rem;
+  font-size: 0.85rem; color: rgba(255,255,255,0.45);
 }
-#hello-close:hover { color: rgba(26,25,20,0.8); }
-#hello button:focus-visible, #hello a:focus-visible { outline: 2px solid #2B4C93; outline-offset: 2px; border-radius: 3px; }
+#hello-close:hover { color: #FFFFFF; }
+#hello button:focus-visible, #hello a:focus-visible { outline: 2px solid #8FB0F0; outline-offset: 2px; border-radius: 3px; }
+@media (max-width: 760px) { #hello { left: 1rem; } }
 @media (prefers-reduced-motion: reduce) {
-  #hello { transition: none; }
-  #hello.show .hello-wave, #hello.show .hello-bubble { animation: none; }
+  #hello, .hello-out, #hello-contact { transition: none; }
 }
 
 /* experience timeline — research left, teaching right */
@@ -363,6 +324,7 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
   font-family: 'Lora', Georgia, serif; font-size: 1.12rem; line-height: 1.75; color: #23232B;
   max-width: 36em; text-wrap: pretty;
 }
+.about-text strong { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95em; color: #2B4C93; }
 .about-text .about-personal { font-size: 1rem; color: rgba(35,35,43,0.78); }
 .horizon {
   height: 1px; margin: 0 -1.5rem;
@@ -370,21 +332,18 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
   box-shadow: 0 0 10px rgba(43,76,147,0.25);
 }
 
-/* section buttons below the horizon */
-.about-nav {
-  max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 2.5rem;
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem;
-}
+/* section commands under the about text */
+.about-nav { margin-top: 1.6rem; display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .about-btn {
-  display: inline-flex; align-items: center; gap: 0.9rem;
-  padding: 0.8rem 1.4rem; border-radius: 999px;
-  background: transparent; border: 1.5px solid var(--c); color: var(--c);
-  font: 600 0.8rem 'Inter', sans-serif; letter-spacing: 0.14em; text-transform: uppercase;
-  cursor: pointer; transition: background 0.15s, color 0.15s;
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  padding: 0.65rem 1.05rem; border-radius: 8px; border: none;
+  background: #14161C; color: #E6E6EC;
+  font: 500 0.9rem 'JetBrains Mono', monospace;
+  cursor: pointer; transition: box-shadow 0.15s, transform 0.15s;
 }
-.about-btn::after { content: '→'; letter-spacing: 0; transition: transform 0.15s; }
-.about-btn:hover, .about-btn.active { background: var(--c); color: #FFFFFF; }
-.about-btn:hover::after { transform: translateX(3px); }
+.about-btn .p { color: var(--c); }
+.about-btn:hover { box-shadow: 0 0 0 2px var(--c); transform: translateY(-1px); }
+.about-btn.active { box-shadow: 0 0 0 2px var(--c); }
 .about-btn:focus-visible { outline: 2px solid var(--c); outline-offset: 3px; }
 @media (max-width: 760px) {
   #hero { padding-top: 2.5rem; }
@@ -394,15 +353,15 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
   .hero-title { font-size: 0.7rem; letter-spacing: 0.08em; }
   .about-text p { font-size: 1rem; margin: 0 auto; }
   .about-text .about-personal { font-size: 0.93rem; }
-  .about-nav { display: grid; grid-template-columns: 1fr 1fr; padding: 1.5rem 1.25rem 2rem; }
-  .about-btn { justify-content: space-between; padding: 0.75rem 0.9rem; font-size: 0.72rem; letter-spacing: 0.1em; }
+  .about-nav { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+  .about-btn { padding: 0.65rem 0.75rem; font-size: 0.85rem; }
 }
 @media (prefers-reduced-motion: reduce) { .portrait::after { animation: none; } }
 .news-row.more { display: none; }
 #news-panel.all .news-row.more { display: flex; }
 .news-toggle {
   align-self: center; margin-top: 0.4rem; background: none; border: none; cursor: pointer;
-  font: 500 0.75rem 'JetBrains Mono', monospace; color: #2B4C93;
+  font: 500 0.8rem 'JetBrains Mono', monospace; color: #2B4C93;
   text-decoration: underline; text-underline-offset: 3px;
 }
 @media (max-width: 699px) {
@@ -410,13 +369,6 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 </style>
 </head>
 <body>
-<button id="back-btn">
-  <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-    <path d="M5.5 1.5L2.5 4.5L5.5 7.5" stroke="currentColor" stroke-width="1.4"
-          stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-  Overview
-</button>
 <div id="hint">Click a section to explore</div>
 
 <header id="hero">
@@ -428,15 +380,16 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
       <h1 class="hero-name">Motahare Mounesan <span class="hero-phd">Ph.D.</span></h1>
       <div class="hero-title">Postdoctoral Researcher · Texas A&amp;M University</div>
       <div class="about-text">
-        <p>I'm Motahare, a computer science researcher passionate about AI, reinforcement learning, and distributed systems at the edge. Today's most capable AI models are too big for the phones, cameras, and sensors where they're needed most, and sending everything to the cloud is slow, expensive, and not always private. My research makes big multimodal models (ones that see, hear, and read) run efficiently on small devices, and uses reward and feedback to teach large language models to keep improving.</p>
-    <p class="about-personal">Besides building things on a computer, I love nature, capturing whatever makes my eyes sparkle, the discomfort of inversions in yoga 🤸‍♀️, the uphills of Central Park on my bike, and crafting things from time to time.</p>
+        <p>I'm Motahare, a computer science researcher passionate about AI, reinforcement learning, and distributed systems and edge computing. My current research has two threads.</p>
+        <p><strong>Edge AI.</strong> Today's most capable AI models are too big for the phones, cameras, and sensors where they're needed most, and sending everything to the cloud is slow, expensive, and not always private. I make big multimodal models (ones that see, hear, and read) run efficiently on small devices.</p>
+        <p><strong>RL &times; LLMs.</strong> I study how reinforcement learning and large language models can improve each other: using reward and feedback to fine-tune LLMs, and using LLMs to make reinforcement learning better.</p>
+    <p class="about-personal">Besides building things on a computer, I love nature, capturing whatever makes my eyes sparkle, embracing the discomfort of inversions 🤸‍♀️ and uphill rides through Central Park. From time to time, I also enjoy crafting and making art.</p>
       </div>
+      <nav class="about-nav" id="about-nav" aria-label="Sections"></nav>
     </div>
   </div>
   <div class="horizon" aria-hidden="true"></div>
 </header>
-
-<nav class="about-nav" id="about-nav" aria-label="Sections"></nav>
 
 <div id="news-panel">
   <div class="news-header">Recent Updates</div>
@@ -446,11 +399,11 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
   </div>
   <div class="news-row">
     <span class="news-date">Jun 2026</span><span class="news-sep">·</span>
-    <span>Got hooded at Lincoln Center 🎓 at the CUNY Ph.D. Convocation Ceremony! <button class="news-photos-btn" type="button" onclick="openGallery('hooding')">📷 photos</button></span>
+    <span>Got hooded at Lincoln Center 🎓 at the CUNY Ph.D. Convocation Ceremony! <button class="news-photos-btn" type="button" onclick="openGallery('hooding')"><span class="p" aria-hidden="true">❯</span>photos</button></span>
   </div>
   <div class="news-row">
     <span class="news-date">Oct 2025</span><span class="news-sep">·</span>
-    <span><a href="https://ieeexplore.ieee.org/abstract/document/11297524" target="_blank" rel="noopener">Reinforcement Learning-Driven Edge Management for Reliable Multi-view 3D Reconstruction</a> presented at the 21st CNSM 2025, Bologna, Italy <a class="news-slides-btn" href="slides/CNSM_Relibality.pdf" target="_blank" rel="noopener">▶ slides</a></span>
+    <span><a href="https://ieeexplore.ieee.org/abstract/document/11297524" target="_blank" rel="noopener">Reinforcement Learning-Driven Edge Management for Reliable Multi-view 3D Reconstruction</a> presented at the 21st CNSM 2025, Bologna, Italy <a class="news-slides-btn" href="slides/CNSM_Relibality.pdf" target="_blank" rel="noopener"><span class="p" aria-hidden="true">❯</span>slides</a></span>
   </div>
   <div class="news-row more">
     <span class="news-date">Oct 2025</span><span class="news-sep">·</span>
@@ -459,7 +412,7 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
   <div class="news-row more">
     <span class="news-date">Jun 2025</span><span class="news-sep">·</span>
     <span>Defended Ph.D. thesis — <a href="https://academicworks.cuny.edu/gc_etds/6502/" target="_blank" rel="noopener">Reinforcement Learning Based Resource Management in Edge Systems</a>
-    <button type="button" class="news-photos-btn" onclick="openGallery('defense')">📷 photos</button></span>
+    <button type="button" class="news-photos-btn" onclick="openGallery('defense')"><span class="p" aria-hidden="true">❯</span>photos</button></span>
   </div>
   <div class="news-row more">
     <span class="news-date">May 2025</span><span class="news-sep">·</span>
@@ -473,13 +426,10 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 </div>
 
 <div id="hello" role="status" aria-live="polite">
-  <div class="hello-wave" aria-hidden="true">🤸‍♀️</div>
-  <div class="hello-bubble">
-    <button id="hello-close" type="button" aria-label="Dismiss greeting">✕</button>
-    <div><strong>Hi! 👋 I'm Motahare.</strong></div>
-    <div class="hello-sub">Thanks for stopping by.</div>
-    <a id="hello-contact" href="mailto:motaharemounesan@gmail.com?subject=Hi%20Motahare!">Say hi back →</a>
-  </div>
+  <button id="hello-close" type="button" aria-label="Dismiss greeting">✕</button>
+  <div><span class="p">❯</span> <span id="hello-cmd"></span><span class="caret">▌</span></div>
+  <div class="hello-out">Hi! 👋 I'm Motahare.<br>Thanks for stopping by.</div>
+  <a id="hello-contact" href="mailto:motaharemounesan@gmail.com?subject=Hi%20Motahare!"><span class="p">❯</span> say hi back →</a>
 </div>
 
 <div id="gallery-modal">
@@ -685,7 +635,7 @@ function showTerminal(cat) {
   termBody.appendChild(cmd);
   // type the command out
   const typed = cmd.querySelector('.term-typed');
-  const cmdText = `ls ./${cat.id}/`;
+  const cmdText = `cd ${cat.id} && ls`;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) typed.textContent = cmdText;
   else [...cmdText].forEach((ch, k) => setTimeout(() => { typed.textContent += ch; }, k * 35));
 
@@ -837,18 +787,15 @@ function hideTerminal() { termEl.classList.remove('open'); }
 let STATE  = 'overview';
 let ACTIVE = null;
 
-const backBtn   = document.getElementById('back-btn');
 const hintEl    = document.getElementById('hint');
 const newsPanel = document.getElementById('news-panel');
 
-backBtn.addEventListener('click', e => { e.stopPropagation(); collapse(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') collapse(); });
 
 function expand(cat) {
   STATE = 'expanded'; ACTIVE = cat.id;
   hideHello();
   markActiveBtn();
-  backBtn.classList.add('visible');
   hintEl.style.opacity = '0';
   newsPanel.classList.add('hidden');
   showTerminal(cat);
@@ -858,7 +805,6 @@ function collapse() {
   if (STATE !== 'expanded') return;
   STATE = 'overview'; ACTIVE = null;
   markActiveBtn();
-  backBtn.classList.remove('visible');
   hintEl.style.opacity = '1';
   newsPanel.classList.remove('hidden');
   hideTerminal();
@@ -871,8 +817,9 @@ const aboutNav = document.getElementById('about-nav');
 CATS.forEach(c => {
   const b = document.createElement('button');
   b.type = 'button'; b.className = 'about-btn'; b.dataset.cat = c.id;
-  b.style.setProperty('--c', c.color);
-  b.textContent = c.label;
+  b.style.setProperty('--c', c.termColor);
+  b.innerHTML = `<span class="p" aria-hidden="true">❯</span>cd ${c.id}`;
+  b.setAttribute('aria-label', c.label);
   b.addEventListener('click', e => {
     e.stopPropagation();
     if (STATE === 'expanded' && ACTIVE === c.id) collapse();
@@ -904,7 +851,11 @@ function hideHello() { helloEl.classList.remove('show'); clearTimeout(helloTimer
 setTimeout(() => {
   if (STATE !== 'overview') return;
   helloEl.classList.add('show');
-  helloTimer = setTimeout(hideHello, 9000);
+  const cmd = 'whoami', out = document.getElementById('hello-cmd');
+  const reveal = () => { helloEl.classList.add('done'); helloTimer = setTimeout(hideHello, 9000); };
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { out.textContent = cmd; reveal(); return; }
+  [...cmd].forEach((ch, k) => setTimeout(() => { out.textContent += ch; }, 450 + k * 70));
+  setTimeout(reveal, 450 + cmd.length * 70 + 250);
 }, 1200);
 helloEl.addEventListener('mouseenter', () => clearTimeout(helloTimer));
 helloEl.addEventListener('mouseleave', () => { helloTimer = setTimeout(hideHello, 4000); });
