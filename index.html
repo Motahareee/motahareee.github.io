@@ -299,17 +299,14 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
   max-width: 1000px; margin: 0 auto; padding-bottom: 2.75rem;
   display: grid; grid-template-columns: auto 1fr; gap: 4rem; align-items: center;
 }
-.portrait { position: relative; width: 270px; aspect-ratio: 1; }
+.portrait { position: relative; width: 260px; aspect-ratio: 26 / 28; }
 .portrait img {
-  position: relative; z-index: 1; display: block; width: 100%; height: 100%;
-  border-radius: 50%; object-fit: cover;
+  display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%;
+  border-radius: 58% 42% 46% 54% / 52% 44% 56% 48%;
+  animation: morph 12s ease-in-out infinite;
 }
-.portrait::before, .portrait::after {
-  content: ''; position: absolute; border-radius: 50%; pointer-events: none;
-}
-.portrait::before { inset: -14px; border: 1px solid rgba(43,76,147,0.35); }
-.portrait::after  { inset: -34px; border: 1px solid rgba(43,76,147,0.18); animation: halo 6.4s ease-in-out infinite; }
-@keyframes halo { 50% { transform: scale(1.06); border-color: rgba(43,76,147,0.08); } }
+@keyframes morph { 50% { border-radius: 44% 56% 54% 46% / 46% 56% 44% 54%; } }
+@media (prefers-reduced-motion: reduce) { .portrait img { animation: none; } }
 .hero-name {
   font-family: 'Playfair Display', Georgia, serif; font-weight: 400;
   font-size: 2.6rem; line-height: 1.15; color: #000000; text-wrap: balance;
@@ -356,7 +353,6 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
   .about-nav { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .about-btn { padding: 0.65rem 0.75rem; font-size: 0.85rem; }
 }
-@media (prefers-reduced-motion: reduce) { .portrait::after { animation: none; } }
 .news-row.more { display: none; }
 #news-panel.all .news-row.more { display: flex; }
 .news-toggle {
@@ -366,6 +362,31 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 }
 @media (max-width: 699px) {
 }
+
+/* research drawer: projects with papers and figures */
+.rs { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 2.2rem; max-width: 780px; }
+.rs-item { animation: termFadeIn 0.35s ease both; }
+.rs-tag { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: #8FB0F0; }
+.rs-title { margin-top: 0.3rem; font: 600 1.15rem 'JetBrains Mono', monospace; color: #FFFFFF; }
+.rs-gist { margin-top: 0.55rem; font: 400 0.95rem/1.65 'Inter', sans-serif; color: rgba(255,255,255,0.85); }
+.rs-fig { margin: 1rem 0 0; }
+.rs-fig img {
+  display: block; width: 100%; height: auto; border-radius: 10px; background: #FFFFFF;
+  padding: 0.6rem; cursor: zoom-in;
+}
+.rs-fig figcaption { margin-top: 0.45rem; font-size: 0.72rem; color: rgba(255,255,255,0.55); }
+.rs-papers { list-style: none; margin-top: 0.9rem; display: flex; flex-direction: column; gap: 0.55rem; }
+.rs-papers li { font: 400 0.85rem/1.5 'Inter', sans-serif; color: rgba(255,255,255,0.85); padding-left: 1.1rem; position: relative; }
+.rs-papers li::before { content: '↳'; position: absolute; left: 0; color: #8FB0F0; }
+.rs-papers a { color: #FFFFFF; text-decoration: underline; text-decoration-color: rgba(143,176,240,0.5); text-underline-offset: 3px; }
+.rs-papers a:hover { text-decoration-color: #8FB0F0; }
+.rs-venue { font: 500 0.72rem 'JetBrains Mono', monospace; color: #8FB0F0; white-space: nowrap; }
+.rs-papers a.rs-slides {
+  display: inline-flex; gap: 0.3rem; margin-left: 0.3rem; padding: 0.05rem 0.45rem; border-radius: 5px;
+  border: 1px solid rgba(143,176,240,0.5); text-decoration: none; font: 500 0.72rem 'JetBrains Mono', monospace; color: #E6E6EC;
+}
+.rs-papers a.rs-slides .p { color: #8FB0F0; }
+@media (prefers-reduced-motion: reduce) { .rs-item { animation: none; } }
 </style>
 </head>
 <body>
@@ -374,7 +395,7 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 <header id="hero">
   <div class="hero-inner">
     <div class="portrait">
-      <img src="images/portrait.jpg" alt="Motahare Mounesan">
+      <img src="images/portrait-tall.jpg" alt="Motahare Mounesan">
     </div>
     <div class="hero-text">
       <h1 class="hero-name">Motahare Mounesan <span class="hero-phd">Ph.D.</span></h1>
@@ -520,24 +541,32 @@ const CATS = [
     id: 'research', label: 'Research', icon: '🔬',
     items: [
       {
-        label: 'Reinforcement Learning',
-        gist: 'Studying reinforcement learning for sequential decision-making in dynamic environments. My work spans value-based and actor-critic methods, including Q-learning, A2C, and A3C, with an emphasis on learning adaptive policies that respond to changing conditions and long-horizon objectives.',
-        sub: ''
+        label: 'EMMI: Multimodal LLMs at the Edge', tag: 'Edge AI · Multimodal',
+        gist: 'Drones and other edge devices capture text, audio, and images, but the multimodal LLMs that understand them run on servers, and shipping raw data there is slow and bandwidth-hungry. EMMI encodes each modality on the device, fuses them into one representation, and compresses it with task-agnostic or task-aware autoencoders. Only that compact representation travels to the server, where it is decompressed and handed to the multimodal LLM.',
+        figure: { src: 'images/research/emmi-pipeline.png', alt: 'EMMI pipeline: on-device modality encoders, cross-modal fusion and compression; compressed representation sent to a server for decompression and a multimodal LLM', caption: 'On-device encoding, fusion, and compression; server-side decompression and multimodal LLM.', gallery: 'emmi' },
+        papers: [
+          { title: 'EMMI: Edge Multi-Modal Intelligence for Communication-Efficient MLLM Inference via Fused Representation Compression', venue: 'IEEE/ACM SEC Edge Intelligence Workshop 2026', href: 'https://arxiv.org/abs/2609.11058' },
+        ]
       },
       {
-        label: 'Multimodal AI',
-        gist: 'Developing multimodal AI systems that learn to integrate and represent information across different modalities. My work explores multimodal representation learning, cross-modal fusion, and efficient MLLM deployment for applications with communication and computational constraints.',
-        sub: ''
+        label: 'Adaptive Deep Learning Inference at the Edge', tag: 'Edge AI · RL',
+        gist: 'Edge devices have limited and shifting compute, so a single fixed way of running a deep learning model rarely fits. I build reinforcement learning agents that decide at runtime how and where to run models across edge systems, adapting as conditions change.',
+        papers: [
+          { title: 'Infer-EDGE: Dynamic DNN Inference Optimization in Just-in-Time Edge-AI Implementations', venue: 'IEEE NOMS 2025', href: 'https://ieeexplore.ieee.org/abstract/document/11073623' },
+          { title: 'EdgeRL: Reinforcement Learning-Driven Deep Learning Model Inference Optimization at Edge', venue: 'CNSM 2024', href: 'https://ieeexplore.ieee.org/abstract/document/10814523' },
+        ]
       },
       {
-        label: 'Distributed Systems & Edge Computing',
-        gist: 'Designing distributed computing systems that support intelligent applications across heterogeneous and resource-constrained environments. My work explores distributed inference, edge-cloud collaboration, resource management, and adaptive computation across devices and networked systems.',
-        sub: ''
+        label: 'Reliable Multi-view 3D Reconstruction', tag: 'Edge Systems · RL',
+        gist: 'Multi-camera 3D reconstruction needs many edge devices to work together. I use reinforcement learning to manage those edge resources so reconstruction stays reliable as conditions change.',
+        papers: [
+          { title: 'Reinforcement Learning-Driven Edge Management for Reliable Multi-view 3D Reconstruction', venue: 'CNSM 2025', href: 'https://ieeexplore.ieee.org/abstract/document/11297524', slides: 'slides/CNSM_Relibality.pdf' },
+        ]
       },
       {
-        label: 'LLM Training & Alignment',
-        gist: 'Exploring methods for improving and adapting large language models through supervised, preference-based, and reinforcement learning. My work focuses on efficient model training and learning from feedback, with an interest in methods such as DPO, RLHF, and GRPO.',
-        sub: 'new direction'
+        label: 'RL × LLMs', tag: 'Current work',
+        gist: 'How reinforcement learning and large language models can improve each other: fine-tuning LLMs with reward and feedback (RLHF, DPO, GRPO), and using LLMs to guide and speed up reinforcement learning.',
+        papers: []
       },
     ]
   },
@@ -624,6 +653,30 @@ function buildTimeline(cat) {
   return tl;
 }
 
+// research: one entry per project, with its papers and an optional figure
+function buildResearch(cat) {
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+  const wrap = document.createElement('div');
+  wrap.className = 'rs';
+  cat.items.forEach((p, i) => {
+    const el = document.createElement('article');
+    el.className = 'rs-item';
+    el.style.animationDelay = `${i * 90}ms`;
+    el.innerHTML = `
+      <div class="rs-tag">${esc(p.tag)}</div>
+      <h3 class="rs-title">${esc(p.label)}</h3>
+      <p class="rs-gist">${esc(p.gist)}</p>
+      ${p.figure ? `<figure class="rs-fig"><img src="${p.figure.src}" alt="${esc(p.figure.alt)}" loading="lazy"><figcaption>${esc(p.figure.caption)}</figcaption></figure>` : ''}
+      ${p.papers.length ? `<ul class="rs-papers">${p.papers.map(r => `
+        <li><a href="${r.href}" target="_blank" rel="noopener">${esc(r.title)}</a> <span class="rs-venue">${esc(r.venue)}</span>${r.slides ? ` <a class="rs-slides" href="${r.slides}" target="_blank" rel="noopener"><span class="p" aria-hidden="true">❯</span>slides</a>` : ''}</li>`).join('')}
+      </ul>` : ''}`;
+    const img = el.querySelector('.rs-fig img');
+    if (img) img.addEventListener('click', () => openGallery(p.figure.gallery));
+    wrap.appendChild(el);
+  });
+  return wrap;
+}
+
 function showTerminal(cat) {
   document.getElementById('term-cat-slug').textContent = cat.id;
   termBody.innerHTML = '';
@@ -655,6 +708,7 @@ function showTerminal(cat) {
   if (hasPhoto) listEl.className = 'term-list';
 
   if (cat.id === 'experience') termBody.appendChild(buildTimeline(cat));
+  else if (cat.id === 'research') termBody.appendChild(buildResearch(cat));
   else cat.items.forEach((item, i) => {
     const block = document.createElement('div');
     block.className = 'term-item';
@@ -867,6 +921,7 @@ const GALLERIES = {
   hooding: ['photos/hooding/74bfc585-a727-45e8-ad4f-5d3f5381d2d5.jpg'],
   defense: ['photos/defense/1000145696.jpg'],
   graduation: ['images/graduation-cap.jpg'],
+  emmi: ['images/research/emmi-pipeline.png'],
 };
 const galleryModal = document.getElementById('gallery-modal');
 const galleryImg   = document.getElementById('gallery-img');
