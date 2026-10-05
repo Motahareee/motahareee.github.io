@@ -364,7 +364,7 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 }
 
 /* research drawer: projects with papers and figures */
-.rs { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 2.2rem; max-width: 780px; }
+.rs { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 2.2rem; }
 .rs-item { animation: termFadeIn 0.35s ease both; }
 .rs-tag { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: #8FB0F0; }
 .rs-title { margin-top: 0.3rem; font: 600 1.15rem 'JetBrains Mono', monospace; color: #FFFFFF; }
@@ -387,6 +387,20 @@ html, body { width: 100%; background: #FFFFFF; overflow-x: hidden; }
 }
 .rs-papers a.rs-slides .p { color: #8FB0F0; }
 @media (prefers-reduced-motion: reduce) { .rs-item { animation: none; } }
+
+.rs-head { font: 600 0.72rem 'JetBrains Mono', monospace; letter-spacing: 0.18em; text-transform: uppercase; color: #8FB0F0; margin-bottom: -0.8rem; }
+.rs-areas { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem 2.5rem; }
+.rs-area { animation: termFadeIn 0.3s ease both; }
+.rs-area-title { font: 600 1rem 'JetBrains Mono', monospace; color: #FFFFFF; display: flex; gap: 0.55rem; align-items: baseline; }
+.rs-area-title .p { color: #7FA0E8; font-size: 0.8rem; }
+.rs-badge {
+  display: inline-block; margin: 0.35rem 0 0 1.35rem; padding: 0.1rem 0.45rem; border-radius: 4px;
+  border: 1px solid rgba(143,176,240,0.5); color: #8FB0F0;
+  font: 500 0.66rem 'JetBrains Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.rs-area-gist { margin: 0.4rem 0 0 1.35rem; font: 400 0.88rem/1.6 'Inter', sans-serif; color: rgba(255,255,255,0.85); }
+@media (max-width: 699px) { .rs-areas { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .rs-area { animation: none; } }
 </style>
 </head>
 <body>
@@ -539,6 +553,30 @@ const CATS = [
   },
   {
     id: 'research', label: 'Research', icon: '🔬',
+    // broad focus areas, shown first
+    areas: [
+      {
+        label: 'Reinforcement Learning',
+        gist: 'Studying reinforcement learning for sequential decision-making in dynamic environments. My work spans value-based and actor-critic methods, including Q-learning, A2C, and A3C, with an emphasis on learning adaptive policies that respond to changing conditions and long-horizon objectives.',
+      },
+      {
+        label: 'Multimodal AI',
+        gist: 'Developing multimodal AI systems that learn to integrate and represent information across different modalities. My work explores multimodal representation learning, cross-modal fusion, and efficient MLLM deployment for applications with communication and computational constraints.',
+      },
+      {
+        label: 'Distributed Systems & Edge Computing',
+        gist: 'Designing distributed computing systems that support intelligent applications across heterogeneous and resource-constrained environments. My work explores distributed inference, edge-cloud collaboration, resource management, and adaptive computation across devices and networked systems.',
+      },
+      {
+        label: 'Security of Edge Systems',
+        gist: 'Studying how collaborative AI at the edge can be attacked. When devices split deep learning inference with remote servers, the information they exchange travels over unsecured networks. My work designs adversarial attacks on collaborative edge inference, using learned representations, to expose these weaknesses.',
+      },
+      {
+        label: 'LLM Training & Alignment', badge: 'new direction',
+        gist: 'Exploring methods for improving and adapting large language models through supervised, preference-based, and reinforcement learning. My work focuses on efficient model training and learning from feedback, with an interest in methods such as DPO, RLHF, and GRPO.',
+      },
+    ],
+    // projects, with papers and figures, shown after the focus areas
     items: [
       {
         label: 'EMMI: Multimodal LLMs at the Edge', tag: 'Edge AI · Multimodal',
@@ -564,9 +602,12 @@ const CATS = [
         ]
       },
       {
-        label: 'RL × LLMs', tag: 'Current work',
-        gist: 'How reinforcement learning and large language models can improve each other: fine-tuning LLMs with reward and feedback (RLHF, DPO, GRPO), and using LLMs to guide and speed up reinforcement learning.',
-        papers: []
+        label: 'Attacks on Collaborative DNN Inference', tag: 'Edge Security',
+        gist: 'When IoT devices offload part of a deep learning model to a remote server, the partitioning information and intermediate data they exchange can be intercepted. I study what an attacker can do with it: extract the model with an adversarial autoencoder, or cause untraceable misclassifications with a variational autoencoder.',
+        papers: [
+          { title: 'AdVAR-DNN: Adversarial Misclassification Attack on Collaborative DNN Inference', venue: 'arXiv 2025', href: 'https://arxiv.org/abs/2508.01107' },
+          { title: 'Adversarial Autoencoder based Model Extraction Attacks for Collaborative DNN Inference at Edge', venue: 'IEEE/IFIP NOMS 2025' },
+        ]
       },
     ]
   },
@@ -658,6 +699,27 @@ function buildResearch(cat) {
   const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
   const wrap = document.createElement('div');
   wrap.className = 'rs';
+
+  const areaHead = document.createElement('div');
+  areaHead.className = 'rs-head'; areaHead.textContent = 'Focus areas';
+  wrap.appendChild(areaHead);
+  const grid = document.createElement('div');
+  grid.className = 'rs-areas';
+  cat.areas.forEach((a, i) => {
+    const el = document.createElement('div');
+    el.className = 'rs-area';
+    el.style.animationDelay = `${i * 70}ms`;
+    el.innerHTML = `
+      <h3 class="rs-area-title"><span class="p" aria-hidden="true">▸</span>${esc(a.label)}</h3>
+      ${a.badge ? `<span class="rs-badge">✦ ${esc(a.badge)}</span>` : ''}
+      <p class="rs-area-gist">${esc(a.gist)}</p>`;
+    grid.appendChild(el);
+  });
+  wrap.appendChild(grid);
+
+  const projHead = document.createElement('div');
+  projHead.className = 'rs-head'; projHead.textContent = 'Projects';
+  wrap.appendChild(projHead);
   cat.items.forEach((p, i) => {
     const el = document.createElement('article');
     el.className = 'rs-item';
@@ -668,7 +730,7 @@ function buildResearch(cat) {
       <p class="rs-gist">${esc(p.gist)}</p>
       ${p.figure ? `<figure class="rs-fig"><img src="${p.figure.src}" alt="${esc(p.figure.alt)}" loading="lazy"><figcaption>${esc(p.figure.caption)}</figcaption></figure>` : ''}
       ${p.papers.length ? `<ul class="rs-papers">${p.papers.map(r => `
-        <li><a href="${r.href}" target="_blank" rel="noopener">${esc(r.title)}</a> <span class="rs-venue">${esc(r.venue)}</span>${r.slides ? ` <a class="rs-slides" href="${r.slides}" target="_blank" rel="noopener"><span class="p" aria-hidden="true">❯</span>slides</a>` : ''}</li>`).join('')}
+        <li>${r.href ? `<a href="${r.href}" target="_blank" rel="noopener">${esc(r.title)}</a>` : esc(r.title)} <span class="rs-venue">${esc(r.venue)}</span>${r.slides ? ` <a class="rs-slides" href="${r.slides}" target="_blank" rel="noopener"><span class="p" aria-hidden="true">❯</span>slides</a>` : ''}</li>`).join('')}
       </ul>` : ''}`;
     const img = el.querySelector('.rs-fig img');
     if (img) img.addEventListener('click', () => openGallery(p.figure.gallery));
